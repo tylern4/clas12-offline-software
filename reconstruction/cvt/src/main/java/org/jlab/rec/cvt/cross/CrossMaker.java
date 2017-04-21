@@ -54,7 +54,7 @@ public class CrossMaker {
 	 * @param svt_geo svt geometry
 	 * @return the list of SVT crosses reconstructed from clusters in the inner and outer layers in a module
 	 */
-	private ArrayList<Cross> findSVTCrosses(
+	public ArrayList<Cross> findSVTCrosses(
 			List<Cluster> svt_innerlayrclus,
 			List<Cluster> svt_outerlayrclus,
 			org.jlab.rec.cvt.svt.Geometry svt_geo) {
@@ -181,7 +181,7 @@ public class CrossMaker {
 	 * @param clusters the clusters
 	 * @return arraylist of clusters sorted by detector type and inner/outer layer in a double layer
 	 */
-	private ArrayList<ArrayList<Cluster>> sortClusterByDetectorAndIO(
+	public ArrayList<ArrayList<Cluster>> sortClusterByDetectorAndIO(
 			List<Cluster> clusters) {
 		
 		ArrayList<ArrayList<Cluster>> sortedClusters = new ArrayList<ArrayList<Cluster>>();

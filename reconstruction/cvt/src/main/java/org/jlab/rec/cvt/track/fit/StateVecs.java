@@ -35,6 +35,7 @@ public class StateVecs {
 	public List<Integer>Sector;
 	
 	public StateVec getStateVecAtModule(int k, StateVec kVec, Geometry geo) {
+		
 		StateVec newVec = kVec;
 		double xc = X0.get(k) + (kVec.d_rho+kVec.alpha/kVec.kappa)*Math.cos(kVec.phi0);
 		double yc = Y0.get(k) + (kVec.d_rho+kVec.alpha/kVec.kappa)*Math.sin(kVec.phi0);

@@ -131,7 +131,7 @@ public class TrackSeeder {
 	   		if(! circlefitstatusOK)
 	   			continue;
 	   		CrossMaker cm = new CrossMaker();
-	   	// instantiate array of clusters that are sorted by detector (SVT, BMT [C, Z]) and inner/outer layers
+	     	// instantiate array of clusters that are sorted by detector (SVT, BMT [C, Z]) and inner/outer layers
 			ArrayList<ArrayList<Cluster>> sortedClusters = new ArrayList<ArrayList<Cluster>>();
 			// fill the sorted list
 			sortedClusters = cm.sortClusterByDetectorAndIO(seedClusters.get(s));

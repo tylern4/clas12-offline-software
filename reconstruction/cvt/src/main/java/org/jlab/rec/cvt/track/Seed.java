@@ -4,7 +4,11 @@ import java.util.List;
 
 import org.jlab.rec.cvt.cluster.Cluster;
 import org.jlab.rec.cvt.trajectory.Helix;
-
+/**
+ * 
+ * @author ziegler
+ *
+ */
 public class Seed {
 
 	public Seed() {

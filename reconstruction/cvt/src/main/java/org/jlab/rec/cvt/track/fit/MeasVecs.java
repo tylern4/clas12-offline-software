@@ -243,6 +243,7 @@ public class MeasVecs {
 						};
 			 for(int i = 0; i<5; i++)
 				 System.out.println("H["+i+"] = "+(float)H[i]);
+			 
 		}
 		
 		return H;
