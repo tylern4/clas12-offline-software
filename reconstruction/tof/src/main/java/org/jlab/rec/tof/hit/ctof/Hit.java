@@ -13,7 +13,6 @@ import org.jlab.geom.prim.Point3D;
 import org.jlab.geom.prim.Vector3D;
 import org.jlab.geometry.prim.Line3d;
 import org.jlab.rec.ctof.CCDBConstants;
-import org.jlab.rec.ctof.CCDBConstantsLoader;
 import org.jlab.rec.ctof.Constants;
 import org.jlab.rec.tof.hit.AHit;
 import org.jlab.rec.tof.hit.IGetCalibrationParams;
