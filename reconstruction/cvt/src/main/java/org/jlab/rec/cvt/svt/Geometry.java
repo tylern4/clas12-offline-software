@@ -358,8 +358,11 @@ public class Geometry {
 				//s=(x+alpha*z)/(alpha*z+P); */
 				
 			}	
-			if(s<0.5)
+			if(s<=1)
 				s=1;
+			if(s>=256)
+				s=256;
+			
 			//System.out.println(" layer "+layer+" sector "+sect+" strip "+s);
 			return s;
 		}

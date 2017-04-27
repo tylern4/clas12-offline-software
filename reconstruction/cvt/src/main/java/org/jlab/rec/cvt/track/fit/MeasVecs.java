@@ -58,7 +58,7 @@ public class MeasVecs {
 	public double h(StateVec stateVec, Geometry geo) {
 		int sec = this.measurements.get(stateVec.k).sector;
 		int lay = this.measurements.get(stateVec.k).layer;
-		System.out.println("h : sec "+sec+" lay "+lay+" calcStrip "+geo.calcNearestStrip(stateVec.x, stateVec.y, stateVec.z, lay, sec));
+		
 		return geo.calcNearestStrip(stateVec.x, stateVec.y, stateVec.z, lay, sec);
 	}
 	
@@ -66,74 +66,75 @@ public class MeasVecs {
 		StateVec SVplus = null;// = new StateVec(stateVec.k);
 		StateVec SVminus = null;// = new StateVec(stateVec.k);
 		
-		double delta_d_rho = 0.1;
+		double delta_d_rho = 2.*Math.sqrt(Math.abs(sv.trackCov.get(stateVec.k).covMat.get(0, 0)));
 		SVplus = this.reset(SVplus, stateVec, sv);
 		SVminus = this.reset(SVminus, stateVec, sv);
 		
 		SVplus.d_rho = stateVec.d_rho+delta_d_rho/2.;
 		SVminus.d_rho = stateVec.d_rho-delta_d_rho/2.;
 		
-		SVplus =  sv.getStateVecAtModule(stateVec.k, SVplus, geo);
-		SVminus =  sv.getStateVecAtModule(stateVec.k, SVminus, geo);
+		SVplus =  sv.newStateVecAtModule(stateVec.k, SVplus, geo);
+		SVminus =  sv.newStateVecAtModule(stateVec.k, SVminus, geo);
 		
 		double delta_m_drho = (h(SVplus, geo) - h(SVminus, geo))/delta_d_rho;
 		
-		double delta_d_phi0 = 0.1;
+		double delta_d_phi0 = 2.*Math.sqrt(Math.abs(sv.trackCov.get(stateVec.k).covMat.get(1, 1)));;
 		SVplus = this.reset(SVplus, stateVec, sv);
 		SVminus = this.reset(SVminus, stateVec, sv);
 		
 		SVplus.phi0 = stateVec.phi0+delta_d_phi0/2.;
 		SVminus.phi0 = stateVec.phi0-delta_d_phi0/2.;
 		
-		SVplus =  sv.getStateVecAtModule(stateVec.k, SVplus, geo);
-		SVminus =  sv.getStateVecAtModule(stateVec.k, SVminus, geo);
+		SVplus =  sv.newStateVecAtModule(stateVec.k, SVplus, geo);
+		SVminus =  sv.newStateVecAtModule(stateVec.k, SVminus, geo);
 		
 		double delta_m_dphi0 = (h(SVplus, geo) - h(SVminus, geo))/delta_d_phi0;
 		
-		double delta_d_kappa = 0.1;
+		double delta_d_kappa = 2.*Math.sqrt(Math.abs(sv.trackCov.get(stateVec.k).covMat.get(2, 2)));
 		SVplus = this.reset(SVplus, stateVec, sv);
 		SVminus = this.reset(SVminus, stateVec, sv);
 		
 		SVplus.kappa = stateVec.kappa+delta_d_kappa/2.;
 		SVminus.kappa = stateVec.kappa-delta_d_kappa/2.;
 		
-		SVplus =  sv.getStateVecAtModule(stateVec.k, SVplus, geo);
-		SVminus =  sv.getStateVecAtModule(stateVec.k, SVminus, geo);
+		SVplus =  sv.newStateVecAtModule(stateVec.k, SVplus, geo);
+		SVminus =  sv.newStateVecAtModule(stateVec.k, SVminus, geo);
 		
 		double delta_m_dkappa = (h(SVplus, geo) - h(SVminus, geo))/delta_d_kappa;
 		
-		double delta_d_dz = 0.1;
+		double delta_d_dz = 2.*Math.sqrt(Math.abs(sv.trackCov.get(stateVec.k).covMat.get(3, 3)));;
 		SVplus = this.reset(SVplus, stateVec, sv);
 		SVminus = this.reset(SVminus, stateVec, sv);
 		
 		SVplus.dz = stateVec.dz+delta_d_dz/2.;
 		SVminus.dz = stateVec.dz-delta_d_dz/2.;
 		
-		SVplus =  sv.getStateVecAtModule(stateVec.k, SVplus, geo);
-		SVminus =  sv.getStateVecAtModule(stateVec.k, SVminus, geo);
+		SVplus =  sv.newStateVecAtModule(stateVec.k, SVplus, geo);
+		SVminus =  sv.newStateVecAtModule(stateVec.k, SVminus, geo);
 		
 		double delta_m_dz = (h(SVplus, geo) - h(SVminus, geo))/delta_d_dz;
 		
-		double delta_d_tanL = 0.1;
+		double delta_d_tanL = 2.*Math.sqrt(Math.abs(sv.trackCov.get(stateVec.k).covMat.get(4, 4)));;
 		SVplus = this.reset(SVplus, stateVec, sv);
 		SVminus = this.reset(SVminus, stateVec, sv);
 		
 		SVplus.tanL = stateVec.tanL+delta_d_tanL/2.;
 		SVminus.tanL = stateVec.tanL-delta_d_tanL/2.;
 		
-		SVplus =  sv.getStateVecAtModule(stateVec.k, SVplus, geo);
-		SVminus =  sv.getStateVecAtModule(stateVec.k, SVminus, geo);
+		SVplus =  sv.newStateVecAtModule(stateVec.k, SVplus, geo);
+		SVminus =  sv.newStateVecAtModule(stateVec.k, SVminus, geo);
 		
 		double delta_m_dtanL = (h(SVplus, geo) - h(SVminus, geo))/delta_d_tanL;
 		
 		double[] H=  new double[] 
 				{ delta_m_drho, delta_m_dphi0, delta_m_dkappa, delta_m_dz, delta_m_dtanL};
-		 for(int i = 0; i<5; i++)
-			 System.out.println("num H["+i+"] = "+(float)H[i]);
-		 this.H2(stateVec, geo);
+		// for(int i = 0; i<5; i++)
+		//	 System.out.println("num H["+i+"] = "+(float)H[i]);
+		 
 		 return H;
 		
 	}
+	
 	private StateVec reset(StateVec SVplus, StateVec stateVec, StateVecs sv) {
 		SVplus = sv.new StateVec(stateVec.k);
 		SVplus.d_rho = stateVec.d_rho;
@@ -147,7 +148,7 @@ public class MeasVecs {
 		return SVplus;
 	}
 
-
+	/*
 	public double[] H2(StateVec stateVec, Geometry geo) {
 		double[] H = new double[]{0,0,0,0,0};
 		//System.out.println(" Projecting to meas plane ...........");
@@ -155,9 +156,10 @@ public class MeasVecs {
 			int sec = this.measurements.get(stateVec.k).sector;
 			int lay = this.measurements.get(stateVec.k).layer;
 			// global rotation angle
-			double Glob_rangl = ((double) (sec-1)/(double) Constants.NSECT[lay-1])*2.*Math.PI + Constants.PHI0[lay-1];
+			double Glob_rangl = ((double) -(sec-1)/(double) Constants.NSECT[lay-1])*2.*Math.PI + Constants.PHI0[lay-1];
 			// angle to rotate to global frame
 			double Loc_to_Glob_rangl = Glob_rangl-Constants.LOCZAXISROTATION;
+
 			// the intersection of the track with the module plane
 			double x = stateVec.x;
 			double y = stateVec.y;
@@ -174,13 +176,13 @@ public class MeasVecs {
 			double sinRotation = Math.sin(Loc_to_Glob_rangl);
 
 			double xt=  (x-lTx)*cosRotation +(y-lTy)*sinRotation  + 0.5*Constants.ACTIVESENWIDTH;
+			
 			double zt = z - lTz ;
 			
 			double alphaAng = (double) Constants.STEREOANGLE/(double) (Constants.NSTRIP-1); 
 			
 			double P = Constants.PITCH;
 		
-			
 			double del_m_del_x =0;
 			double del_m_del_y =0;
 			double del_m_del_z =0;
@@ -196,12 +198,8 @@ public class MeasVecs {
 				 del_m_del_y = sinRotation/(alphaAng*zt+P);
 				 del_m_del_z = alphaAng*(P-xt)/((alphaAng*zt+P)*(alphaAng*zt+P));			 
 			 }
-			 
-			//del_m_del_x =(geo.calcNearestStrip(stateVec.x+0.5, stateVec.y, stateVec.z, lay, sec)-geo.calcNearestStrip(stateVec.x-0.5, stateVec.y, stateVec.z, lay, sec));
-			//del_m_del_y =(geo.calcNearestStrip(stateVec.x, stateVec.y+0.5, stateVec.z, lay, sec)-geo.calcNearestStrip(stateVec.x, stateVec.y-0.5, stateVec.z, lay, sec));
-			//del_m_del_z =(geo.calcNearestStrip(stateVec.x, stateVec.y, stateVec.z+0.5, lay, sec)-geo.calcNearestStrip(stateVec.x, stateVec.y, stateVec.z-0.5, lay, sec));
 			
-			
+			//System.out.println("... del_m_del_x = "+del_m_del_x+" del_m_del_y = "+del_m_del_y+" del_m_del_z = "+del_m_del_z);
 			// find H
 			//==========================================================================//
 			// x = x0 + drho * cos(phi0) + alpha/kappa *(cos(phi0) - cos(phi0 + phi) )  //
@@ -210,13 +208,13 @@ public class MeasVecs {
 			//==========================================================================//
 			
 			// get vars
-			double drho = stateVec.d_rho;
-			double phi0 = stateVec.phi0;
-			double phi = stateVec.phi;
+			double drho  = stateVec.d_rho;
+			double phi0  = stateVec.phi0;
+			double phi   = stateVec.phi;
 			double alpha = stateVec.alpha;
 			double kappa = stateVec.kappa;
 			//double dz = stateVec.dz;
-			double tanL = stateVec.tanL;
+			double tanL  = stateVec.tanL;
 			
 			double delx_deldrho = Math.cos(phi0);
 			double dely_deldrho = Math.sin(phi0);
@@ -234,21 +232,20 @@ public class MeasVecs {
 			double dely_deltanL =0;
 			double delz_deltanL =-alpha/kappa *phi;
 			 H =  new double[] 
-						{   del_m_del_x*delx_deldrho + del_m_del_y*dely_deldrho + del_m_del_z*delz_deldrho,
-							del_m_del_x*delx_delphi0 + del_m_del_y*dely_delphi0 + del_m_del_z*delz_delphi0,
-							del_m_del_x*delx_delkappa + del_m_del_y*dely_delkappa + del_m_del_z*delz_delkappa,						    
-							del_m_del_x*delx_deldz + del_m_del_y*dely_deldz + del_m_del_z*delz_deldz,
-							del_m_del_x*delx_deltanL + del_m_del_y*dely_deltanL + del_m_del_z*delz_deltanL
+						{   del_m_del_x*delx_deldrho   + del_m_del_y*dely_deldrho   + del_m_del_z*delz_deldrho,
+							del_m_del_x*delx_delphi0   + del_m_del_y*dely_delphi0   + del_m_del_z*delz_delphi0,
+							del_m_del_x*delx_delkappa  + del_m_del_y*dely_delkappa  + del_m_del_z*delz_delkappa,						    
+							del_m_del_x*delx_deldz     + del_m_del_y*dely_deldz     + del_m_del_z*delz_deldz,
+							del_m_del_x*delx_deltanL   + del_m_del_y*dely_deltanL   + del_m_del_z*delz_deltanL
 						
 						};
-			 for(int i = 0; i<5; i++)
-				 System.out.println("H["+i+"] = "+(float)H[i]);
-			 
 		}
 		
+		for(int i = 0; i < 5; i++)
+			System.out.println("H["+i+"] = "+H[i]);
 		return H;
 	}
-
+   */
 
 	
 	

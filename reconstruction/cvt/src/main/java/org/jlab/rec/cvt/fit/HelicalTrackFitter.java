@@ -187,6 +187,7 @@ public class HelicalTrackFitter {
 	         //covr[3] =  delta_phi.delta_phi;
 	         //covr[4] =  delta_phi.delta_dca;
 	         //covr[5] =  delta_dca.delta_dca;
+	        
 	        fit_covmatrix.set(0, 0, _circlefitpars.cov()[5]);
 	        fit_covmatrix.set(1, 0, _circlefitpars.cov()[4]);
 	        fit_covmatrix.set(2, 0, _circlefitpars.cov()[2]);

@@ -13,13 +13,13 @@ import org.jlab.rec.cvt.banks.HitReader;
 import org.jlab.rec.cvt.banks.RecoBankWriter;
 import org.jlab.rec.cvt.cluster.Cluster;
 import org.jlab.rec.cvt.cluster.ClusterFinder;
-import org.jlab.rec.cvt.cross.Cross;
-import org.jlab.rec.cvt.cross.CrossList;
-import org.jlab.rec.cvt.cross.CrossMaker;
-import org.jlab.rec.cvt.cross.StraightTrackCrossListFinder;
 import org.jlab.rec.cvt.hit.ADCConvertor;
 import org.jlab.rec.cvt.hit.FittedHit;
 import org.jlab.rec.cvt.hit.Hit;
+import org.jlab.rec.cvt.track.Seed;
+import org.jlab.rec.cvt.track.TrackSeeder;
+import org.jlab.rec.cvt.track.fit.KFitter;
+import org.jlab.rec.cvt.trajectory.TrkSwimmer;
 
 /**
  * Service to return reconstructed BST track candidates- the output is in Evio format
@@ -28,10 +28,15 @@ import org.jlab.rec.cvt.hit.Hit;
  *
  */
 
-public class CVTKPP extends ReconstructionEngine {
+public class CVTReconstructionDevel extends ReconstructionEngine {
 
-    public CVTKPP() {
-    	super("CVTCosmics", "ziegler", "3.0"); 	
+
+	TrackSeeder trseed ;
+	KFitter kf;
+	
+    public CVTReconstructionDevel() {
+    	super("CVTCosmics", "ziegler", "4.0"); 	
+    	trseed = new TrackSeeder();
     }
 
     String FieldsConfig="";
@@ -98,73 +103,31 @@ public class CVTKPP extends ReconstructionEngine {
    				}
    			}
 		}
-		List<ArrayList<Cross>> crosses = new ArrayList<ArrayList<Cross>>();
 		
-		//3) find the crosses
-		CrossMaker crossMake = new CrossMaker();
-
-		crosses = crossMake.findCrosses(clusters,SVTGeom);
-		
-		if(clusters.size()==0 ) {
-			
-			return true; //exiting
+		List<Seed> seeds = trseed.findSeed(SVTclusters, SVTGeom);
+		for(Seed seed : seeds) {
+			kf = new KFitter(seed, SVTGeom);
+			kf.runFitter(SVTGeom);
 		}
+		return true;
 		
-		//clean up svt crosses
-		List<Cross> crossesToRm = crossMake.crossLooperCands(crosses);		
-		crosses.get(0).removeAll(crossesToRm);
-		/*
-		for(int j =0; j< crosses.get(0).size(); j++) {
-			for(int j2 =0; j2< crossesToRm.size(); j2++) {
-				if(crosses.get(0).get(j).get_Id()==crossesToRm.get(j2).get_Id())
-					crosses.get(0).remove(j);
-				
-			}
-		}
-		*/
-		
-		if(crosses.size()==0 ) {
-			// create the clusters and fitted hits banks
-			rbc.appendCVTCosmicsBanks( event, SVThits, BMThits, SVTclusters, BMTclusters, null, null);
-			return true; //exiting
-		}
-		// if the looper finder kills all svt crosses save all crosses anyway
-		if(crosses.get(0).size()==0) {
-			List<ArrayList<Cross>> crosses2 = new ArrayList<ArrayList<Cross>>();
-			crosses2.add(0,(ArrayList<Cross>) crossesToRm);
-			crosses2.add(1, crosses.get(1));
-			rbc.appendCVTCosmicsBanks( event, SVThits, BMThits, SVTclusters, BMTclusters, crosses2, null);
-			
-			return true;
-		}
-		//Find cross lists for Cosmics
-		//4) make list of crosses consistent with a track candidate
-		StraightTrackCrossListFinder crossLister = new StraightTrackCrossListFinder();
-		CrossList crosslist = crossLister.findCosmicsCandidateCrossLists(crosses, SVTGeom);
-		
-		//if(crosslist==null || crosslist.size()==0) {
-			// create the clusters and fitted hits banks
-			rbc.appendCVTCosmicsBanks( event, SVThits, BMThits, SVTclusters, BMTclusters, crosses, null);
-			
-			return true;
-		//}
-		//return true;
     }
 
 
 	
-	public boolean init() {
-		// Load the Constants
+public boolean init() {
+		
+		TrkSwimmer.getMagneticFields();
 		config = new CVTRecConfig();
 		return true;
 	}
 	public static void main(String[] args) throws FileNotFoundException, EvioException{
 		
-	String inputFile = "/Users/ziegler/Workdir/Distribution/coatjava-4a.0.0/svt123_decoded.hipo";
+	String inputFile = "/Users/ziegler/Workdir/Files/GEMC/CVT/prot.hipo";
 		
 		System.err.println(" \n[PROCESSING FILE] : " + inputFile);
 		
-		CVTKPP en = new CVTKPP();
+		CVTReconstructionDevel en = new CVTReconstructionDevel();
 		en.init();
 		
 		int counter = 0;
@@ -174,7 +137,7 @@ public class CVTKPP extends ReconstructionEngine {
 		
          HipoDataSync writer = new HipoDataSync();
 		//Writer
-		 String outputFile="/Users/ziegler/Workdir/Distribution/SVTTest.hipo";
+		 String outputFile="/Users/ziegler/Workdir/Files/GEMC/CVT/protRec.hipo";
 		 writer.open(outputFile);
 		
 		long t1=0;
@@ -191,7 +154,7 @@ public class CVTKPP extends ReconstructionEngine {
 			en.processDataEvent(event);
 			writer.writeEvent(event);
 			//System.out.println("  EVENT "+counter);
-			//if(counter>11) break;
+			if(counter>2) break;
 			//event.show();
 			//if(counter%100==0)
 			//System.out.println("run "+counter+" events");

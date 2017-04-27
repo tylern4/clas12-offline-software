@@ -179,7 +179,7 @@ public class CircleFitter {
 		double S_delta     = Math.sin(phiFit)*Sxr2 - Math.cos(phiFit)*Syr2;
 		double S_alphalpha = (Math.sin(phiFit)*Math.sin(phiFit))*Sxx - 2.*Math.cos(phiFit)*Math.sin(phiFit)*Sxy + (Math.cos(phiFit)*Math.cos(phiFit))*Syy;
 		
-		double invV_rhorho = 0.25*(Sr2r2/Sw) - docaFit*(S_delta -docaFit*(S_alphalpha+0.5*Sr2-docaFit*(S_alpha-0.25*docaFit*Sw)));
+		double invV_rhorho = 0.25*(Sr2r2) - docaFit*(S_delta -docaFit*(S_alphalpha+0.5*Sr2-docaFit*(S_alpha-0.25*docaFit*Sw)));
 		double invV_rhophi = -u*(0.5*(Math.cos(phiFit)*Sxr2+Math.sin(phiFit)*Syr2)-docaFit*(Sy-0.5*docaFit*S_beta));
 		double invV_phiphi = u*u*((Math.cos(phiFit)*Math.cos(phiFit))*Sxx+(Math.sin(phiFit)*Math.sin(phiFit))*Syy+Math.sin(2.*phiFit)*Sxy);
 		double invV_rhod   = rhoFit*(-0.5*S_delta+docaFit*S_alphalpha)+0.5*u*Sr2-0.5*docaFit*((2.*u+rhoFit*docaFit)*S_alpha-u*docaFit*Sw);
@@ -279,13 +279,14 @@ public class CircleFitter {
         double Vp_dd     = result.get(2,2);
         
         //3. Fill the covariance matrix
+        
         _covr[0] =  Vp_rhorho;
         _covr[1] =  Vp_rhophi;
         _covr[2] =  Vp_rhod;
         _covr[3] =  Vp_phiphi;
         _covr[4] =  Vp_phid;
-        _covr[5] =  Vp_dd;
-
+        _covr[5] =  Vp_dd; 
+        
         //  new params
 		_phi = Math.atan2(B,C);
 		_dca = A/(1.+U);

@@ -24,7 +24,8 @@ public class Track extends Trajectory {
 	 */
 	public Track(Helix helix) {
 		super(helix);
-		set_HelicalTrack(helix);
+		if(helix!=null)
+			set_HelicalTrack(helix);
 	}
 
 
@@ -92,25 +93,19 @@ public class Track extends Trajectory {
 	 * Sets the track helical track parameters P, Pt, Pz
 	 * @param Helix the track helix
 	 */
-	public void set_HelicalTrack(Helix Helix) {
-		
-		set_Q(((int) Math.signum(Constants.getSolenoidscale())*Helix.get_charge()));
-		 
-		double Bz = Math.abs(this.calc_Field(0, 0, 0));
-		
-		double calcPt = Constants.LIGHTVEL*Helix.radius()*Bz;
-		
-		double calcPz =0;
-		
-	
-		calcPz = calcPt*Helix.get_tandip();
-		
-		double calcP = Math.sqrt(calcPt*calcPt+calcPz*calcPz);
-		
-		set_Pt(calcPt);
-		set_Pz(calcPz);
-		set_P(calcP);
-		
+	public void set_HelicalTrack(Helix Helix) {		
+		if(Helix!=null) {
+			set_Q(((int) Math.signum(Constants.getSolenoidscale())*Helix.get_charge())); 
+			double Bz = Math.abs(this.calc_Field(0, 0, 0));
+			double calcPt = Constants.LIGHTVEL*Helix.radius()*Bz;
+			double calcPz =0;
+			calcPz = calcPt*Helix.get_tandip();
+			double calcP = Math.sqrt(calcPt*calcPt+calcPz*calcPz);
+			
+			set_Pt(calcPt);
+			set_Pz(calcPz);
+			set_P(calcP);
+		}
 	}
 	
 
