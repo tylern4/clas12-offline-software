@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.jlab.rec.cvt.svt.Constants;
 import org.jlab.rec.cvt.svt.Geometry;
 import org.jlab.rec.cvt.track.Seed;
 import org.jlab.rec.cvt.track.fit.StateVecs.StateVec;

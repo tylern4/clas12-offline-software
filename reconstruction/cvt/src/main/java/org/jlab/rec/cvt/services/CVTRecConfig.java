@@ -42,6 +42,7 @@ public class CVTRecConfig {
 			System.out.println("  CHECK CONFIGS..............................."+FieldsConfig+" = ? "+newConfig);
 			Constants.Load(isCosmics, isSVTonly, (double)bank.getFloat("solenoid",0)); 
 			// Load the Fields
+			System.out.println("************************************************************SETTING FIELD SCALE *****************************************************");
 			TrkSwimmer.setMagneticFieldScale(bank.getFloat("solenoid",0)); // something changed in the configuration
 			this.setFieldsConfig(newConfig);
 		}

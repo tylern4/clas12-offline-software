@@ -86,9 +86,10 @@ public class KFitter {
 						sv.trackTraj.get(k).z+" p "+1./sv.trackTraj.get(k).kappa); 
 				System.out.println((k+1)+"] trans "+sv.trackTraj.get(k+1).x+","+sv.trackTraj.get(k+1).y+","+
 						sv.trackTraj.get(k+1).z); 
-				//this.filter(k+1, geo);
+				this.filter(k+1, geo);
 				System.out.println((k+1)+"] filt "+sv.trackTraj.get(k+1).x+","+sv.trackTraj.get(k+1).y+","+
 						sv.trackTraj.get(k+1).z); 
+				System.out.println(" Energy loss \n pion "+ (float) sv.trackTraj.get(k+1).get_ELoss()[0]+"\n kaon "+ (float) sv.trackTraj.get(k+1).get_ELoss()[1]+"\n proton "+ (float) sv.trackTraj.get(k+1).get_ELoss()[2]);
 			}			
 		sv.setTrackPars(sv.X0.size()-1);
 		}

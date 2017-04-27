@@ -154,7 +154,7 @@ public boolean init() {
 			en.processDataEvent(event);
 			writer.writeEvent(event);
 			//System.out.println("  EVENT "+counter);
-			if(counter>2) break;
+			if(counter>20) break;
 			//event.show();
 			//if(counter%100==0)
 			//System.out.println("run "+counter+" events");

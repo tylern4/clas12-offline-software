@@ -94,7 +94,7 @@ public class Constants {
 	static double Z_eff_roha = Math.pow((7.84/100.)*Math.pow(1, 2.94) + (64.5/100.)*Math.pow(6, 2.94)+(8.38/100.)*Math.pow(7, 2.94)+(19.12/100.)*Math.pow(8, 2.94), (1./2.94));
 	
 	// empirical scaling factor from MC
-    public static double detMatZ_ov_A_timesThickn =  0.97*(14.*2*SILICONTHICK/28.0855+0*(Z_eff_roha*RohacellThick/12.0588)+6*CaThick/12.0107 );
+    public static double detMatZ_ov_A_timesThickn =  (14.*2*SILICONTHICK/28.0855+(Z_eff_roha*RohacellThick/12.0588)+6*CaThick/12.0107 );
 	//...................
 	//Code for identifying BST in making an ID for a bst intersection
 	public static int BSTidCode=1;

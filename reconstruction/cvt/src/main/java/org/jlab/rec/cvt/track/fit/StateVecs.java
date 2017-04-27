@@ -176,7 +176,13 @@ public class StateVecs {
 		
 		fVec.d_rho = (Xc - X0.get(f))*Math.cos(phi_f) + (Yc - Y0.get(f))*Math.sin(phi_f) - Bf.alpha/iVec.kappa ;
 		
-		fVec.kappa = ELoss_kappa(iVec, f-i) ;
+		fVec.kappa = iVec.kappa;
+		
+		double[] ElossTot = new double[3];
+		for(int e = 0 ; e<3; e++) {
+			ElossTot[e] = iVec.get_ELoss()[e] + ELoss_hypo(iVec, f-i)[e];
+		}
+		fVec.set_ELoss(ElossTot) ;
 		
 		fVec.dz = Z0.get(i) - Z0.get(f) +iVec.dz -(Bf.alpha/iVec.kappa)*(phi_f - iVec.phi0)*iVec.tanL;
 		
@@ -243,40 +249,39 @@ public class StateVecs {
 		} 
 	}	
 	
-	private double ELoss_kappa(StateVec iVec, int dir) {
+	private double[] ELoss_hypo(StateVec iVec, int dir) {
+		double[] Eloss = new double[3]; //Eloss for pion, kaon, proton hypotheses
+		
+		if(dir<0)
+			return Eloss;
 		
 		Vector3D trkDir = 	this.P(iVec.k);
 		trkDir.unit();
-		double cosEntranceAngle = this.P(iVec.k).z();
-		
+		double cosEntranceAngle = trkDir.z();
+		//System.out.println(" cosTrk "+Math.toDegrees(Math.acos(trkDir.z())));
 		double pt = Math.abs(1./iVec.kappa);
 		double pz = pt*iVec.tanL;
 		double p = Math.sqrt(pt*pt+pz*pz);
 		
-	    double mass = MassHypothesis(massHypo); // assume given mass hypothesis
-	    double beta = p/Math.sqrt(p*p+mass*mass); // use particle momentum
-	    double gamma = 1./Math.sqrt(1-beta*beta);
+		for(int hyp = 2; hyp<5; hyp++) {
 		
-	    double s = MassHypothesis("electron")/mass;
-
- 		double Wmax = 2.*mass*beta*beta*gamma*gamma/(1.+2.*s*gamma+s*s);
- 		double I = 0.000000172;
-
- 		double logterm = 2.*mass*beta*beta*gamma*gamma*Wmax/(I*I);
-
- 		double delta = 0.; 
- 		double dEdx = 0.00001535*Constants.detMatZ_ov_A_timesThickn*(Math.log(logterm)-2*beta*beta-delta)/(beta*beta); //in GeV/mm
- 	
- 		double tmpPtot = p;
-		
-	    double tmpEtot = Math.sqrt(MassHypothesis(massHypo)*MassHypothesis(massHypo)+tmpPtot*tmpPtot); 
-	    double tmpEtotCorrected = tmpEtot-dir*dEdx/cosEntranceAngle; 
- 	    double tmpPtotCorrSq = tmpEtotCorrected*tmpEtotCorrected-MassHypothesis(massHypo)*MassHypothesis(massHypo); 
-	   
- 	    double newPt = Math.sqrt(tmpPtotCorrSq/(1+iVec.tanL*iVec.tanL));
- 	    
- 	    return iVec.kappa ;		
- 	   // return Math.signum(iVec.kappa)/newPt ;		
+			double mass = MassHypothesis(hyp); // assume given mass hypothesis
+		    double beta = p/Math.sqrt(p*p+mass*mass); // use particle momentum
+		    double gamma = 1./Math.sqrt(1-beta*beta);
+			
+		    double s = MassHypothesis(1)/mass;
+	
+	 		double Wmax = 2.*mass*beta*beta*gamma*gamma/(1.+2.*s*gamma+s*s);
+	 		double I = 0.000000172;
+	
+	 		double logterm = 2.*mass*beta*beta*gamma*gamma*Wmax/(I*I);
+	
+	 		double delta = 0.; 
+	 		double dEdx = 0.00001535*Constants.detMatZ_ov_A_timesThickn*(Math.log(logterm)-2*beta*beta-delta)/(beta*beta); //in GeV/mm
+	 	
+	 	     Eloss[hyp-2] =  dir*Math.abs(dEdx/cosEntranceAngle );		
+		}
+		return Eloss;
 	}
 	
 	private Matrix Q(StateVec iVec, int dir) {
@@ -301,7 +306,7 @@ public class StateVecs {
 			
 		    double t_ov_X0 = 2.*0.32/Constants.SILICONRADLEN; //path length in radiation length units = t/X0 [true path length/ X0] ; Si radiation length = 9.36 cm
 		    
-		    double mass = MassHypothesis(massHypo); // assume given mass hypothesis
+		    double mass = MassHypothesis(2);   // assume given mass hypothesis (2=pion)
 		    double beta = p/Math.sqrt(p*p+mass*mass); // use particle momentum
 		    double pathLength = t_ov_X0/cosEntranceAngle;  
 		    
@@ -324,6 +329,7 @@ public class StateVecs {
 	
 	
 	public class StateVec {
+		
 		final int k;
 		
 		public double x;
@@ -339,6 +345,15 @@ public class StateVecs {
 		
 		StateVec(int k){
 			this.k = k;
+		}
+		private double[] _ELoss = new double[3];
+
+		public double[] get_ELoss() {
+			return _ELoss;
+		}
+
+		public void set_ELoss(double[] _ELoss) {
+			this._ELoss = _ELoss;
 		}
 		
 	}
@@ -382,24 +397,24 @@ public class StateVecs {
 		}		
 	}
 	
-	public String massHypo = "proton";
+	//public String massHypo = "pion";
 	
-	public double MassHypothesis(String H) {
+	public double MassHypothesis(int H) {
     	double piMass = 0.13957018;
    	  	double KMass  = 0.493677;
    	  	double muMass = 0.105658369;
    	  	double eMass  = 0.000510998;
    	  	double pMass  = 0.938272029;
    	  	double value = piMass; //default
-   	  	if(H.equals("proton"))
+   	  	if(H==4)
   		  value = pMass;
-   	  	if(H.equals("electron"))
+   	  	if(H==1)
   		  value = eMass;
-   	  	if(H.equals("pion"))
+   	  	if(H==2)
   		  value = piMass;
-   	  	if(H.equals("kaon"))
+   	  	if(H==3)
   		  value = KMass;
-   	  	if(H.equals("muon"))
+   	  	if(H==0)
   		  value = muMass;
    	  	return value;
      }
@@ -434,8 +449,11 @@ public class StateVecs {
 		double py = Math.signum(1/this.trackTraj.get(kf).kappa)*Math.cos(this.trackTraj.get(kf).phi0);
 		double pz = Math.signum(1/this.trackTraj.get(kf).kappa)*this.trackTraj.get(kf).tanL;
 		int q = (int) Math.signum(this.trackTraj.get(kf).kappa);
+		double p_unc = Math.sqrt(px*px+py*py+pz*pz);
 		
-		System.out.println("x "+x/10+" y "+y/10+" z "+z/10+" p "+Math.sqrt(px*px+py*py+pz*pz)+" theta "+Math.toDegrees(Math.acos(pz/Math.sqrt(px*px+py*py+pz*pz)))+" phi "+Math.toDegrees(Math.atan2(py, px))+" q "+q);
+		double E_loss = this.trackTraj.get(kf).get_ELoss()[2];
+	
+		System.out.println("x "+x/10+" y "+y/10+" z "+z/10+" p "+p_unc+" ELossTot "+E_loss +" theta "+Math.toDegrees(Math.acos(pz/Math.sqrt(px*px+py*py+pz*pz)))+" phi "+Math.toDegrees(Math.atan2(py, px))+" q "+q);
 	}
 	public void init(Seed trk, KFitter kf) {
 		//init stateVec
