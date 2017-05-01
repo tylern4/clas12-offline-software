@@ -120,7 +120,7 @@ public class TableLoader {
 	 * @param r superlayer idx
 	 * @return returns time (ns) when given inputs of distance x (cm), local angle alpha (degrees) and magnitude of bfield (Tesla).  
 	 */
-	 private static double calc_Time(double x, double dmax, double tmax, double alpha, double bfield, int s, int r) {
+	 public static synchronized double calc_Time(double x, double dmax, double tmax, double alpha, double bfield, int s, int r) {
 		 
 		 // Assume a functional form (time=x/v0+a*(x/dmax)**n+b*(x/dmax)**m)
 		 // for time as a function of x for theta = 30 deg.
