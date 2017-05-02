@@ -11,101 +11,76 @@ import org.jlab.rec.cvt.fit.CircleFitter;
 import org.jlab.rec.cvt.fit.HelicalTrackFitter;
 import org.jlab.rec.cvt.svt.Constants;
 
-
 public class TrackSeeder {
+	private List<ArrayList<Cluster>> seedClusters = new ArrayList<ArrayList<Cluster>>();
 	
+	double[] phiShift = new double[]{0, 90}; // move the bin edge to handle bin boundaries
+	
+	public void FindSeedClusters(List<Cluster> SVTclusters) {
+		seedClusters.clear();
+		List<ArrayList<Cluster>> phi0 = FindSeedClustersFixedBin(SVTclusters, phiShift[0]); 
+		List<ArrayList<Cluster>> phi90 = FindSeedClustersFixedBin(SVTclusters, phiShift[1]); 
+		if(phi0.size()>phi90.size())
+			seedClusters = phi0;
+		if(phi90.size()>phi0.size())
+			seedClusters = phi90;
+		if(phi90.size()==phi0.size()) {
+			for(int i = 0; i< phi0.size(); i++) {
+				if(phi0.get(i).size() >= phi90.get(i).size()) {
+					seedClusters.add(phi0.get(i));
+				} else {
+					seedClusters.add(phi90.get(i));
+				}
+			}
+		}
+	}
+	
+	public List<ArrayList<Cluster>> FindSeedClustersFixedBin(List<Cluster> SVTclusters, double phiShift) {
+		
+		int NbLayers = Constants.NLAYR;		
+    	Collections.sort(SVTclusters);
+    	List<ArrayList<Cluster>> seedClusters = new ArrayList<ArrayList<Cluster>>();   	
+    	int nphiBins = 36;
+		Cluster[][] ClsArray = new Cluster[nphiBins][NbLayers];
+		
+		for(int i = 0; i<SVTclusters.size(); i++) {
+			double phi = Math.toDegrees(SVTclusters.get(i).get(0).get_Strip().get_ImplantPoint().toVector3D().phi());
+			phi+=phiShift;
+			if(phi<0)
+				phi+=360;
+			
+			int binIdx = (int) (phi /nphiBins);
+			
+			ClsArray[binIdx][SVTclusters.get(i).get_Layer()-1] = SVTclusters.get(i);
+			
+		}
+		
+		
+		for(int b = 0; b< nphiBins; b++)  {
+			
+			if(ClsArray[b]!=null)  {
+				ArrayList<Cluster> hits = new ArrayList<Cluster>() ;
+
+					for(int la=0; la<6; la++) {
+
+						if(ClsArray[b][la]!=null) 
+							hits.add(ClsArray[b][la]);
+							
+					}
+					if(hits.size()>3)  {
+						seedClusters.add(hits);
+					}
+			}
+		}
+		return seedClusters;
+		
+	}
 	public List<Seed> findSeed(List<Cluster> SVTclusters, org.jlab.rec.cvt.svt.Geometry svt_geo) {
 		
 		List<Seed> seeds = new ArrayList<Seed>();
 		
-		double angleRange = 10;
-		//test
-		// sort the clusters...
-		int NbLayers = 8;
+		this.FindSeedClusters(SVTclusters);
 		
-    	Collections.sort(SVTclusters);
-    	List<ArrayList<Cluster>> seedClusters = new ArrayList<ArrayList<Cluster>>();
-    	
-    	List<ArrayList<ArrayList<Cluster>>> candLists = new ArrayList<ArrayList<ArrayList<Cluster>>>();
-    	for(int j =0; j<20; j++) { // max nb trks
-    		ArrayList<ArrayList<Cluster>> listsByLayer = new ArrayList<ArrayList<Cluster>>();
-	        for(int i =0; i<NbLayers; i++) {
-	        	listsByLayer.add(new ArrayList<Cluster>());
-	        }
-	        candLists.add(listsByLayer); 
-    	}
-    	int index = 0;
-    	
-		for(int i =1; i<SVTclusters.size(); i++) {
-			Cluster clus = SVTclusters.get(i-1);
-			double phi = Math.toDegrees(clus.get(0).get_Strip().get_ImplantPoint().toVector3D().phi());
-			Cluster clus1 = SVTclusters.get(i);
-			double phi1 = Math.toDegrees(clus1.get(0).get_Strip().get_ImplantPoint().toVector3D().phi());
-			if(phi<0)
-				phi+=360;
-			if(phi1<0)
-				phi1+=360;
-			
-	    	if(Math.abs(phi-phi1)<angleRange || Math.abs(phi-phi1)>360-angleRange) {
-	    		if(i==1) {
-	    			candLists.get(index).get(clus.get_Layer()-1).add(clus);    	
-	    	    	clus.printInfo();
-	    		}
-	    		candLists.get(index).get(clus1.get_Layer()-1).add(clus1);
-	    		clus1.printInfo();
-	    		} else {
-	    			index++;
-	    	}
-	    	
-		}
-		
-
-		int NbCands =1;
-		for(int i = 0; i<=index; i++) {
-				
-				int[] L = new int[NbLayers];
-				for(int k =0; k<NbLayers; k++) {					
-					L[k] = candLists.get(i).get(k).size(); 
-					if(L[k]==0)
-						L[k]=1;
-					NbCands*=L[k];
-				}
-				
-				List<ArrayList<Cluster>> clusLists = new ArrayList<ArrayList<Cluster>>();
-				for(int l =0; l<NbCands; l++)
-					clusLists.add(new ArrayList<Cluster>());
-				
-				int listIdx=0;
-				for(int k0 =0; k0<L[0]; k0++) 
-					for(int k1 =0; k1<L[1]; k1++)
-						for(int k2 =0; k2<L[2]; k2++)
-							for(int k3 =0; k3<L[3]; k3++) 
-								for(int k4 =0; k4<L[4]; k4++)
-									for(int k5 =0; k5<L[5]; k5++) {
-										
-										if(candLists.get(i).get(0).size()!=0 && candLists.get(i).get(0).get(k0)!=null) {
-											clusLists.get(listIdx).add(candLists.get(i).get(0).get(k0));
-										}
-										if(candLists.get(i).get(1).size()!=0 && candLists.get(i).get(1).get(k1)!=null) {
-											clusLists.get(listIdx).add(candLists.get(i).get(1).get(k1));
-										}
-										if(candLists.get(i).get(2).size()!=0 && candLists.get(i).get(2).get(k2)!=null) {
-											clusLists.get(listIdx).add(candLists.get(i).get(2).get(k2));
-										}
-										if(candLists.get(i).get(3).size()!=0 && candLists.get(i).get(3).get(k3)!=null) {
-											clusLists.get(listIdx).add(candLists.get(i).get(3).get(k3));
-										}
-										if(candLists.get(i).get(4).size()!=0 && candLists.get(i).get(4).get(k4)!=null) {
-											clusLists.get(listIdx).add(candLists.get(i).get(4).get(k4));
-										}
-										if(candLists.get(i).get(5).size()!=0 && candLists.get(i).get(5).get(k5)!=null) {
-											clusLists.get(listIdx).add(candLists.get(i).get(5).get(k5)); 
-										}
-					
-				}
-				seedClusters.addAll(clusLists);
-			
-		} 
 		for(int s =0; s<seedClusters.size(); s++) {
 		//	if(seeds.get(s).size()<4)
 			//	continue;
@@ -121,13 +96,12 @@ public class TrackSeeder {
 				Ys[loopIdx] = c.get(0).get_Strip().get_MidPoint().y();
 				double err = svt_geo.getSingleStripResolution(c.get(0).get_Layer(), c.get(0).get_Strip().get_Strip(), Constants.ACTIVESENLEN/2);
 				Ws[loopIdx] =1./(err*err);
-				System.out.println(" Strips err "+err);
 				loopIdx++;
 			}
 			 
 			CircleFitter circlefit = new CircleFitter();
 	   		 boolean circlefitstatusOK = circlefit.fitStatus(Xs, Ys, Ws, Xs.length); 
-	   		System.out.println(" circle fit to clusters "+Constants.LIGHTVEL*5/circlefit.getFit().rho());
+	   		
 	   		if(! circlefitstatusOK)
 	   			continue;
 	   		CrossMaker cm = new CrossMaker();
@@ -146,7 +120,7 @@ public class TrackSeeder {
 			if(cand!=null) {
 				Seed seed = new Seed();
 				seed.set_Clusters(seedClusters.get(s));
-				System.out.println(" cand "+cand.get_Pt()+" "+cand.get_Pz()+" ");
+				seed.set_Crosses(SVTCrosses);
 				seed.set_Helix(cand.get_helix());
 				seeds.add(seed);
 			}

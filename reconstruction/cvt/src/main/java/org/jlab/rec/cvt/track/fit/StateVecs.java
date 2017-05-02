@@ -7,9 +7,12 @@ import java.util.Map;
 
 import org.jlab.geom.prim.Point3D;
 import org.jlab.geom.prim.Vector3D;
+import org.jlab.io.base.DataBank;
+import org.jlab.io.base.DataEvent;
 import org.jlab.rec.cvt.svt.Constants;
 import org.jlab.rec.cvt.svt.Geometry;
 import org.jlab.rec.cvt.track.Seed;
+import org.jlab.rec.cvt.trajectory.Helix;
 import org.jlab.rec.cvt.trajectory.TrkSwimmer;
 
 import Jama.Matrix;
@@ -22,7 +25,7 @@ public class StateVecs {
 	public Map<Integer, StateVec> trackTraj = new HashMap<Integer, StateVec>();
 	public Map<Integer,CovMat> trackCov = new HashMap<Integer, CovMat>();
 
-	public double stepSize = 0.2; // step size 
+	
 	public StateVec StateVec;
 	public CovMat CovMat;
 	public Matrix F;
@@ -80,11 +83,12 @@ public class StateVecs {
 			double m = (En.y()-Or.y())/(En.x()-Or.x());
 			double d = Or.y() - Or.x()*m;
 			
-			double del = r*r*(1+m*m) - (yc-m*xc-d)*(yc-m*xc-d);
+			//double del = r*r*(1+m*m) - (yc-m*xc-d)*(yc-m*xc-d);
+			double del = (xc+(-d+yc)*m)*(xc+(-d+yc)*m) - (1+m*m)*(xc*xc + (d-yc)*(d-yc) -r*r);
 			if(del<0)
 				return null;
-			double x1 = (xc+yc*m - d*m + Math.sqrt(del))/(1+m*m);
-			double x2 = (xc+yc*m - d*m - Math.sqrt(del))/(1+m*m);
+			double x1 = (xc + (-d +yc)*m + Math.sqrt(del))/(1+m*m);
+			double x2 = (xc + (-d +yc)*m - Math.sqrt(del))/(1+m*m);
 			
 			if(Math.abs(x1-Or.x())<Math.abs(En.x()-Or.x())) {
 				X = x1;
@@ -109,10 +113,10 @@ public class StateVecs {
 		
 		double phi = ToRef.angle(ToPoint);
 		phi*=-Math.signum(kappa);
-		double x = X0.get(k) + d_rho*Math.cos(phi0) + alpha *(Math.cos(phi0) - Math.cos(phi0 + phi));
-		double y = Y0.get(k) + d_rho*Math.sin(phi0) + alpha *(Math.sin(phi0) - Math.sin(phi0 + phi));
+		double x = X0.get(k) + d_rho*Math.cos(phi0) + alpha/kappa *(Math.cos(phi0) - Math.cos(phi0 + phi));
+		double y = Y0.get(k) + d_rho*Math.sin(phi0) + alpha/kappa *(Math.sin(phi0) - Math.sin(phi0 + phi));
 		double z = Z0.get(k) + dz - alpha/kappa*tanL*phi;
-		
+		System.out.println("X "+X+" Y "+Y+" x "+x+" y "+Y+" phi "+Math.toDegrees(phi)+" z "+z+" alpha "+alpha+" kappa "+kappa+" tanL "+tanL +" dz "+dz);
 		value[0] = x; 
 		value[1] = y;
 		value[2] = z;
@@ -159,7 +163,9 @@ public class StateVecs {
 	
 
 	public void transport(int i, int f, StateVec iVec, CovMat icovMat, Geometry geo) { // s = signed step-size
-		
+		if(iVec.phi0<0)
+			iVec.phi0+=2.*Math.PI;
+			
 		B Bf = new B(i, iVec.x, iVec.y, iVec.z);
 		
 		double Xc = X0.get(i) + (iVec.d_rho+iVec.alpha/iVec.kappa)*Math.cos(iVec.phi0);
@@ -172,6 +178,8 @@ public class StateVecs {
 		if(iVec.kappa<0)
 			phi_f = Math.atan2(-Yc + Y0.get(f), -Xc + X0.get(f));
 		
+		if(phi_f<0)
+			phi_f+=2*Math.PI;
 		fVec.phi0 = phi_f;
 		
 		fVec.d_rho = (Xc - X0.get(f))*Math.cos(phi_f) + (Yc - Y0.get(f))*Math.sin(phi_f) - Bf.alpha/iVec.kappa ;
@@ -185,7 +193,7 @@ public class StateVecs {
 		fVec.set_ELoss(ElossTot) ;
 		
 		fVec.dz = Z0.get(i) - Z0.get(f) +iVec.dz -(Bf.alpha/iVec.kappa)*(phi_f - iVec.phi0)*iVec.tanL;
-		
+		System.out.println(" trans phi_f " +phi_f+"  iVec.phi0 "+iVec.phi0);
 		fVec.tanL = iVec.tanL;
 		
 		//Bf = new B(f, X0.get(f), Y0.get(f), Z0.get(f));
@@ -311,13 +319,13 @@ public class StateVecs {
 		    double pathLength = t_ov_X0/cosEntranceAngle;  
 		    
 		    double sctRMS =(0.0136/(beta*p))*Math.sqrt(pathLength)*(1+0.038*Math.log(pathLength)); // Highland-Lynch-Dahl formula
-		   
+		    
 		    Q = new Matrix( new double[][]{
-					{0, 0, 						0,   	  							0,      0									},
-					{0, sctRMS*(1+iVec.tanL*iVec.tanL),  	0,          						0,      0									},
-					{0, 0, 		  				sctRMS*(iVec.kappa*iVec.kappa*iVec.tanL*iVec.tanL),		0,		sctRMS*(iVec.kappa*iVec.tanL*(1+iVec.tanL*iVec.tanL))	},
-					{0, 0, 						0, 									0, 		0									},
-					{0, 0, 						sctRMS*(iVec.kappa*iVec.tanL*(1+iVec.tanL*iVec.tanL)),  0,		sctRMS*(1+iVec.tanL*iVec.tanL)*(1+iVec.tanL*iVec.tanL)	}
+					{0, 0, 0, 0, 0 },
+					{0, sctRMS*(1+iVec.tanL*iVec.tanL), 0, 0, 0 },
+					{0, 0,sctRMS*(iVec.kappa*iVec.kappa*iVec.tanL*iVec.tanL), 0, sctRMS*(iVec.kappa*iVec.tanL*(1+iVec.tanL*iVec.tanL)) },
+					{0, 0, 0, 0, 0 },
+					{0, 0, sctRMS*(iVec.kappa*iVec.tanL*(1+iVec.tanL*iVec.tanL)),  0, sctRMS*(1+iVec.tanL*iVec.tanL)*(1+iVec.tanL*iVec.tanL) }
 			});
 		}
 		
@@ -440,23 +448,59 @@ public class StateVecs {
 	}
 	
 	
-	public void setTrackPars(int kf) {
+	public Helix setTrackPars(int kf) {
 		
 		double x = this.trackTraj.get(kf).d_rho*Math.cos(this.trackTraj.get(kf).phi0);
 		double y = this.trackTraj.get(kf).d_rho*Math.sin(this.trackTraj.get(kf).phi0);
 		double z = this.trackTraj.get(kf).dz ;
-		double px = -Math.signum(1/this.trackTraj.get(kf).kappa)*Math.sin(this.trackTraj.get(kf).phi0);
-		double py = Math.signum(1/this.trackTraj.get(kf).kappa)*Math.cos(this.trackTraj.get(kf).phi0);
-		double pz = Math.signum(1/this.trackTraj.get(kf).kappa)*this.trackTraj.get(kf).tanL;
+		double px = -Math.abs(1/this.trackTraj.get(kf).kappa)*Math.sin(this.trackTraj.get(kf).phi0);
+		double py = Math.abs(1/this.trackTraj.get(kf).kappa)*Math.cos(this.trackTraj.get(kf).phi0);
+		double pz = Math.abs(1/this.trackTraj.get(kf).kappa)*this.trackTraj.get(kf).tanL;
 		int q = (int) Math.signum(this.trackTraj.get(kf).kappa);
 		double p_unc = Math.sqrt(px*px+py*py+pz*pz);
 		
 		double E_loss = this.trackTraj.get(kf).get_ELoss()[2];
-	
-		System.out.println("x "+x/10+" y "+y/10+" z "+z/10+" p "+p_unc+" ELossTot "+E_loss +" theta "+Math.toDegrees(Math.acos(pz/Math.sqrt(px*px+py*py+pz*pz)))+" phi "+Math.toDegrees(Math.atan2(py, px))+" q "+q);
+		
+		double h_dca = Math.sqrt(x*x+y*y);
+		double h_phi0 = Math.atan2(py, px);
+		double kappa = Math.signum(this.trackTraj.get(kf).kappa)/Math.sqrt(px*px+py*py);
+		double h_omega = kappa/this.trackTraj.get(kf).alpha;
+		double h_dz = z;
+		double h_tandip = pz/Math.sqrt(px*px+py*py);;
+		
+		Helix trkHelix = new Helix(h_dca, h_phi0, h_omega, h_dz, h_tandip, this.trackCov.get(kf).covMat);
+		
+		return trkHelix;
+		//System.out.println("x "+x/10+" y "+y/10+" z "+z/10+" p "+p_unc+" ELossTot "+E_loss +" theta "+Math.toDegrees(Math.acos(pz/Math.sqrt(px*px+py*py+pz*pz)))+" phi "+Math.toDegrees(Math.atan2(py, px))+" q "+q);
 	}
-	public void init(Seed trk, KFitter kf) {
+	public void init(Seed trk, KFitter kf, DataEvent event) {
 		//init stateVec
+		DataBank bank = event.getBank("MC::Particle");
+        // fills the arrays corresponding to the hit variables
+		int rows = bank.rows();
+		double [] px = new double[rows];
+		double [] py = new double[rows];
+		double [] pz = new double[rows];
+        
+		// exit if the array is empty
+		int size = rows;
+		if(size==0)
+			return;
+		
+		
+		for(int i = 0; i<size; i++){
+			px[i] = bank.getFloat("px", i);
+			py[i] = bank.getFloat("py", i);
+			pz[i] = bank.getFloat("pz", i);
+		}
+		double g_p = Math.sqrt(px[0]*px[0]+py[0]*py[0]+pz[0]*pz[0]);
+		double g_kappa = 1./Math.sqrt(px[0]*px[0]+py[0]*py[0]);
+		double g_phi0 = Math.atan2(-px[0],py[0]);
+		double g_rho = 0;
+		double g_dz = 0;
+		double g_tanL =  pz[0]/Math.sqrt(px[0]*px[0]+py[0]*py[0]);
+				
+				
 		StateVec initSV = new StateVec(0);
 		initSV.x = -trk.get_Helix().get_dca()*Math.sin(trk.get_Helix().get_phi_at_dca());
 		initSV.y = trk.get_Helix().get_dca()*Math.cos(trk.get_Helix().get_phi_at_dca());
@@ -473,6 +517,20 @@ public class StateVecs {
 		initSV.tanL = trk.get_Helix().get_tandip();
 		initSV.d_rho = trk.get_Helix().get_dca();
 		initSV.phi = 0;
+		//
+		/*
+        initSV.kappa = g_kappa;  
+		initSV.phi0 = g_phi0;
+		initSV.dz = g_dz;
+		initSV.tanL = g_tanL;
+		initSV.d_rho = g_rho;
+		
+		initSV.x = 0;
+		initSV.y = 0;
+		initSV.z = 0; 
+		*/
+		//
+		
 		this.trackTraj.put(0, initSV);	
 		//init covMat
 		Matrix fitCovMat = 	trk.get_Helix().get_covmatrix();
@@ -504,7 +562,6 @@ public class StateVecs {
 		components[3][4] = cov_z0tandip;
 		components[4][3] = cov_z0tandip;
 		components[4][4] = cov_tandip2;
-		
 		
 		Matrix initCMatrix = new Matrix(components);
 		

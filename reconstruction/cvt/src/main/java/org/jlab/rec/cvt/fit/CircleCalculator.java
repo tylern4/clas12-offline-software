@@ -18,11 +18,15 @@ public class CircleCalculator {
 	// Status set to false if no circle can be found
 	
 	public boolean status(double[] P_0, double[] P_1, double[] P_2) {
+		if(P_0==null || P_1==null || P_2==null)
+			return false;
 		// sort points
 		double[][] sortedPoints = SortPoints(P_0, P_1, P_2);
 		double[] P0 = sortedPoints[0];
 		double[] P1 = sortedPoints[1];
 		double[] P2 = sortedPoints[2];
+		if(P0==null || P1==null || P2==null)
+			return false;
 		
 		if ( Math.abs(P1[0]-P0[0])<1.0e-18 || Math.abs(P2[0]-P1[0])<1.0e-18) return false;
 		

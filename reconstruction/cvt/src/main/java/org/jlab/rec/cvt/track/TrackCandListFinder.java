@@ -12,7 +12,6 @@ import org.jlab.rec.cvt.cross.CrossList;
 import org.jlab.rec.cvt.fit.HelicalTrackFitter;
 import org.jlab.rec.cvt.fit.StraightTrackFitter;
 import org.jlab.rec.cvt.hit.FittedHit;
-import org.jlab.rec.cvt.svt.Geometry;
 import org.jlab.rec.cvt.trajectory.Helix;
 import org.jlab.rec.cvt.trajectory.Ray;
 import org.jlab.rec.cvt.trajectory.StateVec;

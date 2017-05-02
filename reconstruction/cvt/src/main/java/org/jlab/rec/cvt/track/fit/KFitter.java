@@ -2,9 +2,11 @@ package org.jlab.rec.cvt.track.fit;
 import java.util.ArrayList;
 
 import org.jlab.geom.prim.Point3D;
-import org.jlab.rec.cvt.svt.Constants;
+import org.jlab.io.base.DataEvent;
 import org.jlab.rec.cvt.svt.Geometry;
 import org.jlab.rec.cvt.track.Seed;
+import org.jlab.rec.cvt.track.Track;
+import org.jlab.rec.cvt.track.fit.StateVecs.B;
 import org.jlab.rec.cvt.track.fit.StateVecs.StateVec;
 import org.jlab.rec.cvt.trajectory.Helix;
 
@@ -19,13 +21,13 @@ public class KFitter {
 	
 	public StateVec finalStateVec;
 	
-	public KFitter(Seed trk, Geometry geo) {
-		this.init(trk, geo);
+	public KFitter(Seed trk, Geometry geo, DataEvent event) {
+		this.init(trk, geo, event);
 	}
 
-	public void init(Seed trk, Geometry geo) {
-		Helix helix = trk.get_Helix();
-		mv.setMeasVecs(trk);
+	public void init(Seed trk, Geometry geo, DataEvent event) {
+		//Helix helix = trk.get_Helix();
+		mv.setMeasVecs(trk, geo);
 		if(sv.Layer!=null) {
 			sv.Layer.clear();
 		} else {
@@ -60,40 +62,71 @@ public class KFitter {
 		for(int i =1; i< mv.measurements.size(); i++) {
 			sv.Layer.add(mv.measurements.get(i).layer);
 			sv.Sector.add(mv.measurements.get(i).sector);
-			Point3D ref = geo.intersectionOfHelixWithPlane(mv.measurements.get(i).layer, mv.measurements.get(i).sector,  helix) ;
+			//Point3D ref = geo.intersectionOfHelixWithPlane(mv.measurements.get(i).layer, mv.measurements.get(i).sector,  helix) ;
 			//ref = new Point3D(0,Constants.MODULERADIUS[mv.measurements.get(i).layer-1][0], 0);
-			ref = new Point3D(0,0,0);
+			Point3D ref = new Point3D(0,0,0);
 			sv.X0.add(ref.x());
 			sv.Y0.add(ref.y());
 			sv.Z0.add(ref.z());
 		}
-		sv.init(trk, this);		
+		sv.init(trk, this, event);		
 	}
 	
-	public int totNumIter = 10;
+	public int totNumIter = 5;
 	double newChisq = Double.POSITIVE_INFINITY;
 	
 	public void runFitter(Geometry geo) {
 		this.chi2 = 0;	
 		this.NDF = sv.X0.size();
-		
-		for(int k=0; k<sv.X0.size()-1; k++) {
-			System.out.println(" transporting state ");
-			sv.transport(k, k+1, sv.trackTraj.get(k), sv.trackCov.get(k), geo);
-				//sv.trackTraj.add(k+1, sv.StateVec); 
-				//sv.trackCov.add(k+1, sv.CovMat);
-				System.out.println((k)+"] trans "+sv.trackTraj.get(k).x+","+sv.trackTraj.get(k).y+","+
-						sv.trackTraj.get(k).z+" p "+1./sv.trackTraj.get(k).kappa); 
-				System.out.println((k+1)+"] trans "+sv.trackTraj.get(k+1).x+","+sv.trackTraj.get(k+1).y+","+
-						sv.trackTraj.get(k+1).z); 
-				this.filter(k+1, geo);
-				System.out.println((k+1)+"] filt "+sv.trackTraj.get(k+1).x+","+sv.trackTraj.get(k+1).y+","+
-						sv.trackTraj.get(k+1).z); 
-				System.out.println(" Energy loss \n pion "+ (float) sv.trackTraj.get(k+1).get_ELoss()[0]+"\n kaon "+ (float) sv.trackTraj.get(k+1).get_ELoss()[1]+"\n proton "+ (float) sv.trackTraj.get(k+1).get_ELoss()[2]);
-			}			
-		sv.setTrackPars(sv.X0.size()-1);
+		for(int it = 0; it< totNumIter; it++) {
+			for(int k=0; k<sv.X0.size()-1; k++) {
+				System.out.println(" transporting state ");
+				sv.transport(k, k+1, sv.trackTraj.get(k), sv.trackCov.get(k), geo);
+					System.out.println((k)+"] trans "+sv.trackTraj.get(k).x+","+sv.trackTraj.get(k).y+","+
+							sv.trackTraj.get(k).z+" p "+1./sv.trackTraj.get(k).kappa); 
+					System.out.println("To "+(k+1)+"] trans "+sv.trackTraj.get(k+1).x+","+sv.trackTraj.get(k+1).y+","+
+							sv.trackTraj.get(k+1).z+" p "+1./sv.trackTraj.get(k).kappa); 
+					System.out.println(" Filtering state ...........................................");
+					this.filter(k+1, geo);
+					System.out.println((k+1)+"] filt "+sv.trackTraj.get(k+1).x+","+sv.trackTraj.get(k+1).y+","+
+							sv.trackTraj.get(k+1).z); 
+					System.out.println(" Energy loss \n pion "+ (float) sv.trackTraj.get(k+1).get_ELoss()[0]+"\n kaon "+ (float) sv.trackTraj.get(k+1).get_ELoss()[1]+"\n proton "+ (float) sv.trackTraj.get(k+1).get_ELoss()[2]);
+				}
+			if(it<totNumIter-1)
+				this.Rinit();
+			}
 		}
 		
+	public void Rinit() {
+		Helix helix = sv.setTrackPars(sv.X0.size()-1);
+
+		sv.trackTraj.get(0).x = -helix.get_dca()*Math.sin(helix.get_phi_at_dca());
+		sv.trackTraj.get(0).y = helix.get_dca()*Math.cos(helix.get_phi_at_dca());
+		sv.trackTraj.get(0).z = helix.get_Z0();
+		double xcen    = (1./helix.get_curvature() - helix.get_dca()) * Math.sin(helix.get_phi_at_dca());  
+        double ycen    = (-1./helix.get_curvature() + helix.get_dca()) * Math.cos(helix.get_phi_at_dca()); 
+        B Bf = sv.new B(0,0,0,0);
+        sv.trackTraj.get(0).alpha = Bf.alpha;
+        sv.trackTraj.get(0).kappa = Bf.alpha*helix.get_curvature();  
+        sv.trackTraj.get(0).phi0 = Math.atan2(ycen, xcen);
+		if(sv.trackTraj.get(0).kappa<0)
+			sv.trackTraj.get(0).phi0 = Math.atan2(-ycen, -xcen);
+		sv.trackTraj.get(0).dz = helix.get_Z0();
+		sv.trackTraj.get(0).tanL = helix.get_tandip();
+		sv.trackTraj.get(0).d_rho = helix.get_dca();
+		sv.trackTraj.get(0).phi = 0;
+		
+		sv.trackCov.get(0).covMat = sv.trackCov.get(sv.X0.size()-1).covMat;
+	}
+	public Track OutputTrack(Seed trk, Geometry geo) {
+		
+		Helix helix = sv.setTrackPars(sv.X0.size()-1);
+		Track cand = new Track(helix);
+		cand.addAll(trk.get_Crosses());	
+		cand.update_Crosses(geo);
+		
+		return cand;
+	}
 	
 	public double chi2 = 0;
 	public int NDF = 0;
@@ -102,7 +135,7 @@ public class KFitter {
 		
 		if(sv.trackTraj.get(k)!=null && sv.trackCov.get(k).covMat!=null ) {		
 			double[] K = new double[5];
-			double V   =  1; 
+			double V   =  mv.measurements.get(k).error; 
 			double[] H =  mv.H(sv.trackTraj.get(k), sv, geo);
 			
 			double[][] HTGH =  new double[][] {
@@ -114,7 +147,7 @@ public class KFitter {
 			}; 
 			
 			Matrix Ci = null;
-			
+			this.printMatrix(new Matrix(HTGH));System.err.println("-------------------------------\n");
 			if(this.isNonsingular(sv.trackCov.get(k).covMat)==false) {
 				System.err.println("Covariance Matrix is non-invertible - quit filter!");
 				this.printMatrix(sv.trackCov.get(k).covMat);
@@ -176,8 +209,8 @@ public class KFitter {
 			
 			sv.getStateVecAtModule(k, fVec, geo);
 			double f_h = mv.h(fVec, geo);
-			
-			
+			System.out.println(" measurement = "+mv.measurements.get(k).centroid+" state "+h +" filtered "+f_h);
+		
 			if((mv.measurements.get(k).centroid - f_h)*(mv.measurements.get(k).centroid - f_h)/V < (mv.measurements.get(k).centroid - h)*(mv.measurements.get(k).centroid - h)/V) {
 				
 				sv.trackTraj.get(k).d_rho 	= drho_filt;
@@ -191,6 +224,7 @@ public class KFitter {
 			//	sv.trackTraj.put(k, fVec);
 			} 
 			chi2+=(mv.measurements.get(k).centroid - f_h)*(mv.measurements.get(k).centroid - f_h)/V;
+			
 		}
 	}
 

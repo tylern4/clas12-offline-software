@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.jlab.geom.prim.Point3D;
+import org.jlab.rec.cvt.cross.Cross;
+import org.jlab.rec.cvt.svt.Constants;
 import org.jlab.rec.cvt.svt.Geometry;
 import org.jlab.rec.cvt.track.Seed;
 import org.jlab.rec.cvt.track.fit.StateVecs.StateVec;
@@ -31,7 +34,7 @@ public class MeasVecs {
 		
 	}
 
-	public void setMeasVecs(Seed trkcand) {
+	public void setMeasVecs(Seed trkcand, Geometry geo) {
 		
 		measurements = new ArrayList<MeasVec>(trkcand.get_Clusters().size());
 		MeasVec meas0 = new MeasVec();
@@ -43,10 +46,26 @@ public class MeasVecs {
 		for(int i =0; i< trkcand.get_Clusters().size(); i++) {
 			MeasVec meas = new MeasVec();
 			meas.centroid =trkcand.get_Clusters().get(i).get_Centroid();
-			meas.error =0.5;
+			meas.error = 0;
+			for(int j = 0; j< trkcand.get_Clusters().get(i).size(); j++) {
+				double Z = Constants.ACTIVESENLEN;
+				for(int c = 0; c< trkcand.get_Crosses().size(); c++) {
+					if(trkcand.get_Crosses().get(c).get_Cluster1().get_Id() == trkcand.get_Clusters().get(i).get_Id() 
+							|| trkcand.get_Crosses().get(c).get_Cluster2().get_Id() == trkcand.get_Clusters().get(i).get_Id()) {
+						Point3D crPt = trkcand.get_Crosses().get(c).get_Point();
+						
+						Z = geo.transformToFrame(trkcand.get_Clusters().get(i).get_Sector(), trkcand.get_Clusters().get(i).get_Layer(), crPt.x(), crPt.y(), crPt.z(), "local", "").z();
+					}
+				}
+				
+				double res = trkcand.get_Clusters().get(i).get_ResolutionAlongZ(Z, geo)/(Constants.PITCH/Math.sqrt(12.) );
+				
+				meas.error+= res*res;
+			}
 			meas.sector = trkcand.get_Clusters().get(i).get_Sector();
 			meas.layer = trkcand.get_Clusters().get(i).get_Layer();
 			measurements.add(meas);
+			System.out.println(trkcand.get_Clusters().get(i).size()+") meas "+i+" sector "+meas.sector+" layer "+meas.layer+" err "+meas.error);
 		}
 		Collections.sort(measurements);
 		for(int i =0; i<measurements.size(); i++)
@@ -55,6 +74,9 @@ public class MeasVecs {
 	
 	
 	public double h(StateVec stateVec, Geometry geo) {
+		if(stateVec==null)
+			return Double.NEGATIVE_INFINITY;
+		
 		int sec = this.measurements.get(stateVec.k).sector;
 		int lay = this.measurements.get(stateVec.k).layer;
 		
@@ -65,7 +87,7 @@ public class MeasVecs {
 		StateVec SVplus = null;// = new StateVec(stateVec.k);
 		StateVec SVminus = null;// = new StateVec(stateVec.k);
 		
-		double delta_d_rho = 2.*Math.sqrt(Math.abs(sv.trackCov.get(stateVec.k).covMat.get(0, 0)));
+		double delta_d_rho = 1;
 		SVplus = this.reset(SVplus, stateVec, sv);
 		SVminus = this.reset(SVminus, stateVec, sv);
 		
@@ -77,7 +99,7 @@ public class MeasVecs {
 		
 		double delta_m_drho = (h(SVplus, geo) - h(SVminus, geo))/delta_d_rho;
 		
-		double delta_d_phi0 = 2.*Math.sqrt(Math.abs(sv.trackCov.get(stateVec.k).covMat.get(1, 1)));;
+		double delta_d_phi0 = Math.toRadians(0.25);
 		SVplus = this.reset(SVplus, stateVec, sv);
 		SVminus = this.reset(SVminus, stateVec, sv);
 		
@@ -89,7 +111,7 @@ public class MeasVecs {
 		
 		double delta_m_dphi0 = (h(SVplus, geo) - h(SVminus, geo))/delta_d_phi0;
 		
-		double delta_d_kappa = 2.*Math.sqrt(Math.abs(sv.trackCov.get(stateVec.k).covMat.get(2, 2)));
+		double delta_d_kappa = 0.01;
 		SVplus = this.reset(SVplus, stateVec, sv);
 		SVminus = this.reset(SVminus, stateVec, sv);
 		
@@ -101,7 +123,7 @@ public class MeasVecs {
 		
 		double delta_m_dkappa = (h(SVplus, geo) - h(SVminus, geo))/delta_d_kappa;
 		
-		double delta_d_dz = 2.*Math.sqrt(Math.abs(sv.trackCov.get(stateVec.k).covMat.get(3, 3)));;
+		double delta_d_dz = 1;
 		SVplus = this.reset(SVplus, stateVec, sv);
 		SVminus = this.reset(SVminus, stateVec, sv);
 		
@@ -113,7 +135,7 @@ public class MeasVecs {
 		
 		double delta_m_dz = (h(SVplus, geo) - h(SVminus, geo))/delta_d_dz;
 		
-		double delta_d_tanL = 2.*Math.sqrt(Math.abs(sv.trackCov.get(stateVec.k).covMat.get(4, 4)));;
+		double delta_d_tanL = 0.01;
 		SVplus = this.reset(SVplus, stateVec, sv);
 		SVminus = this.reset(SVminus, stateVec, sv);
 		
@@ -127,8 +149,8 @@ public class MeasVecs {
 		
 		double[] H=  new double[] 
 				{ delta_m_drho, delta_m_dphi0, delta_m_dkappa, delta_m_dz, delta_m_dtanL};
-		// for(int i = 0; i<5; i++)
-		//	 System.out.println("num H["+i+"] = "+(float)H[i]);
+		 for(int i = 0; i<5; i++)
+		 System.out.println("num H["+i+"] = "+(float)H[i]);
 		 
 		 return H;
 		
@@ -142,13 +164,13 @@ public class MeasVecs {
 		SVplus.kappa = stateVec.kappa;
 		SVplus.dz = stateVec.dz;
 		SVplus.tanL = stateVec.tanL;
-		
+		SVplus.alpha = stateVec.alpha;
 		
 		return SVplus;
 	}
 
-	/*
-	public double[] H2(StateVec stateVec, Geometry geo) {
+	
+	public double[] H2(StateVec stateVec, StateVecs sv, Geometry geo) {
 		double[] H = new double[]{0,0,0,0,0};
 		//System.out.println(" Projecting to meas plane ...........");
 		if(stateVec.k>0) {
@@ -242,9 +264,12 @@ public class MeasVecs {
 		
 		for(int i = 0; i < 5; i++)
 			System.out.println("H["+i+"] = "+H[i]);
+	//	double[] H2 = this.H2(stateVec, sv, geo);
+	//	for(int i = 0; i < 5; i++)
+	//		System.out.println(stateVec.phi+" H2["+i+"] = "+H2[i]);
 		return H;
 	}
-   */
+   
 
 	
 	

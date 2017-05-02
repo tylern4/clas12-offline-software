@@ -114,7 +114,7 @@ public class Track extends Trajectory {
 	 * @param geo the SVT geometry
 	 */
 	public void update_Crosses(Geometry geo) {
-		if(this.get_helix()!=null) {
+		if(this.get_helix()!=null && this.get_helix().get_curvature()!=0) {
 			Helix helix = this.get_helix();
 			for (int i =0; i<this.size(); i++) {
 				if(this.get(i).get_Detector()!="SVT")

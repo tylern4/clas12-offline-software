@@ -13,10 +13,14 @@ import org.jlab.rec.cvt.banks.HitReader;
 import org.jlab.rec.cvt.banks.RecoBankWriter;
 import org.jlab.rec.cvt.cluster.Cluster;
 import org.jlab.rec.cvt.cluster.ClusterFinder;
+import org.jlab.rec.cvt.cross.Cross;
+import org.jlab.rec.cvt.cross.CrossMaker;
 import org.jlab.rec.cvt.hit.ADCConvertor;
 import org.jlab.rec.cvt.hit.FittedHit;
 import org.jlab.rec.cvt.hit.Hit;
 import org.jlab.rec.cvt.track.Seed;
+import org.jlab.rec.cvt.track.Track;
+import org.jlab.rec.cvt.track.TrackListFinder;
 import org.jlab.rec.cvt.track.TrackSeeder;
 import org.jlab.rec.cvt.track.fit.KFitter;
 import org.jlab.rec.cvt.trajectory.TrkSwimmer;
@@ -104,18 +108,60 @@ public class CVTReconstructionDevel extends ReconstructionEngine {
    			}
 		}
 		
+		List<ArrayList<Cross>> crosses = new ArrayList<ArrayList<Cross>>();			
+		CrossMaker crossMake = new CrossMaker();
+		crosses = crossMake.findCrosses(clusters,SVTGeom);
+		
+		List<Track> trkcands = new ArrayList<Track>();		
 		List<Seed> seeds = trseed.findSeed(SVTclusters, SVTGeom);
 		for(Seed seed : seeds) {
-			kf = new KFitter(seed, SVTGeom);
+			kf = new KFitter(seed, SVTGeom, event);
 			kf.runFitter(SVTGeom);
+			System.out.println(" chisq "+kf.chi2);
+			
+			if(kf.chi2<100) 
+				trkcands.add(kf.OutputTrack(seed, SVTGeom));
 		}
+		
+		
+		if(trkcands.size()==0) {
+			rbc.appendCVTBanks(event, SVThits, BMThits, SVTclusters, BMTclusters, crosses, null);
+			return true;
+		}
+		
+		
+		//This last part does ELoss C
+		TrackListFinder trkFinder = new TrackListFinder();
+		List<Track> trks = new ArrayList<Track>();
+		trks = trkFinder.getTracks(trkcands, SVTGeom) ;
+		
+		// set index associations
+		if(trks.size()>0) {
+			// create the clusters and fitted hits banks
+			for(int k1 = 0; k1<trks.size(); k1++) {
+				trks.get(k1).set_Id(k1+1);
+				for(int k2 = 0; k2<trks.get(k1).size(); k2++) {
+					trks.get(k1).get(k2).set_AssociatedTrackID(trks.get(k1).get_Id()); // associate crosses
+					trks.get(k1).get(k2).get_Cluster1().set_AssociatedTrackID(trks.get(k1).get_Id()); // associate cluster1 in cross
+					trks.get(k1).get(k2).get_Cluster2().set_AssociatedTrackID(trks.get(k1).get_Id()); // associate cluster2 in cross					
+					for(int k3 = 0; k3<trks.get(k1).get(k2).get_Cluster1().size(); k3++) { //associate hits
+						trks.get(k1).get(k2).get_Cluster1().get(k3).set_AssociatedTrackID(trks.get(k1).get_Id());
+					}
+					for(int k4 = 0; k4<trks.get(k1).get(k2).get_Cluster2().size(); k4++) { //associate hits
+						trks.get(k1).get(k2).get_Cluster2().get(k4).set_AssociatedTrackID(trks.get(k1).get_Id());
+					}
+				}
+			}
+			rbc.appendCVTBanks(event, SVThits, BMThits, SVTclusters, BMTclusters, crosses, trks);
+		} 
+		
 		return true;
 		
     }
 
 
 	
-public boolean init() {
+    public boolean init() {
 		
 		TrkSwimmer.getMagneticFields();
 		config = new CVTRecConfig();
@@ -123,7 +169,7 @@ public boolean init() {
 	}
 	public static void main(String[] args) throws FileNotFoundException, EvioException{
 		
-	String inputFile = "/Users/ziegler/Workdir/Files/GEMC/CVT/prot.hipo";
+		String inputFile = "/Users/ziegler/Workdir/Files/GEMC/CVT/prot.hipo";
 		
 		System.err.println(" \n[PROCESSING FILE] : " + inputFile);
 		
@@ -137,7 +183,7 @@ public boolean init() {
 		
          HipoDataSync writer = new HipoDataSync();
 		//Writer
-		 String outputFile="/Users/ziegler/Workdir/Files/GEMC/CVT/protRec.hipo";
+		 String outputFile="/Users/ziegler/testRecD.hipo";
 		 writer.open(outputFile);
 		
 		long t1=0;
@@ -153,8 +199,8 @@ public boolean init() {
 			// Processing    
 			en.processDataEvent(event);
 			writer.writeEvent(event);
-			//System.out.println("  EVENT "+counter);
-			if(counter>20) break;
+			System.out.println("  EVENT "+counter);
+			//if(counter>1) break;
 			//event.show();
 			//if(counter%100==0)
 			//System.out.println("run "+counter+" events");
