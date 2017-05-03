@@ -121,6 +121,7 @@ public class CVTReconstructionDevel extends ReconstructionEngine {
 			
 			if(kf.chi2<100) 
 				trkcands.add(kf.OutputTrack(seed, SVTGeom));
+			
 		}
 		
 		
@@ -134,6 +135,12 @@ public class CVTReconstructionDevel extends ReconstructionEngine {
 		TrackListFinder trkFinder = new TrackListFinder();
 		List<Track> trks = new ArrayList<Track>();
 		trks = trkFinder.getTracks(trkcands, SVTGeom) ;
+		
+		ArrayList<Cross> crossesOntrk = new ArrayList<Cross>();	
+		for(int c = 0; c< trkcands.size(); c++) 
+			crossesOntrk.addAll(trkcands.get(c));
+		crosses.get(0).removeAll(crosses.get(0));
+		crosses.get(0).addAll(crossesOntrk);
 		
 		// set index associations
 		if(trks.size()>0) {

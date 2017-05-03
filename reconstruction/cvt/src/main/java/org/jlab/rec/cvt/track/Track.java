@@ -115,9 +115,10 @@ public class Track extends Trajectory {
 	 */
 	public void update_Crosses(Geometry geo) {
 		if(this.get_helix()!=null && this.get_helix().get_curvature()!=0) {
+			
 			Helix helix = this.get_helix();
 			for (int i =0; i<this.size(); i++) {
-				if(this.get(i).get_Detector()!="SVT")
+				if(!this.get(i).get_Detector().equalsIgnoreCase("SVT"))
 					continue;
 				double R = Math.sqrt(this.get(i).get_Point().x()*this.get(i).get_Point().x()+this.get(i).get_Point().y()*this.get(i).get_Point().y());
 				Vector3D helixTanVecAtLayer = helix.getTrackDirectionAtRadius(R);
@@ -128,6 +129,7 @@ public class Track extends Trajectory {
 					double x = this.get(i).get_Point().x();
 					double y = this.get(i).get_Point().y();
 					this.get(i).set_Point(new Point3D(x,y,z));
+					
 				}
 					
 			}
@@ -135,7 +137,25 @@ public class Track extends Trajectory {
 		}
 		
 	}
-  
+	public void finalUpdate_Crosses(Geometry geo) {
+		if(this.get_helix()!=null && this.get_helix().get_curvature()!=0) {
+			
+			Helix helix = this.get_helix();
+			for (int i =0; i<this.size(); i++) {
+				if(!this.get(i).get_Detector().equalsIgnoreCase("SVT"))
+					continue;
+				double R = Math.sqrt(this.get(i).get_Point().x()*this.get(i).get_Point().x()+this.get(i).get_Point().y()*this.get(i).get_Point().y());
+				Vector3D helixTanVecAtLayer = helix.getTrackDirectionAtRadius(R);
+				Point3D helixPosAtLayer = helix.getPointAtRadius(R);
+				this.get(i).set_Point(helixPosAtLayer);
+				this.get(i).set_Dir(helixTanVecAtLayer);
+				
+					
+			}
+			
+		}
+		
+	}
 	
   
 	private double _circleFitChi2PerNDF;		// the chi2 for the helical track circle fit

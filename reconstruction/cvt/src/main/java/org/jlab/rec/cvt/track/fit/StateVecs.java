@@ -116,7 +116,7 @@ public class StateVecs {
 		double x = X0.get(k) + d_rho*Math.cos(phi0) + alpha/kappa *(Math.cos(phi0) - Math.cos(phi0 + phi));
 		double y = Y0.get(k) + d_rho*Math.sin(phi0) + alpha/kappa *(Math.sin(phi0) - Math.sin(phi0 + phi));
 		double z = Z0.get(k) + dz - alpha/kappa*tanL*phi;
-		System.out.println("X "+X+" Y "+Y+" x "+x+" y "+Y+" phi "+Math.toDegrees(phi)+" z "+z+" alpha "+alpha+" kappa "+kappa+" tanL "+tanL +" dz "+dz);
+		
 		value[0] = x; 
 		value[1] = y;
 		value[2] = z;
@@ -193,7 +193,7 @@ public class StateVecs {
 		fVec.set_ELoss(ElossTot) ;
 		
 		fVec.dz = Z0.get(i) - Z0.get(f) +iVec.dz -(Bf.alpha/iVec.kappa)*(phi_f - iVec.phi0)*iVec.tanL;
-		System.out.println(" trans phi_f " +phi_f+"  iVec.phi0 "+iVec.phi0);
+		
 		fVec.tanL = iVec.tanL;
 		
 		//Bf = new B(f, X0.get(f), Y0.get(f), Z0.get(f));

@@ -89,6 +89,7 @@ public class CrossMaker {
 					if(this_cross.get_Point0()!=null) {
 					//pass the cross to the arraylist of crosses
 						this_cross.set_Id(crosses.size()+1);
+						this_cross.set_Detector("SVT");
 						crosses.add(this_cross);
 					}
 					

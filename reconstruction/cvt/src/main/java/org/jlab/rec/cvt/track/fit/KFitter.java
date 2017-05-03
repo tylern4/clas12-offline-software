@@ -3,6 +3,7 @@ import java.util.ArrayList;
 
 import org.jlab.geom.prim.Point3D;
 import org.jlab.io.base.DataEvent;
+import org.jlab.rec.cvt.cross.Cross;
 import org.jlab.rec.cvt.svt.Geometry;
 import org.jlab.rec.cvt.track.Seed;
 import org.jlab.rec.cvt.track.Track;
@@ -122,8 +123,14 @@ public class KFitter {
 		
 		Helix helix = sv.setTrackPars(sv.X0.size()-1);
 		Track cand = new Track(helix);
-		cand.addAll(trk.get_Crosses());	
-		cand.update_Crosses(geo);
+		cand.addAll(trk.get_Crosses());
+		
+		for(Cross c : cand)
+			System.out.println(" before update "+c.printInfo());
+		
+		for(Cross c : trk.get_Crosses())
+			System.out.println(" after update "+c.printInfo());
+		cand.finalUpdate_Crosses(geo);
 		
 		return cand;
 	}

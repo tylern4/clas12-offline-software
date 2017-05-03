@@ -318,7 +318,7 @@ public class Geometry {
 				if(sdelta<-(P+z*Math.tan(alpha))/4.)
 					s= newStrip+0.5;
 				//s=(-x+b+alpha*z)/(alpha*z+P); */
-				System.out.println(" nearest strip "+s+" at ("+X+", "+Y+", "+Z+"); delta = "+delta);
+				//System.out.println(" nearest strip "+s+" at ("+X+", "+Y+", "+Z+"); delta = "+delta);
 			}
 			if(layer%2==0) { 
 				 //layers 2,4,6 == top ==j ==>(2) : regular configuration
@@ -357,7 +357,7 @@ public class Geometry {
 				if(sdelta<-(P+z*Math.tan(alpha))/4.)
 					s= newStrip-0.5;
 				//s=(x+alpha*z)/(alpha*z+P); */
-				System.out.println(" nearest strip "+s+" at ("+X+", "+Y+", "+Z+"); delta = "+delta);
+				//System.out.println(" nearest strip "+s+" at ("+X+", "+Y+", "+Z+"); delta = "+delta);
 			}	
 			if(s<=1)
 				s=1;

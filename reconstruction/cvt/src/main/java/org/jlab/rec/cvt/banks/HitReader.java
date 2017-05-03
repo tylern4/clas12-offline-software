@@ -186,6 +186,8 @@ public class HitReader {
 			    // if the strip is out of range skip
 				if(strip[i]<1)
 					continue;
+				if(layer[i]>6)
+					continue;
 				// create the strip object with the adc value converted to daq value used for cluster-centroid estimate
 				Strip SvtStrip = new Strip(strip[i], adcConv.SVTADCtoDAQ(ADC[i]));
 				// get the strip endPoints
