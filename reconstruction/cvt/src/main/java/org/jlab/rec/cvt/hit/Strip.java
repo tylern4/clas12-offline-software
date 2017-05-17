@@ -106,14 +106,14 @@ public class Strip {
 	 */
 	public void calc_BMTStripParams(org.jlab.rec.cvt.bmt.Geometry geo, int sector, int layer) {
 				
-		if(layer%2==0) { // C-dtectors
+		if(org.jlab.rec.cvt.bmt.Geometry.getZorC(layer)==0) { // C-dtectors
 			// set z
 			double z = geo.CRCStrip_GetZ(layer, this.get_Strip());
 			this.set_Z(z);
 			// max z err
 			this.set_ZErr(org.jlab.rec.cvt.bmt.Constants.SigmaMax);
 		}
-		if(layer%2==1) { // Z-detectors
+		if(org.jlab.rec.cvt.bmt.Geometry.getZorC(layer)==1) { // Z-detectors
 			double theMeasuredPhi = geo.CRZStrip_GetPhi(sector, layer, this.get_Strip());
 			double theLorentzCorrectedAngle = geo.LorentzAngleCorr( theMeasuredPhi, layer);
 			// set the phi 
@@ -123,12 +123,12 @@ public class Strip {
 			// get the strip number after correcting for Lorentz angle
 			this.set_LCStrip(theLorentzCorrectedStrip);
 			
-			double sigma = org.jlab.rec.cvt.bmt.Constants.SigmaMax/Math.sqrt(Math.cos(org.jlab.rec.cvt.bmt.Constants.ThetaL)); // max sigma for drift distance  (hDrift) = total gap from top to mesh
+			double sigma = org.jlab.rec.cvt.bmt.Constants.SigmaMax/Math.sqrt(Math.cos(org.jlab.rec.cvt.bmt.Constants.getThetaL())); // max sigma for drift distance  (hDrift) = total gap from top to mesh
 			
 			int num_region = (int) (layer+1)/2 - 1; // region index (0...2) 0=layers 1&2, 1=layers 3&4, 2=layers 5&6double Z0=0;
 			//max phi err
-			double phiErr = (sigma/Math.cos(org.jlab.rec.cvt.bmt.Constants.ThetaL)
-					-(org.jlab.rec.cvt.bmt.Constants.hDrift-org.jlab.rec.cvt.bmt.Constants.CRZRADIUS[num_region])*Math.tan(org.jlab.rec.cvt.bmt.Constants.ThetaL))/org.jlab.rec.cvt.bmt.Constants.CRZRADIUS[num_region];
+			double phiErr = (sigma/Math.cos(org.jlab.rec.cvt.bmt.Constants.getThetaL())
+					-(org.jlab.rec.cvt.bmt.Constants.hDrift-org.jlab.rec.cvt.bmt.Constants.getCRZRADIUS()[num_region])*Math.tan(org.jlab.rec.cvt.bmt.Constants.getThetaL()))/org.jlab.rec.cvt.bmt.Constants.getCRZRADIUS()[num_region];
 			this.set_PhiErr(phiErr);
 			this.set_PhiErr0(sigma);
 		}

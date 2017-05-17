@@ -1,5 +1,6 @@
 package org.jlab.rec.cvt.fit;
 
+import org.jlab.rec.cvt.svt.Constants;
 import org.jlab.rec.cvt.trajectory.Helix;
 
 import Jama.Matrix;
@@ -73,12 +74,10 @@ public class HelicalTrackFitter {
 	        _helicalfitoutput = null;
  
    		    double[] W = new double[X.length]; //the weight on the point for circle fit 
-	   		 X[0]=0;
-	   		 Y[0]=0;
-	   		 Z[0]=0;
+	   		
 	   		
 	   		 for(int j=0; j<X.length;j++){
-	   			 
+	   			
 	   			 if(errRt[j]==0) {
 	   				 System.err.println("Point errors ill-defined -- helical fit exiting");
 	   				 return FitStatus.CircleFitFailed;	   				
@@ -94,7 +93,6 @@ public class HelicalTrackFitter {
 	 		 _circlefit = new CircleFitter();
 	   		 boolean circlefitstatusOK = _circlefit.fitStatus(X, Y, W, X.length); 
 	   		
-
 	        if (!circlefitstatusOK) {
 	            return FitStatus.CircleFitFailed;
 	        }
@@ -138,7 +136,7 @@ public class HelicalTrackFitter {
 		        if(passed_fits==0) {
 		            return FitStatus.AllCircleCalcsFailed;
 		        }
-                
+		        
 		        double avechi2Max = 1.; 
 		        if(passed_fits>0) { 
 		        	averageChi2 = chi2/passed_fits;
@@ -151,7 +149,7 @@ public class HelicalTrackFitter {
 		     _linefit = new LineFitter();
 		   	
 		   	boolean linefitstatusOK = _linefit.fitStatus(Rho, Z, errRho, ErrZ, Z.length);
-		   		 	
+		  
 	        if (!linefitstatusOK) {
 	            return FitStatus.LineFitFailed;
 	        }
@@ -159,8 +157,7 @@ public class HelicalTrackFitter {
 	        _linefitpars = _linefit.getFit();
 	        
 	        _circlefitpars = _circlefit.getFit();
-	        
-	       
+	         
 	        // get the parameters of the helix representation of the track
 	        double fit_dca = _circlefitpars.doca(); //check sign convention
 	        double fit_phi_at_dca  = _circlefitpars.phi();   
@@ -169,7 +166,12 @@ public class HelicalTrackFitter {
 	        
 	        //double fit_Z0 = _linefitpars.intercept();
 	        double fit_Z0 = _linefitpars.intercept();
-	        
+	      //  fit_Z0 = (fit_dca-_linefitpars.intercept())/ _linefitpars.slope() ; //reset for displaced vertex
+	       
+	        //require vertex position inside of the inner barrel
+	        if(Math.abs(fit_dca) > Constants.MODULERADIUS[0][0] || Math.abs(fit_Z0)>100)
+	        	return null;
+	    	
 	        // get the error matrix
 	    	 Matrix fit_covmatrix = new Matrix(5,5);
 	    	//error matrix (assuming that the circle fit and line fit parameters are uncorrelated)

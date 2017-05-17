@@ -75,7 +75,7 @@ public class TrackSeeder {
 		return seedClusters;
 		
 	}
-	public List<Seed> findSeed(List<Cluster> SVTclusters, org.jlab.rec.cvt.svt.Geometry svt_geo) {
+	public List<Seed> findSeed(List<Cluster> SVTclusters, org.jlab.rec.cvt.svt.Geometry svt_geo, List<Cross> bmt_crosses) {
 		
 		List<Seed> seeds = new ArrayList<Seed>();
 		
@@ -122,22 +122,67 @@ public class TrackSeeder {
 				seed.set_Clusters(seedClusters.get(s));
 				seed.set_Crosses(SVTCrosses);
 				seed.set_Helix(cand.get_helix());
+				
+				//match to BMT
+				if(bmt_crosses!=null && bmt_crosses.size()!=0) {
+					this.findCandUsingMicroMegas(seed, bmt_crosses);
+					
+					//refit using the BMT
+					cand =fitSeed(SVTCrosses, svt_geo, new Track(null), 5,
+							new double[SVTCrosses.size()], new double[SVTCrosses.size()], new double[SVTCrosses.size()], new double[SVTCrosses.size()], 
+							new double[SVTCrosses.size()], new double[SVTCrosses.size()], new double[SVTCrosses.size()], new HelicalTrackFitter());
+					
+					seed = new Seed();
+					seed.set_Clusters(seedClusters.get(s));
+					seed.set_Crosses(cand);
+					seed.set_Helix(cand.get_helix());
+					
+				}
+				
 				seeds.add(seed);
+				
 			}
 		}
 		//end test
 		return seeds;
 	}
 	
-	private Track fitSeed(ArrayList<Cross> SVTCrosses, org.jlab.rec.cvt.svt.Geometry svt_geo, Track cand, int fitIter,
+	private Track fitSeed(List<Cross> VTCrosses, org.jlab.rec.cvt.svt.Geometry svt_geo, Track cand, int fitIter,
 			double[] X, double[] Y, double[] Z, double[] Rho, double[] ErrZ, double[] ErrRho, double[] ErrRt, HelicalTrackFitter fitTrk ) {
-		X = new double[SVTCrosses.size()+1];
-		Y = new double[SVTCrosses.size()+1];
-		Z = new double[SVTCrosses.size()+1];
-		Rho = new double[SVTCrosses.size()+1];
-		ErrZ = new double[SVTCrosses.size()+1];
-		ErrRho = new double[SVTCrosses.size()+1];
-		ErrRt = new double[SVTCrosses.size()+1];
+		
+		int svtSz = 0;
+		int bmtZSz =0;
+		int bmtCSz =0;
+		
+		List<Cross> BMTCrossesC = new ArrayList<Cross>();
+		List<Cross> BMTCrossesZ = new ArrayList<Cross>();
+		List<Cross> SVTCrosses  = new ArrayList<Cross>();
+		
+		for(Cross c : VTCrosses) {
+			if( !(Double.isNaN(c.get_Point().z()) || Double.isNaN(c.get_Point().x()) ))  {
+				SVTCrosses.add(c);
+			}
+			//System.out.println(" cross in seed "+c.printInfo() );
+			if(Double.isNaN(c.get_Point().x()) ) {
+				BMTCrossesC.add(c);
+			}
+			if(Double.isNaN(c.get_Point().z()) ) {
+				BMTCrossesZ.add(c);
+			}
+		}
+		svtSz = SVTCrosses.size();
+		if(BMTCrossesZ!=null)
+			bmtZSz = BMTCrossesZ.size();
+		if(BMTCrossesC!=null)
+			bmtCSz = BMTCrossesC.size();
+		
+		X = new double[svtSz+1 +bmtZSz];
+		Y = new double[svtSz+1 +bmtZSz];
+		Z = new double[svtSz+1 +bmtCSz];
+		Rho = new double[svtSz+1 +bmtCSz];
+		ErrZ = new double[svtSz+1 +bmtCSz];
+		ErrRho = new double[svtSz+1 +bmtCSz];
+		ErrRt = new double[svtSz+1 +bmtZSz];
 		
 		cand = new Track(null);
 		cand.addAll(SVTCrosses);
@@ -164,9 +209,30 @@ public class TrackSeeder {
 						SVTCrosses.get(j-1).get_PointErr().y()*SVTCrosses.get(j-1).get_PointErr().y());
 				ErrRt[j] = Math.sqrt(SVTCrosses.get(j-1).get_PointErr().x()*SVTCrosses.get(j-1).get_PointErr().x() + 
 						SVTCrosses.get(j-1).get_PointErr().y()*SVTCrosses.get(j-1).get_PointErr().y());
-				ErrZ[j] = SVTCrosses.get(j-1).get_PointErr().z();		
+				ErrZ[j] = SVTCrosses.get(j-1).get_PointErr().z();
 				
 			}
+			
+			if(bmtZSz>0)
+				for(int j= 1+svtSz; j<svtSz+1 +bmtZSz; j++) {			
+					X[j] = BMTCrossesZ.get(j-1-svtSz).get_Point().x();
+					Y[j] = BMTCrossesZ.get(j-1-svtSz).get_Point().y();
+					ErrRt[j] = Math.sqrt(BMTCrossesZ.get(j-1-svtSz).get_PointErr().x()*BMTCrossesZ.get(j-1-svtSz).get_PointErr().x() + 
+							BMTCrossesZ.get(j-1-svtSz).get_PointErr().y()*BMTCrossesZ.get(j-1-svtSz).get_PointErr().y());
+					
+				
+				}
+			if(bmtCSz>0)
+				for(int j= 1+svtSz; j<svtSz+1 +bmtCSz; j++) {			
+					Z[j] = BMTCrossesC.get(j-1-svtSz).get_Point().z();
+					Rho[j] =  org.jlab.rec.cvt.bmt.Constants.getCRCRADIUS()[BMTCrossesC.get(j-1-svtSz).get_Region()-1]+org.jlab.rec.cvt.bmt.Constants.LYRTHICKN;
+							
+					ErrRho[j] = org.jlab.rec.cvt.bmt.Constants.LYRTHICKN/Math.sqrt(12.);
+					ErrZ[j] = BMTCrossesC.get(j-1-svtSz).get_PointErr().z();
+							
+				}
+
+			
 			fitTrk.fit(X, Y, Z, Rho, ErrRt, ErrRho, ErrZ);
 			if(fitTrk.get_helix()==null) 
 				return null;
@@ -178,6 +244,128 @@ public class TrackSeeder {
 		}
 		return cand;
 	}
+	
+	/**
+	 * 
+	 * @param trkCand the track seed
+	 * @param bmt_cross BMT cross
+	 * @return 
+	 */
+    public ArrayList<Seed> findCandUsingMicroMegas(Seed trkCand,
+			List<Cross> bmt_crosses) {
+    	
+    	ArrayList<Seed>  trkCands =new ArrayList<Seed>();
+    	ArrayList<Cross> BMTCcrosses = new ArrayList<Cross>();
+    	ArrayList<Cross> BMTZcrosses = new ArrayList<Cross>();
+    	for(Cross bmt_cross : bmt_crosses) { 
+    		
+    		if(!(Double.isNaN(bmt_cross.get_Point().z())))  // C-detector
+    			BMTCcrosses.add(bmt_cross);
+    		if(!(Double.isNaN(bmt_cross.get_Point().x())))  // Z-detector
+    			BMTZcrosses.add(bmt_cross);
+    	}
+    	
+   
+    	List<Seed> AllSeeds = new ArrayList<Seed>();
+       	if(BMTCcrosses.size()>0)
+	    	for(Cross bmt_Ccross : BMTCcrosses) { // C-detector   		    		
+	    		if(this.passCcross(trkCand, bmt_Ccross)) {
+	    			Seed BMTTrkSeed = new Seed();
+	    			BMTTrkSeed.set_Clusters(trkCand.get_Clusters());
+	    			BMTTrkSeed.set_Crosses(trkCand.get_Crosses());
+	    			BMTTrkSeed.set_Helix(trkCand.get_Helix());  			
+	    			BMTTrkSeed.get_Crosses().add(bmt_Ccross); 
+	    			AllSeeds.add(BMTTrkSeed); 
+	    		}
+	    	}
+       	if(AllSeeds.size()==0) { // no C-match
+       		Seed BMTTrkSeed = new Seed();
+			BMTTrkSeed.set_Clusters(trkCand.get_Clusters());
+			BMTTrkSeed.set_Crosses(trkCand.get_Crosses());
+			BMTTrkSeed.set_Helix(trkCand.get_Helix());   
+			AllSeeds.add(BMTTrkSeed);
+       	}
+    	if(BMTZcrosses.size()>0 )
+    		for(int h = 0; h< AllSeeds.size(); h++) {
+		    	for(Cross bmt_Zcross : BMTZcrosses) { // Z-detector   			    		
+		    		if(this.passZcross(trkCand, bmt_Zcross)) {
+		    			Seed BMTTrkSeed = new Seed();
+		    			BMTTrkSeed.set_Clusters(trkCand.get_Clusters());
+		    			BMTTrkSeed.set_Crosses(trkCand.get_Crosses());
+		    			BMTTrkSeed.set_Helix(trkCand.get_Helix());   			
+		    			BMTTrkSeed.get_Crosses().add(bmt_Zcross); 
+		    			trkCands.add(BMTTrkSeed);
+		    		}
+		    	}	    	
+    		}
+    	
+    	
+		return trkCands;
+    }
+
+	private boolean passCcross(Seed trkCand, Cross bmt_Ccross) {
+		
+		boolean pass = false;
+		
+		double dzdrsum = trkCand.get_Helix().get_tandip();
+    	
+		double z_bmt = bmt_Ccross.get_Point().z();
+		double r_bmt = org.jlab.rec.cvt.bmt.Constants.getCRCRADIUS()[bmt_Ccross.get_Region()-1];
+		double dzdr_bmt = z_bmt/r_bmt;
+		if(Math.abs(1-(dzdrsum/(double)(trkCand.get_Crosses().size()))/((dzdrsum+dzdr_bmt)/(double)(trkCand.get_Crosses().size()+1)))<=Constants.dzdrcut)  // add this to the track
+			pass =true;
+	
+		return pass;
+	}
+    private boolean passZcross(Seed trkCand, Cross bmt_Zcross) {
+
+    	double ave_seed_rad=trkCand.get_Helix().radius();
+    	
+		double x_bmt = bmt_Zcross.get_Point().x();
+		double y_bmt = bmt_Zcross.get_Point().y();
+		boolean pass = true;
+		for(int i = 0; i< trkCand.get_Crosses().size()-2; i++) {
+			if(trkCand.get_Crosses().get(i).get_Point().x() != x_bmt) {
+				double rad_withBmt = calc_radOfCurv(trkCand.get_Crosses().get(i).get_Point().x(), trkCand.get_Crosses().get(i+1).get_Point().x(), x_bmt, 
+						                            trkCand.get_Crosses().get(i).get_Point().y(), trkCand.get_Crosses().get(i+1).get_Point().y(), y_bmt);
+				if(rad_withBmt==0)
+					continue;
+				
+				if(rad_withBmt<Constants.radcut || Math.abs((rad_withBmt-ave_seed_rad)/ave_seed_rad)>0.3) // more than 30% different
+					pass = false;
+			}
+		}
+		return pass;
+    }
+    /**
+	 * 
+	 * @param x1 cross1 x-coordinate
+	 * @param x2 cross2 x-coordinate
+	 * @param x3 cross3 x-coordinate
+	 * @param y1 cross1 y-coordinate
+	 * @param y2 cross2 y-coordinate
+	 * @param y3 cross3 y-coordinate
+	 * @return  radius of circle containing 3 crosses  in the (x,y) plane
+	 */
+	private double calc_radOfCurv(double x1, double x2, double x3, double y1, double y2, double y3){
+		double radiusOfCurv = 0;
+		
+		if ( Math.abs(x2-x1)>1.0e-9 && Math.abs(x3-x2)>1.0e-9) {
+	        // Find the intersection of the lines joining the innermost to middle and middle to outermost point
+	        double ma   = (y2-y1)/(x2-x1);
+	        double mb   = (y3-y2)/(x3-x2);
+	       
+	        if (Math.abs(mb-ma)>1.0e-9) {
+	        double xcen = 0.5*(ma*mb*(y1-y3) + mb*(x1+x2) -ma*(x2+x3))/(mb-ma);
+	        double ycen = (-1./mb)*(xcen - 0.5*(x2+x3)) + 0.5*(y2+y3);
+
+	        radiusOfCurv = Math.sqrt((x1-xcen)*(x1-xcen)+(y1-ycen)*(y1-ycen));
+	        }
+		}
+		return radiusOfCurv;
+	
+	}
+	
 	
 
 }

@@ -50,6 +50,8 @@ public class MeasVecs {
 			for(int j = 0; j< trkcand.get_Clusters().get(i).size(); j++) {
 				double Z = Constants.ACTIVESENLEN;
 				for(int c = 0; c< trkcand.get_Crosses().size(); c++) {
+					if(trkcand.get_Crosses().get(c).get_Detector().equalsIgnoreCase("BMT"))
+						continue;
 					if(trkcand.get_Crosses().get(c).get_Cluster1().get_Id() == trkcand.get_Clusters().get(i).get_Id() 
 							|| trkcand.get_Crosses().get(c).get_Cluster2().get_Id() == trkcand.get_Clusters().get(i).get_Id()) {
 						Point3D crPt = trkcand.get_Crosses().get(c).get_Point();
@@ -65,7 +67,7 @@ public class MeasVecs {
 			meas.sector = trkcand.get_Clusters().get(i).get_Sector();
 			meas.layer = trkcand.get_Clusters().get(i).get_Layer();
 			measurements.add(meas);
-			System.out.println(trkcand.get_Clusters().get(i).size()+") meas "+i+" sector "+meas.sector+" layer "+meas.layer+" err "+meas.error);
+			//System.out.println(trkcand.get_Clusters().get(i).size()+") meas "+i+" sector "+meas.sector+" layer "+meas.layer+" err "+meas.error);
 		}
 		Collections.sort(measurements);
 		for(int i =0; i<measurements.size(); i++)
@@ -149,9 +151,7 @@ public class MeasVecs {
 		
 		double[] H=  new double[] 
 				{ delta_m_drho, delta_m_dphi0, delta_m_dkappa, delta_m_dz, delta_m_dtanL};
-		 for(int i = 0; i<5; i++)
-		 System.out.println("num H["+i+"] = "+(float)H[i]);
-		 
+		
 		 return H;
 		
 	}

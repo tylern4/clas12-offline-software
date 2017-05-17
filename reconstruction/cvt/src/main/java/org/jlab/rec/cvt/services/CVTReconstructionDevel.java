@@ -20,6 +20,7 @@ import org.jlab.rec.cvt.hit.FittedHit;
 import org.jlab.rec.cvt.hit.Hit;
 import org.jlab.rec.cvt.track.Seed;
 import org.jlab.rec.cvt.track.Track;
+import org.jlab.rec.cvt.track.TrackCandListFinder;
 import org.jlab.rec.cvt.track.TrackListFinder;
 import org.jlab.rec.cvt.track.TrackSeeder;
 import org.jlab.rec.cvt.track.fit.KFitter;
@@ -37,10 +38,15 @@ public class CVTReconstructionDevel extends ReconstructionEngine {
 
 	TrackSeeder trseed ;
 	KFitter kf;
-	
+	org.jlab.rec.cvt.svt.Geometry SVTGeom ;
+    org.jlab.rec.cvt.bmt.Geometry BMTGeom ;
+    
     public CVTReconstructionDevel() {
     	super("CVTCosmics", "ziegler", "4.0"); 	
     	trseed = new TrackSeeder();
+    	SVTGeom = new org.jlab.rec.cvt.svt.Geometry();
+	    BMTGeom = new org.jlab.rec.cvt.bmt.Geometry();
+	    
     }
 
     String FieldsConfig="";
@@ -54,7 +60,6 @@ public class CVTReconstructionDevel extends ReconstructionEngine {
     	this.FieldsConfig=config.getFieldsConfig();
     	this.Run = config.getRun();
 		
-	    org.jlab.rec.cvt.svt.Geometry SVTGeom = new org.jlab.rec.cvt.svt.Geometry();
 	    
 		ADCConvertor adcConv = new ADCConvertor();
 		
@@ -62,6 +67,7 @@ public class CVTReconstructionDevel extends ReconstructionEngine {
 		
 		HitReader hitRead = new HitReader();
 		hitRead.fetch_SVTHits(event,adcConv,-1,-1, SVTGeom);
+		hitRead.fetch_BMTHits(event, adcConv, BMTGeom);
 		
 		List<Hit> hits = new ArrayList<Hit>();
 		//I) get the hits
@@ -113,11 +119,13 @@ public class CVTReconstructionDevel extends ReconstructionEngine {
 		crosses = crossMake.findCrosses(clusters,SVTGeom);
 		
 		List<Track> trkcands = new ArrayList<Track>();		
-		List<Seed> seeds = trseed.findSeed(SVTclusters, SVTGeom);
+		List<Seed> seeds = trseed.findSeed(SVTclusters, SVTGeom, crosses.get(1));
+		
 		for(Seed seed : seeds) {
+				
 			kf = new KFitter(seed, SVTGeom, event);
 			kf.runFitter(SVTGeom);
-			System.out.println(" chisq "+kf.chi2);
+			//System.out.println(" chisq "+kf.chi2);
 			
 			if(kf.chi2<100) 
 				trkcands.add(kf.OutputTrack(seed, SVTGeom));
@@ -139,7 +147,7 @@ public class CVTReconstructionDevel extends ReconstructionEngine {
 		ArrayList<Cross> crossesOntrk = new ArrayList<Cross>();	
 		for(int c = 0; c< trkcands.size(); c++) 
 			crossesOntrk.addAll(trkcands.get(c));
-		crosses.get(0).removeAll(crosses.get(0));
+		//crosses.get(0).removeAll(crosses.get(0));
 		crosses.get(0).addAll(crossesOntrk);
 		
 		// set index associations
@@ -148,6 +156,8 @@ public class CVTReconstructionDevel extends ReconstructionEngine {
 			for(int k1 = 0; k1<trks.size(); k1++) {
 				trks.get(k1).set_Id(k1+1);
 				for(int k2 = 0; k2<trks.get(k1).size(); k2++) {
+					if(trks.get(k1).get(k2).get_Detector().equalsIgnoreCase("BMT"))
+						continue;
 					trks.get(k1).get(k2).set_AssociatedTrackID(trks.get(k1).get_Id()); // associate crosses
 					trks.get(k1).get(k2).get_Cluster1().set_AssociatedTrackID(trks.get(k1).get_Id()); // associate cluster1 in cross
 					trks.get(k1).get(k2).get_Cluster2().set_AssociatedTrackID(trks.get(k1).get_Id()); // associate cluster2 in cross					
@@ -176,7 +186,7 @@ public class CVTReconstructionDevel extends ReconstructionEngine {
 	}
 	public static void main(String[] args) throws FileNotFoundException, EvioException{
 		
-		String inputFile = "/Users/ziegler/Workdir/Files/GEMC/CVT/prot.hipo";
+		String inputFile = "/Users/ziegler/Workdir/Files/GEMC/CVT/cvt_0.hipo";
 		
 		System.err.println(" \n[PROCESSING FILE] : " + inputFile);
 		
@@ -190,7 +200,7 @@ public class CVTReconstructionDevel extends ReconstructionEngine {
 		
          HipoDataSync writer = new HipoDataSync();
 		//Writer
-		 String outputFile="/Users/ziegler/testRecD.hipo";
+		 String outputFile="/Users/ziegler/Workdir/Files/GEMC/CVT/cvt_rec0.hipo";
 		 writer.open(outputFile);
 		
 		long t1=0;
@@ -207,7 +217,7 @@ public class CVTReconstructionDevel extends ReconstructionEngine {
 			en.processDataEvent(event);
 			writer.writeEvent(event);
 			System.out.println("  EVENT "+counter);
-			//if(counter>1) break;
+			//if(counter>5) break;
 			//event.show();
 			//if(counter%100==0)
 			//System.out.println("run "+counter+" events");

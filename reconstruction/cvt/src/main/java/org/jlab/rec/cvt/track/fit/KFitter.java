@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 import org.jlab.geom.prim.Point3D;
 import org.jlab.io.base.DataEvent;
-import org.jlab.rec.cvt.cross.Cross;
+
 import org.jlab.rec.cvt.svt.Geometry;
 import org.jlab.rec.cvt.track.Seed;
 import org.jlab.rec.cvt.track.Track;
@@ -70,7 +70,7 @@ public class KFitter {
 			sv.Y0.add(ref.y());
 			sv.Z0.add(ref.z());
 		}
-		sv.init(trk, this, event);		
+		sv.init(trk, this);		
 	}
 	
 	public int totNumIter = 5;
@@ -81,17 +81,17 @@ public class KFitter {
 		this.NDF = sv.X0.size();
 		for(int it = 0; it< totNumIter; it++) {
 			for(int k=0; k<sv.X0.size()-1; k++) {
-				System.out.println(" transporting state ");
+				//System.out.println(" transporting state ");
 				sv.transport(k, k+1, sv.trackTraj.get(k), sv.trackCov.get(k), geo);
-					System.out.println((k)+"] trans "+sv.trackTraj.get(k).x+","+sv.trackTraj.get(k).y+","+
-							sv.trackTraj.get(k).z+" p "+1./sv.trackTraj.get(k).kappa); 
-					System.out.println("To "+(k+1)+"] trans "+sv.trackTraj.get(k+1).x+","+sv.trackTraj.get(k+1).y+","+
-							sv.trackTraj.get(k+1).z+" p "+1./sv.trackTraj.get(k).kappa); 
-					System.out.println(" Filtering state ...........................................");
-					this.filter(k+1, geo);
-					System.out.println((k+1)+"] filt "+sv.trackTraj.get(k+1).x+","+sv.trackTraj.get(k+1).y+","+
-							sv.trackTraj.get(k+1).z); 
-					System.out.println(" Energy loss \n pion "+ (float) sv.trackTraj.get(k+1).get_ELoss()[0]+"\n kaon "+ (float) sv.trackTraj.get(k+1).get_ELoss()[1]+"\n proton "+ (float) sv.trackTraj.get(k+1).get_ELoss()[2]);
+				//	System.out.println((k)+"] trans "+sv.trackTraj.get(k).x+","+sv.trackTraj.get(k).y+","+
+				//			sv.trackTraj.get(k).z+" p "+1./sv.trackTraj.get(k).kappa); 
+				//	System.out.println("To "+(k+1)+"] trans "+sv.trackTraj.get(k+1).x+","+sv.trackTraj.get(k+1).y+","+
+				//			sv.trackTraj.get(k+1).z+" p "+1./sv.trackTraj.get(k).kappa); 
+				//	System.out.println(" Filtering state ...........................................");
+				this.filter(k+1, geo);
+				//	System.out.println((k+1)+"] filt "+sv.trackTraj.get(k+1).x+","+sv.trackTraj.get(k+1).y+","+
+				//			sv.trackTraj.get(k+1).z); 
+				//	System.out.println(" Energy loss \n pion "+ (float) sv.trackTraj.get(k+1).get_ELoss()[0]+"\n kaon "+ (float) sv.trackTraj.get(k+1).get_ELoss()[1]+"\n proton "+ (float) sv.trackTraj.get(k+1).get_ELoss()[2]);
 				}
 			if(it<totNumIter-1)
 				this.Rinit();
@@ -125,11 +125,6 @@ public class KFitter {
 		Track cand = new Track(helix);
 		cand.addAll(trk.get_Crosses());
 		
-		for(Cross c : cand)
-			System.out.println(" before update "+c.printInfo());
-		
-		for(Cross c : trk.get_Crosses())
-			System.out.println(" after update "+c.printInfo());
 		cand.finalUpdate_Crosses(geo);
 		
 		return cand;
@@ -154,10 +149,10 @@ public class KFitter {
 			}; 
 			
 			Matrix Ci = null;
-			this.printMatrix(new Matrix(HTGH));System.err.println("-------------------------------\n");
+			//this.printMatrix(new Matrix(HTGH));System.err.println("-------------------------------\n");
 			if(this.isNonsingular(sv.trackCov.get(k).covMat)==false) {
 				System.err.println("Covariance Matrix is non-invertible - quit filter!");
-				this.printMatrix(sv.trackCov.get(k).covMat);
+				//this.printMatrix(sv.trackCov.get(k).covMat);
 				return;
 			}
 			try {
@@ -216,7 +211,7 @@ public class KFitter {
 			
 			sv.getStateVecAtModule(k, fVec, geo);
 			double f_h = mv.h(fVec, geo);
-			System.out.println(" measurement = "+mv.measurements.get(k).centroid+" state "+h +" filtered "+f_h);
+			//System.out.println(" measurement = "+mv.measurements.get(k).centroid+" state "+h +" filtered "+f_h);
 		
 			if((mv.measurements.get(k).centroid - f_h)*(mv.measurements.get(k).centroid - f_h)/V < (mv.measurements.get(k).centroid - h)*(mv.measurements.get(k).centroid - h)/V) {
 				

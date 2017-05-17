@@ -154,7 +154,7 @@ public class CVTReconstruction extends ReconstructionEngine {
 		TrackCandListFinder trkcandFinder = new TrackCandListFinder();
 		List<Track> trkcands = new ArrayList<Track>();
 		
-		trkcands = trkcandFinder.getHelicalTrack(crosslist, SVTGeom, BMTGeom); 
+		trkcands = trkcandFinder.getHelicalTracks(crosslist, SVTGeom, BMTGeom); 
 			
 		if(trkcands.size()==0) {
 			rbc.appendCVTBanks(event, SVThits, BMThits, SVTclusters, BMTclusters, crosses, null);

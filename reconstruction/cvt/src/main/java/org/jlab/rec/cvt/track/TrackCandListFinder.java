@@ -98,10 +98,88 @@ public class TrackCandListFinder {
 	}
 	/**
 	 * 
+	 * @param list the input list of crosses
+	 * @return an array list of track candidates in the SVT
+	 */
+	public void getHelicalTrack(Seed cand, org.jlab.rec.cvt.svt.Geometry svt_geo, org.jlab.rec.cvt.bmt.Geometry bmt_geo) {
+		
+		List<Cross> list = cand.get_Crosses();
+		
+		if(list.size()==0) {
+			System.err.print("Error in estimating track candidate trajectory: less than 3 crosses found");
+			return ;
+		}
+		// instantiating the Helical Track fitter
+		HelicalTrackFitter fitTrk = new HelicalTrackFitter();
+		// sets the index according to assumption that the track comes from the origin or not
+		int shift =0;
+	//	if(org.jlab.rec.cvt.Constants.trk_comesfrmOrig)
+	//		shift =1;
+
+		// interate the fit a number of times set in the constants file
+		int Max_Number_Of_Iterations = org.jlab.rec.cvt.svt.Constants.BSTTRKINGNUMBERITERATIONS;
+		
+		// loop over the cross list and do the fits to the crosses
+		if(list.size()>=3) {
+			// for debugging purposes only sets all errors to 1
+			boolean ignoreErr = org.jlab.rec.cvt.svt.Constants.ignoreErr;
+			
+			int Number_Of_Iterations = 0;
+			// do till the number of iterations is reached			
+			while(Number_Of_Iterations<=Max_Number_Of_Iterations) {
+				Number_Of_Iterations++;
+				fitTrk = new HelicalTrackFitter();
+				// get the measuerement arrays for the helical track fit
+				HelixMeasurements MeasArrays = this.get_HelixMeasurementsArrays(list, shift, ignoreErr, false);
+				
+				double[] X = MeasArrays._X;					
+				double[] Y = MeasArrays._Y;
+				double[] Z = MeasArrays._Z;
+				double[] Rho = MeasArrays._Rho;
+				double[] ErrZ = MeasArrays._ErrZ;
+				double[] ErrRho = MeasArrays._ErrRho;
+				double[] ErrRt = MeasArrays._ErrRt;
+				
+				// do the fit to X, Y taking ErrRt uncertainties into account to get the circle fit params, 
+				// and do the fit to Rho, Z taking into account the uncertainties in Rho and Z into account to get the linefit params
+				fitTrk.fit(X, Y, Z, Rho, ErrRt, ErrRho, ErrZ);
+				
+				// if the fit failed then use the uncorrected SVT points since the z-correction in resetting the SVT cross points sometimes fails 
+				if(fitTrk.get_helix()==null) {
+					//System.err.println("Error in Helical Track fitting -- helix not found -- trying to refit using the uncorrected crosses...");
+					MeasArrays = this.get_HelixMeasurementsArrays(list, shift, ignoreErr, true);
+					
+					X = MeasArrays._X;					
+					Y = MeasArrays._Y;
+					Z = MeasArrays._Z;
+					Rho = MeasArrays._Rho;
+					ErrZ = MeasArrays._ErrZ;
+					ErrRho = MeasArrays._ErrRho;
+					ErrRt = MeasArrays._ErrRt;
+					
+					fitTrk.fit(X, Y, Z, Rho, ErrRt, ErrRho, ErrZ);
+					Number_Of_Iterations=Max_Number_Of_Iterations+1;
+					//if(fitTrk.get_helix()==null) 
+						//System.err.println("Error in Helical Track fitting -- helix not found -- refit FAILED");
+				}
+				
+				// if the fit is successful
+				if(fitTrk.get_helix()!=null && fitTrk.getFit()!=null) {	
+					cand.set_Helix(fitTrk.get_helix());
+				}
+			}
+		}	
+		// remove clones
+		
+		
+	}
+
+	/**
+	 * 
 	 * @param crossList the input list of crosses
 	 * @return an array list of track candidates in the SVT
 	 */
-	public ArrayList<Track> getHelicalTrack(CrossList crossList, org.jlab.rec.cvt.svt.Geometry svt_geo, org.jlab.rec.cvt.bmt.Geometry bmt_geo) {
+	public ArrayList<Track> getHelicalTracks(CrossList crossList, org.jlab.rec.cvt.svt.Geometry svt_geo, org.jlab.rec.cvt.bmt.Geometry bmt_geo) {
 		
 		ArrayList<Track> cands = new ArrayList<Track>();
 		
@@ -198,7 +276,6 @@ public class TrackCandListFinder {
 		return passedcands;
 		
 	}
-
 
 	/**
 	 * 
@@ -406,7 +483,7 @@ public class TrackCandListFinder {
 	}
 	
 
-	private HelixMeasurements get_HelixMeasurementsArrays(ArrayList<Cross> arrayList,
+	private HelixMeasurements get_HelixMeasurementsArrays(List<Cross> list,
 			int shift, boolean ignoreErr, boolean resetSVTMeas) {
 		
 		
@@ -415,7 +492,7 @@ public class TrackCandListFinder {
 		ArrayList<Cross> BMTZdetcrossesInTrk = new ArrayList<Cross>();
 		
 		//make lists
-		for(Cross c : arrayList) {
+		for(Cross c : list) {
 			
 			if(c.get_Detector()=="SVT") 
 				SVTcrossesInTrk.add(c);
@@ -488,7 +565,7 @@ public class TrackCandListFinder {
 		
 		for(int j= shift+j0; j<shift+j0+BMTCdetcrossesInTrk.size(); j++) {
 			Z[j] = BMTCdetcrossesInTrk.get(j-shift-j0).get_Point().z();
-			Rho[j] = org.jlab.rec.cvt.bmt.Constants.CRCRADIUS[BMTCdetcrossesInTrk.get(j-shift-j0).get_Region()-1]+org.jlab.rec.cvt.bmt.Constants.LYRTHICKN;
+			Rho[j] = org.jlab.rec.cvt.bmt.Constants.getCRCRADIUS()[BMTCdetcrossesInTrk.get(j-shift-j0).get_Region()-1]+org.jlab.rec.cvt.bmt.Constants.LYRTHICKN;
 			ErrRho[j] = 0.01; // check this error on thickness measurement					
 			ErrZ[j] = BMTCdetcrossesInTrk.get(j-shift-j0).get_PointErr().z();		
 			
@@ -659,7 +736,7 @@ public class TrackCandListFinder {
 
 		ArrayList<Cross> matchedMMCrosses = new ArrayList<Cross>();
 		
-		double R = org.jlab.rec.cvt.bmt.Constants.CRCRADIUS[Region-1];		     // R for C detector
+		double R = org.jlab.rec.cvt.bmt.Constants.getCRCRADIUS()[Region-1];		     // R for C detector
 		
 		double sx = ray.get_yxslope();
 		double ix = ray.get_yxinterc();
@@ -721,7 +798,7 @@ public class TrackCandListFinder {
 
 		ArrayList<Cross> matchedMMCrosses = new ArrayList<Cross>();
 		
-		double R =	org.jlab.rec.cvt.bmt.Constants.CRZRADIUS[Region-1];		     // R for Z detector
+		double R =	org.jlab.rec.cvt.bmt.Constants.getCRZRADIUS()[Region-1];		     // R for Z detector
 		double sx = ray.get_yxslope();
 		double ix = ray.get_yxinterc();
 		double sz = ray.get_yzslope();
