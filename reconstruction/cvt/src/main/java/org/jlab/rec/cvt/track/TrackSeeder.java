@@ -131,12 +131,12 @@ public class TrackSeeder {
 					cand =fitSeed(SVTCrosses, svt_geo, new Track(null), 5,
 							new double[SVTCrosses.size()], new double[SVTCrosses.size()], new double[SVTCrosses.size()], new double[SVTCrosses.size()], 
 							new double[SVTCrosses.size()], new double[SVTCrosses.size()], new double[SVTCrosses.size()], new HelicalTrackFitter());
-					
-					seed = new Seed();
-					seed.set_Clusters(seedClusters.get(s));
-					seed.set_Crosses(cand);
-					seed.set_Helix(cand.get_helix());
-					
+					if(cand!=null) {
+						seed = new Seed();
+						seed.set_Clusters(seedClusters.get(s));
+						seed.set_Crosses(cand);
+						seed.set_Helix(cand.get_helix());
+					}
 				}
 				
 				seeds.add(seed);

@@ -25,13 +25,14 @@ public class Geometry {
 		//sector 1 corresponds to detector B, 2 to A,  3 to C 
 		// A is detIdx 0, B 1, C 2.
 		int DetIdx = -1;
-		if(sector == 1)
+	/*	if(sector == 1)
 			DetIdx = 2;
 		if(sector == 2)
 			DetIdx = 1;
 		if(sector == 3)
 			DetIdx = 0;
-		
+		*/
+		DetIdx = sector-1;
 		return DetIdx;
 		
 	}

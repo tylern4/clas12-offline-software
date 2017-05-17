@@ -186,7 +186,7 @@ public class CVTReconstructionDevel extends ReconstructionEngine {
 	}
 	public static void main(String[] args) throws FileNotFoundException, EvioException{
 		
-		String inputFile = "/Users/ziegler/Workdir/Files/GEMC/CVT/cvt_0.hipo";
+		String inputFile = "/Users/ziegler/Workdir/Files/GEMC/CVT/cvt_0_new.hipo";
 		
 		System.err.println(" \n[PROCESSING FILE] : " + inputFile);
 		
@@ -200,7 +200,7 @@ public class CVTReconstructionDevel extends ReconstructionEngine {
 		
          HipoDataSync writer = new HipoDataSync();
 		//Writer
-		 String outputFile="/Users/ziegler/Workdir/Files/GEMC/CVT/cvt_rec0.hipo";
+		 String outputFile="/Users/ziegler/Workdir/Files/GEMC/CVT/cvt_rec0_new.hipo";
 		 writer.open(outputFile);
 		
 		long t1=0;
