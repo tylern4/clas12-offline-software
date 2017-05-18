@@ -20,7 +20,6 @@ import org.jlab.rec.cvt.hit.FittedHit;
 import org.jlab.rec.cvt.hit.Hit;
 import org.jlab.rec.cvt.track.Seed;
 import org.jlab.rec.cvt.track.Track;
-import org.jlab.rec.cvt.track.TrackCandListFinder;
 import org.jlab.rec.cvt.track.TrackListFinder;
 import org.jlab.rec.cvt.track.TrackSeeder;
 import org.jlab.rec.cvt.track.fit.KFitter;
@@ -122,7 +121,7 @@ public class CVTReconstructionDevel extends ReconstructionEngine {
 		List<Seed> seeds = trseed.findSeed(SVTclusters, SVTGeom, crosses.get(1));
 		
 		for(Seed seed : seeds) {
-				
+		
 			kf = new KFitter(seed, SVTGeom, event);
 			kf.runFitter(SVTGeom);
 			//System.out.println(" chisq "+kf.chi2);
@@ -217,7 +216,7 @@ public class CVTReconstructionDevel extends ReconstructionEngine {
 			en.processDataEvent(event);
 			writer.writeEvent(event);
 			System.out.println("  EVENT "+counter);
-			//if(counter>5) break;
+			//if(counter>1) break;
 			//event.show();
 			//if(counter%100==0)
 			//System.out.println("run "+counter+" events");

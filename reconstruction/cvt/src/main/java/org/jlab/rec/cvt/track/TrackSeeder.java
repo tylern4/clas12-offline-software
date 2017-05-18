@@ -125,22 +125,22 @@ public class TrackSeeder {
 				
 				//match to BMT
 				if(bmt_crosses!=null && bmt_crosses.size()!=0) {
-					this.findCandUsingMicroMegas(seed, bmt_crosses);
-					
-					//refit using the BMT
-					cand =fitSeed(SVTCrosses, svt_geo, new Track(null), 5,
-							new double[SVTCrosses.size()], new double[SVTCrosses.size()], new double[SVTCrosses.size()], new double[SVTCrosses.size()], 
-							new double[SVTCrosses.size()], new double[SVTCrosses.size()], new double[SVTCrosses.size()], new HelicalTrackFitter());
-					if(cand!=null) {
-						seed = new Seed();
-						seed.set_Clusters(seedClusters.get(s));
-						seed.set_Crosses(cand);
-						seed.set_Helix(cand.get_helix());
+					List<Seed> BMTmatches =this.findCandUsingMicroMegas(seed, bmt_crosses);
+					for(Seed bseed : BMTmatches) {
+						//refit using the BMT
+						Track bcand =fitSeed(bseed.get_Crosses(), svt_geo, new Track(null), 5,
+								new double[bseed.get_Crosses().size()], new double[bseed.get_Crosses().size()], new double[bseed.get_Crosses().size()], new double[SVTCrosses.size()], 
+								new double[bseed.get_Crosses().size()], new double[bseed.get_Crosses().size()], new double[bseed.get_Crosses().size()], new HelicalTrackFitter());
+						if(bcand!=null) {
+							seed = new Seed();
+							seed.set_Clusters(seedClusters.get(s));
+							seed.set_Crosses(bseed.get_Crosses());
+							seed.set_Helix(bcand.get_helix());
+						}
 					}
+				
+					seeds.add(seed);
 				}
-				
-				seeds.add(seed);
-				
 			}
 		}
 		//end test
@@ -251,56 +251,85 @@ public class TrackSeeder {
 	 * @param bmt_cross BMT cross
 	 * @return 
 	 */
-    public ArrayList<Seed> findCandUsingMicroMegas(Seed trkCand,
+    public List<Seed> findCandUsingMicroMegas(Seed trkCand,
 			List<Cross> bmt_crosses) {
     	
-    	ArrayList<Seed>  trkCands =new ArrayList<Seed>();
-    	ArrayList<Cross> BMTCcrosses = new ArrayList<Cross>();
-    	ArrayList<Cross> BMTZcrosses = new ArrayList<Cross>();
+    	
+    	ArrayList<ArrayList<Cross>> BMTCcrosses = new ArrayList<ArrayList<Cross>>();
+    	ArrayList<ArrayList<Cross>> BMTZcrosses = new ArrayList<ArrayList<Cross>>();
+    	
+    	for(int r =0; r<3; r++) {
+    		BMTCcrosses.add(new ArrayList<Cross>());
+    		BMTZcrosses.add(new ArrayList<Cross>());
+    	}
+    	
     	for(Cross bmt_cross : bmt_crosses) { 
     		
     		if(!(Double.isNaN(bmt_cross.get_Point().z())))  // C-detector
-    			BMTCcrosses.add(bmt_cross);
+    			BMTCcrosses.get(bmt_cross.get_Region()-1).add(bmt_cross);
     		if(!(Double.isNaN(bmt_cross.get_Point().x())))  // Z-detector
-    			BMTZcrosses.add(bmt_cross);
+    			BMTZcrosses.get(bmt_cross.get_Region()-1).add(bmt_cross);
     	}
     	
-   
+    	
     	List<Seed> AllSeeds = new ArrayList<Seed>();
-       	if(BMTCcrosses.size()>0)
-	    	for(Cross bmt_Ccross : BMTCcrosses) { // C-detector   		    		
-	    		if(this.passCcross(trkCand, bmt_Ccross)) {
-	    			Seed BMTTrkSeed = new Seed();
-	    			BMTTrkSeed.set_Clusters(trkCand.get_Clusters());
-	    			BMTTrkSeed.set_Crosses(trkCand.get_Crosses());
-	    			BMTTrkSeed.set_Helix(trkCand.get_Helix());  			
-	    			BMTTrkSeed.get_Crosses().add(bmt_Ccross); 
-	    			AllSeeds.add(BMTTrkSeed); 
-	    		}
-	    	}
-       	if(AllSeeds.size()==0) { // no C-match
-       		Seed BMTTrkSeed = new Seed();
-			BMTTrkSeed.set_Clusters(trkCand.get_Clusters());
-			BMTTrkSeed.set_Crosses(trkCand.get_Crosses());
-			BMTTrkSeed.set_Helix(trkCand.get_Helix());   
-			AllSeeds.add(BMTTrkSeed);
-       	}
-    	if(BMTZcrosses.size()>0 )
-    		for(int h = 0; h< AllSeeds.size(); h++) {
-		    	for(Cross bmt_Zcross : BMTZcrosses) { // Z-detector   			    		
-		    		if(this.passZcross(trkCand, bmt_Zcross)) {
-		    			Seed BMTTrkSeed = new Seed();
-		    			BMTTrkSeed.set_Clusters(trkCand.get_Clusters());
-		    			BMTTrkSeed.set_Crosses(trkCand.get_Crosses());
-		    			BMTTrkSeed.set_Helix(trkCand.get_Helix());   			
-		    			BMTTrkSeed.get_Crosses().add(bmt_Zcross); 
-		    			trkCands.add(BMTTrkSeed);
-		    		}
-		    	}	    	
+    	int[] S = new int[6];
+    	for(int r =0; r<3; r++) {
+    		S[r]=BMTCcrosses.get(r).size();
+    		if(S[r]==0)
+    			S[r] = 1;
+    		S[r+3]=BMTZcrosses.get(r).size();
+    		if(S[r+3]==0)
+    			S[r+3] = 1;
+    	}
+    	
+    	
+    	for(int i1 =0; i1<S[0]; i1++) {
+    		for(int i2 =0; i2<S[1]; i2++) {
+        		for(int i3 =0; i3<S[2]; i3++) {
+            		for(int j1 =0; j1<S[3]; j1++) {
+                		for(int j2 =0; j2<S[4]; j2++) {
+                    		for(int j3 =0; j3<S[5]; j3++) {
+                    			Seed BMTTrkSeed = new Seed();
+            	    			BMTTrkSeed.set_Clusters(trkCand.get_Clusters());
+            	    			
+            	    			BMTTrkSeed.set_Helix(trkCand.get_Helix());  
+            	    			
+            	    			ArrayList<Cross> matches = new ArrayList<Cross>();
+            	    			
+            	    			if(BMTCcrosses.get(0).size()>0 && i1<BMTCcrosses.get(0).size())
+            	    				if(this.passCcross(trkCand, BMTCcrosses.get(0).get(i1)))
+            	    					matches.add(BMTCcrosses.get(0).get(i1));
+            	    			if(BMTCcrosses.get(1).size()>0 && i2<BMTCcrosses.get(1).size())
+            	    				if(this.passCcross(trkCand, BMTCcrosses.get(1).get(i2)))
+            	    					matches.add(BMTCcrosses.get(1).get(i2));
+            	    			if(BMTCcrosses.get(2).size()>0 && i3<BMTCcrosses.get(2).size())
+            	    				if(this.passCcross(trkCand, BMTCcrosses.get(2).get(i3)))
+            	    					matches.add(BMTCcrosses.get(2).get(i3));
+            	    			if(BMTZcrosses.get(0).size()>0 && j1<BMTZcrosses.get(0).size())
+            	    				if(this.passZcross(trkCand, BMTZcrosses.get(0).get(j1)))
+            	    					matches.add(BMTZcrosses.get(0).get(j1));
+            	    			if(BMTZcrosses.get(1).size()>0 && j2<BMTZcrosses.get(1).size())
+            	    				if(this.passZcross(trkCand, BMTZcrosses.get(1).get(j2)))
+            	    					matches.add(BMTZcrosses.get(1).get(j2));
+            	    			if(BMTZcrosses.get(2).size()>0 && j3<BMTZcrosses.get(2).size())
+            	    				if(this.passZcross(trkCand, BMTZcrosses.get(2).get(j3)))
+            	    					matches.add(BMTZcrosses.get(2).get(j3));
+            	    			
+            	    			matches.addAll(trkCand.get_Crosses());
+            	    			BMTTrkSeed.set_Crosses(matches);
+            	    			
+            	    			AllSeeds.add(BMTTrkSeed);
+            	    			
+                    		}
+                		}
+            		}
+        		}
     		}
+    	}
     	
     	
-		return trkCands;
+		return AllSeeds;
     }
 
 	private boolean passCcross(Seed trkCand, Cross bmt_Ccross) {
@@ -330,8 +359,9 @@ public class TrackSeeder {
 						                            trkCand.get_Crosses().get(i).get_Point().y(), trkCand.get_Crosses().get(i+1).get_Point().y(), y_bmt);
 				if(rad_withBmt==0)
 					continue;
-				
-				if(rad_withBmt<Constants.radcut || Math.abs((rad_withBmt-ave_seed_rad)/ave_seed_rad)>0.3) // more than 30% different
+				//System.out.println(Math.abs((rad_withBmt-ave_seed_rad)/ave_seed_rad)+" rad_withBmt "+rad_withBmt +" from fit "+ave_seed_rad+trkCand.get_Crosses().get(i).printInfo()+trkCand.get_Crosses().get(i+1).printInfo()+
+				//		bmt_Zcross.printInfo());
+				if(rad_withBmt<Constants.radcut || Math.abs((rad_withBmt-ave_seed_rad)/ave_seed_rad)>0.5) // more than 30% different
 					pass = false;
 			}
 		}
