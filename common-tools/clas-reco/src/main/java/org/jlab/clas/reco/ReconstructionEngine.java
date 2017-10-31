@@ -18,12 +18,13 @@ import org.jlab.clara.engine.EngineData;
 import org.jlab.clara.engine.EngineDataType;
 import org.jlab.clara.engine.EngineStatus;
 import org.jlab.detector.calib.utils.ConstantsManager;
-import org.jlab.hipo.data.HipoEvent;
-import org.jlab.hipo.schema.SchemaFactory;
+
 import org.jlab.io.base.DataEvent;
 import org.jlab.io.evio.EvioDataEvent;
 import org.jlab.io.evio.EvioFactory;
 import org.jlab.io.hipo.HipoDataEvent;
+import org.jlab.jnp.hipo.data.HipoEvent;
+import org.jlab.jnp.hipo.schema.SchemaFactory;
 
 /**
  *

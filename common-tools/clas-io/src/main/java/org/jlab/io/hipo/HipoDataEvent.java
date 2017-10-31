@@ -10,16 +10,16 @@ import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.jlab.hipo.data.HipoEvent;
-import org.jlab.hipo.data.HipoGroup;
-import org.jlab.hipo.data.HipoNode;
-import org.jlab.hipo.schema.Schema;
-import org.jlab.hipo.schema.Schema.SchemaEntry;
-import org.jlab.hipo.schema.SchemaFactory;
 import org.jlab.io.base.DataBank;
 import org.jlab.io.base.DataDictionary;
 import org.jlab.io.base.DataEvent;
 import org.jlab.io.base.DataEventType;
+import org.jlab.jnp.hipo.data.HipoEvent;
+import org.jlab.jnp.hipo.data.HipoGroup;
+import org.jlab.jnp.hipo.data.HipoNode;
+import org.jlab.jnp.hipo.schema.Schema;
+import org.jlab.jnp.hipo.schema.Schema.SchemaEntry;
+import org.jlab.jnp.hipo.schema.SchemaFactory;
 
 /**
  *

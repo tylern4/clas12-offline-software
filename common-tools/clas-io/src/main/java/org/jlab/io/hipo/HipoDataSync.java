@@ -5,19 +5,14 @@
  */
 package org.jlab.io.hipo;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import org.jlab.hipo.data.HipoEvent;
 import org.jlab.io.base.DataEvent;
 import org.jlab.io.base.DataSync;
-import org.jlab.io.evio.EvioDataDictionary;
-import org.jlab.io.evio.EvioDataEvent;
-import org.jlab.io.evio.EvioFactory;
-import org.jlab.io.evio.EvioSource;
-import org.jlab.hipo.io.HipoWriter;
+
+
 import org.jlab.io.base.DataBank;
 import org.jlab.io.evio.EvioDataBank;
+import org.jlab.jnp.hipo.data.HipoEvent;
+import org.jlab.jnp.hipo.io.HipoWriter;
 
 /**
  *
