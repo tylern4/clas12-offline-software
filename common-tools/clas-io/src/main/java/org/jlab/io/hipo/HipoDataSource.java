@@ -35,8 +35,9 @@ public class HipoDataSource implements DataSource {
         this.reader = new HipoReader();
     }
     
+    @Override
     public boolean hasEvent() {
-        return (this.currentEventNumber<this.numberOfEvent);
+        return reader.hasNext();
     }
 
     public void open(File file) {
@@ -45,6 +46,7 @@ public class HipoDataSource implements DataSource {
 
     public void open(String filename) {
         this.reader.open(filename);
+        System.out.println("[DataSourceDump] --> opened file with events # " + this.reader.getEventCount());
         /*
         HipoRecord header = this.reader.getHeaderRecord();
         int  ncount = header.getEventCount();
@@ -57,9 +59,9 @@ public class HipoDataSource implements DataSource {
             this.dictionary.addDescriptor(descriptor);
         }*/
         //this.dictionary.show();
-        this.minEventNumber = 0;
+        /*this.minEventNumber = 0;
         this.currentEventNumber = 0;
-        this.numberOfEvent      = this.reader.getEventCount();
+        this.numberOfEvent      = this.reader.getEventCount();*/
     }
 
     public void open(ByteBuffer buff) {

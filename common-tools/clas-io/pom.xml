@@ -15,12 +15,12 @@
 
   <dependencies>
 
-<!--    <dependency>
+    <dependency>
       <groupId>org.jlab.coda</groupId>
       <artifactId>jevio</artifactId>
-      <version>4.4.6</version>
+      <version>6.0-SNAPSHOT</version>
     </dependency>
--->
+
     <dependency>
       <groupId>org.jlab.jnp</groupId>
       <artifactId>jnp-hipo</artifactId>

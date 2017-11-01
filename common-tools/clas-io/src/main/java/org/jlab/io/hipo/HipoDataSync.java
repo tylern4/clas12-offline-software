@@ -24,10 +24,13 @@ public class HipoDataSync implements DataSync {
     
     public HipoDataSync(){
         this.writer = new HipoWriter();
-        this.writer.getSchemaFactory().initFromDirectory("CLAS12DIR", "etc/bankdefs/hipo");
+        this.writer.setCompressionType(3);
+        writer.appendSchemaFactoryFromDirectory("CLAS12DIR", "etc/bankdefs/hipo");
+        //this.writer.getSchemaFactory().initFromDirectory("CLAS12DIR", "etc/bankdefs/hipo");
         //this.writer.getSchemaFactory().show();
     }
     
+    @Override
     public void open(String file) {
         /*
         EvioDataDictionary  dict = EvioFactory.getDictionary();
@@ -39,6 +42,7 @@ public class HipoDataSync implements DataSync {
         this.writer.open(file);
     }
 
+    @Override
     public void writeEvent(DataEvent event) {
         //EvioDataEvent  evioEvent = (EvioDataEvent) event;
         if(event instanceof HipoDataEvent) {

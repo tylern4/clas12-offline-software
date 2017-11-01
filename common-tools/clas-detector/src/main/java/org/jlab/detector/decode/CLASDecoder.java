@@ -16,6 +16,7 @@ import org.jlab.io.evio.EvioSource;
 import org.jlab.io.hipo.HipoDataBank;
 import org.jlab.io.hipo.HipoDataEvent;
 import org.jlab.io.hipo.HipoDataSync;
+import org.jlab.jnp.hipo.io.HipoWriter;
 import org.jlab.utils.benchmark.ProgressPrintout;
 import org.jlab.utils.options.OptionParser;
 
@@ -316,7 +317,7 @@ public class CLASDecoder {
         
         OptionParser parser = new OptionParser("decoder");
         parser.addOption("-n", "-1", "maximum number of events to process");        
-        parser.addOption("-c", "0", "compression type (0-NONE, 1-GZIP, 2-LZ4)");
+        parser.addOption("-c", "2", "compression type (0-NONE, 1-LZ4 Fast, 2-LZ4 Best, 3-GZIP)");
         parser.addOption("-d", "0","debug mode, set >0 for more verbose output");
         parser.addOption("-m", "run","translation tables source (use -m devel for development tables)");
         parser.addRequired("-o","output.hipo");
@@ -360,7 +361,9 @@ public class CLASDecoder {
             
             decoder.setDebugMode(debug);
             
-            HipoDataSync writer = new HipoDataSync();
+            //HipoDataSync writer = new HipoDataSync();
+            System.out.println(" OUTPUT WRITER CHANGED TO JNP HIPO");
+            HipoWriter writer = new HipoWriter();
             writer.setCompressionType(compression);
             
             int nrun = parser.getOption("-r").intValue();
@@ -386,7 +389,9 @@ public class CLASDecoder {
                     DataEvent  decodedEvent = decoder.getDataEvent(event);
                     DataBank   header = decoder.createHeaderBank(decodedEvent, nrun, counter, (float) torus, (float) solenoid);
                     decodedEvent.appendBanks(header);
-                    writer.writeEvent(decodedEvent);
+                    HipoDataEvent dhe = (HipoDataEvent) decodedEvent;
+                    writer.writeEvent(dhe.getHipoEvent());
+                    
                     counter++;
                     progress.updateStatus();
                     if(nevents>0){
