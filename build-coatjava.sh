@@ -15,7 +15,7 @@ mkdir -p coatjava/lib/services
 
 ### clean up any cache copies ###
 rm -rf ~/.m2/repository/org/hep/hipo
-rm -rf ~/.m2/repository/org/jlab
+#rm -rf ~/.m2/repository/org/jlab
 
 ### coat-libs ###
 cd common-tools

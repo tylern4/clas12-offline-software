@@ -365,7 +365,7 @@ public class CLASDecoder {
             System.out.println(" OUTPUT WRITER CHANGED TO JNP HIPO");
             HipoWriter writer = new HipoWriter();
             writer.setCompressionType(compression);
-            
+            writer.appendSchemaFactoryFromDirectory("CLAS12DIR", "etc/bankdefs/hipo");
             int nrun = parser.getOption("-r").intValue();
             double torus = parser.getOption("-t").doubleValue();
             double solenoid = parser.getOption("-s").doubleValue();
