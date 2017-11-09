@@ -8,7 +8,6 @@ package org.jlab.detector.decode;
 import java.util.ArrayList;
 import java.util.List;
 import org.jlab.detector.base.DetectorType;
-import org.jlab.hipo.schema.SchemaFactory;
 import org.jlab.io.base.DataBank;
 import org.jlab.io.base.DataEvent;
 import org.jlab.io.evio.EvioDataEvent;

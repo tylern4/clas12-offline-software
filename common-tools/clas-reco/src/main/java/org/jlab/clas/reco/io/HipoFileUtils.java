@@ -14,20 +14,21 @@ import org.jlab.clas.physics.PhysicsEvent;
 import org.jlab.groot.data.DataVector;
 import org.jlab.groot.data.H1F;
 import org.jlab.groot.ui.TCanvas;
-import org.jlab.hipo.data.HipoEvent;
-import org.jlab.hipo.data.HipoGroup;
-import org.jlab.hipo.data.HipoNode;
-import org.jlab.hipo.data.HipoNodeBuilder;
-import org.jlab.hipo.io.HipoReader;
-import org.jlab.hipo.io.HipoWriter;
-import org.jlab.hipo.schema.Schema;
-import org.jlab.hipo.schema.SchemaFactory;
+
 import org.jlab.io.base.DataEvent;
 import org.jlab.io.evio.EvioDataBank;
 import org.jlab.io.evio.EvioDataEvent;
 import org.jlab.io.evio.EvioFactory;
 import org.jlab.io.hipo.HipoDataSource;
 import org.jlab.io.hipo.HipoDataSync;
+import org.jlab.jnp.hipo.data.HipoEvent;
+import org.jlab.jnp.hipo.data.HipoGroup;
+import org.jlab.jnp.hipo.data.HipoNode;
+import org.jlab.jnp.hipo.data.HipoNodeBuilder;
+import org.jlab.jnp.hipo.io.HipoReader;
+import org.jlab.jnp.hipo.io.HipoWriter;
+import org.jlab.jnp.hipo.schema.Schema;
+import org.jlab.jnp.hipo.schema.SchemaFactory;
 import org.jlab.physics.io.LundReader;
 import org.jlab.utils.benchmark.ProgressPrintout;
 import org.jlab.utils.options.OptionParser;
@@ -86,7 +87,7 @@ public class HipoFileUtils {
              }
              int nEvents = reader.getEventCount();
              for(int nev = 0; nev < nEvents; nev++){
-                 HipoEvent    event = reader.readHipoEvent(nev);
+                 HipoEvent    event = reader.readEvent(nev);
                  boolean flag = false;
                  for(HipoGroup group : event.getGroups()) {
 //                     System.out.println(group.getSchema().getName());
@@ -164,7 +165,7 @@ public class HipoFileUtils {
             //System.out.println("nodes size = " + nodes.size());
             hipoEvent.addNodes(nodes);
             
-            writer.writeEvent(hipoEvent.getDataBuffer());
+            writer.writeEvent(hipoEvent);
         }
         writer.close();
     }
@@ -203,9 +204,9 @@ public class HipoFileUtils {
         int icounter = 0;
         
         for(int loop = 0; loop < nentries; loop++){
-            byte[] eventBuffer = reader.readEvent(loop);
-            HipoEvent event = new HipoEvent(eventBuffer);
-            PhysicsEvent physEvent = fitter.createEvent(event);
+            //byte[] eventBuffer = reader.readEvent(loop);
+            HipoEvent event = reader.readEvent(loop);
+            PhysicsEvent physEvent = new PhysicsEvent();//fitter.createEvent(event);
             
             if(evtFilter.checkFinalState(physEvent.mc())==true){
                 icounter++;
@@ -238,7 +239,7 @@ public class HipoFileUtils {
         int nevents  = 0;
         while(reader.hasEvent()==true){
             EvioDataEvent event = (EvioDataEvent) reader.getNextEvent();
-            PhysicsEvent  physEvent = fitter.createEvent(event);
+            PhysicsEvent  physEvent = new PhysicsEvent();//fitter.createEvent(event);
             if(evtFilter.checkFinalState(physEvent.mc())==true){
                 icounter++;
                 Particle p = physEvent.getParticle(particle);

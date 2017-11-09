@@ -5,7 +5,6 @@
  */
 package org.jlab.clas.physics;
 
-import org.jlab.groot.tree.Tree;
 import org.jlab.io.evio.EvioDataEvent;
 import org.jlab.io.hipo.HipoDataSource;
 import org.jlab.physics.analysis.PhysicsAnalysis;

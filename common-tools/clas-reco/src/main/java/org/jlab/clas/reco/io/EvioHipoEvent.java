@@ -8,8 +8,7 @@ package org.jlab.clas.reco.io;
 import java.util.ArrayList;
 import java.util.List;
 import org.jlab.detector.base.DetectorType;
-import org.jlab.hipo.data.HipoEvent;
-import org.jlab.hipo.data.HipoNodeBuilder;
+
 import org.jlab.io.base.DataBank;
 import org.jlab.io.evio.EvioDataBank;
 import org.jlab.io.evio.EvioDataDescriptor;
