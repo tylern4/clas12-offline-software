@@ -7,13 +7,10 @@ package org.jlab.io.hipo;
 
 import java.io.File;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import org.jlab.io.base.DataEvent;
 import org.jlab.io.base.DataEventList;
 import org.jlab.io.base.DataSource;
-import org.jlab.io.evio.EvioDataDescriptor;
 import org.jlab.io.evio.EvioDataDictionary;
-import org.jlab.io.evio.EvioDataEvent;
 import org.jlab.io.base.DataSourceType;
 import org.jlab.jnp.hipo.data.HipoEvent;
 import org.jlab.jnp.hipo.io.HipoReader;
@@ -40,13 +37,16 @@ public class HipoDataSource implements DataSource {
         return reader.hasNext();
     }
 
+    @Override
     public void open(File file) {
         this.open(file.getAbsolutePath());
     }
 
+    @Override
     public void open(String filename) {
         this.reader.open(filename);
         System.out.println("[DataSourceDump] --> opened file with events # " + this.reader.getEventCount());
+        this.reader.getSchemaFactory().show();
         /*
         HipoRecord header = this.reader.getHeaderRecord();
         int  ncount = header.getEventCount();

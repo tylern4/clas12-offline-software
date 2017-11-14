@@ -33,7 +33,6 @@ public class HipoDataDictionary implements DataDictionary {
         List<Schema> entries = factory.getSchemaList();
         //System.out.println(" schema size = " + entries.size());
         for(Schema sch : entries){
-
             HipoDataDescriptor desc = new HipoDataDescriptor(sch);
             descriptors.put(desc.getName(), desc);
             //System.out.println("name = " + sch.getName() + "  desc = " + desc.getName());

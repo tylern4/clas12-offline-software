@@ -162,7 +162,7 @@ public class DetectorEventDecoder {
         //Collections.sort(detectorData);
     }
     
-        public void fitPulses(List<DetectorDataDgtz>  detectorData){
+    public void fitPulses(List<DetectorDataDgtz>  detectorData){
         for(DetectorDataDgtz data : detectorData){            
             int crate    = data.getDescriptor().getCrate();
             int slot     = data.getDescriptor().getSlot();
@@ -171,7 +171,7 @@ public class DetectorEventDecoder {
             //       + slot + " " + channel);
             for(String table : keysFitter){
                 //custom MM fitter
-            	if( ( (table.equals("BMT"))&&(data.getDescriptor().getType().getName().equals("BMT")) ) || ( (table.equals("FMT"))&&(data.getDescriptor().getType().getName().equals("FMT")) ) ){
+                if( ( (table.equals("BMT"))&&(data.getDescriptor().getType().getName().equals("BMT")) ) || ( (table.equals("FMT"))&&(data.getDescriptor().getType().getName().equals("FMT")) ) ){
                     IndexedTable daq = fitterManager.getConstants(runNumber, table);
                     short adcOffset = (short) daq.getDoubleValue("adc_offset", 0, 0, 0);
                     double fineTimeStampResolution = (byte) daq.getDoubleValue("dream_clock", 0, 0, 0);
@@ -179,7 +179,7 @@ public class DetectorEventDecoder {
                     if (data.getADCSize() > 0) {
                         ADCData adc = data.getADCData(0);
                         mvtFitter.fit(adcOffset, fineTimeStampResolution, samplingTime, adc.getPulseArray(),
-                                        adc.getTimeStamp());
+                                adc.getTimeStamp());
                         adc.setHeight((short) (mvtFitter.adcMax));
                         adc.setTime((int) (mvtFitter.timeMax));
                         adc.setIntegral((int) (mvtFitter.integral));

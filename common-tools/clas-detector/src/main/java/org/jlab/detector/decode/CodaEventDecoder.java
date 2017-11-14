@@ -60,6 +60,17 @@ public class CodaEventDecoder {
         return rawEntries;
     }
 
+    private void printByteBuffer(ByteBuffer buffer, int max, int columns){
+        int n = max;
+        if(buffer.capacity()<max) n = buffer.capacity();
+        StringBuilder str = new StringBuilder();
+        for(int i = 0 ; i < n; i++){
+            str.append(String.format("%02X ", buffer.get(i)));
+            if( (i+1)%columns==0 ) str.append("\n");
+        }
+        System.out.println(str.toString());
+    }
+    
     public int getRunNumber(){
         return this.runNumber;
     }
@@ -104,17 +115,33 @@ public class CodaEventDecoder {
         EvioTreeBranch cbranch = this.getEventBranch(branches, crate);
         if(cbranch == null ) return null;
 
+        /**
+         * Loop over the nodes inside the container to see if there is
+         * a header bank, and fill the header information first
+         */
         for(EvioNode node : cbranch.getNodes()){
-            //System.out.println(" analyzing tag = " + node.getTag());
-
-            if(node.getTag()==57615){
+             if(node.getTag()==57615){
                 //  This is regular integrated pulse mode, used for FTOF
                 // FTCAL and EC/PCAL
                 //return this.getDataEntries_57602(crate, node, event);
                 this.readHeaderBank(crate, node, event);
                 //return this.getDataEntriesMode_7(crate,node, event);
             }
-            else if(node.getTag()==57617){
+        }
+        
+        
+        for(EvioNode node : cbranch.getNodes()){
+            //System.out.println(" analyzing tag = " + node.getTag());
+
+            //if(node.getTag()==57615){
+                //  This is regular integrated pulse mode, used for FTOF
+                // FTCAL and EC/PCAL
+                //return this.getDataEntries_57602(crate, node, event);
+            //    this.readHeaderBank(crate, node, event);
+                //return this.getDataEntriesMode_7(crate,node, event);
+            //}
+            
+            if(node.getTag()==57617){
                 //  This is regular integrated pulse mode, used for FTOF
                 // FTCAL and EC/PCAL
                 //return this.getDataEntries_57602(crate, node, event);
@@ -206,16 +233,20 @@ public class CodaEventDecoder {
     }
 
     public void readHeaderBank(Integer crate, EvioNode node, EvioDataEvent event){
-
+        
         if(node.getDataTypeObj()==DataType.INT32||node.getDataTypeObj()==DataType.UINT32){
             try {
-                int[] intData = ByteDataTransformer.toIntArray(node.getStructureBuffer(false));
+                int[] intData = ByteDataTransformer.toIntArray(node.getStructureBuffer(true));
                 this.runNumber = intData[3];
                 this.eventNumber = intData[4];
                 /*System.out.println(" set run number and event nubmber = "
                 + this.runNumber + "  " + this.eventNumber
                 );
-                System.out.println(" EVENT BUFFER LENGTH = " + intData.length);
+                System.out.println(String.format(" RUN NUMBER %08X %08X %08X",intData[3], intData[4],intData[5]));
+                System.out.println(String.format(" RUN NUMBER %d %d %d %d %d",
+                        intData[1], intData[2],
+                        intData[3], intData[4],intData[5]));*/
+                /*System.out.println(" EVENT BUFFER LENGTH = " + intData.length);
                 for(int i = 0; i < intData.length; i++){
                 System.out.println( i + " " + intData[i]);
                 }*/
@@ -317,6 +348,9 @@ public class CodaEventDecoder {
             try {
 
                 ByteBuffer     compBuffer = node.getByteData(true);
+                //System.out.println(" BEFORE PARSER BYTE ORDER = " + event.getByteOrder());
+                //this.printByteBuffer(compBuffer, 60, 20);
+                
                 CompositeData  compData = new CompositeData(compBuffer.array(),event.getByteOrder());
 
                 List<DataType> cdatatypes = compData.getTypes();
@@ -369,7 +403,10 @@ public class CodaEventDecoder {
                 return entries;
 
             } catch (EvioException ex) {
-                Logger.getLogger(CodaEventDecoder.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("Exception in CRATE = " + crate);
+                ByteBuffer     compBuffer = node.getByteData(true);
+                this.printByteBuffer(compBuffer, 120, 20);
+                //Logger.getLogger(CodaEventDecoder.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         return entries;
@@ -709,11 +746,11 @@ public class CodaEventDecoder {
 
     public static void main(String[] args){
         EvioSource reader = new EvioSource();
-        reader.open("/Users/gavalian/Work/Software/Release-8.0/COATJAVA/sector2_000257_mode7.evio");
+        reader.open("/Users/gavalian/Work/Software/project-2a.0.0/clas_000810.evio.324");
         CodaEventDecoder decoder = new CodaEventDecoder();
         DetectorEventDecoder detectorDecoder = new DetectorEventDecoder();
 
-        int maxEvents = 1;
+        int maxEvents = 400;
         int icounter  = 0;
 
         while(reader.hasEvent()==true&&icounter<maxEvents){
@@ -725,7 +762,7 @@ public class CodaEventDecoder {
 
             System.out.println("---> printout EVENT # " + icounter);
             for(DetectorDataDgtz data : dataSet){
-                System.out.println(data);
+                //System.out.println(data);
             }
             icounter++;
         }

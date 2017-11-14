@@ -26,6 +26,7 @@ public class HipoDataSync implements DataSync {
         this.writer = new HipoWriter();
         this.writer.setCompressionType(3);
         writer.appendSchemaFactoryFromDirectory("CLAS12DIR", "etc/bankdefs/hipo");
+        System.out.println("[HipoDataSync] ---> dictionary size = " + writer.getSchemaFactory().getSchemaList().size());
         //this.writer.getSchemaFactory().initFromDirectory("CLAS12DIR", "etc/bankdefs/hipo");
         //this.writer.getSchemaFactory().show();
     }
