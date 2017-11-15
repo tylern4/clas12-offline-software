@@ -46,7 +46,7 @@ public class HipoDataSource implements DataSource {
     public void open(String filename) {
         this.reader.open(filename);
         System.out.println("[DataSourceDump] --> opened file with events # " + this.reader.getEventCount());
-        this.reader.getSchemaFactory().show();
+        //this.reader.getSchemaFactory().show();
         /*
         HipoRecord header = this.reader.getHeaderRecord();
         int  ncount = header.getEventCount();
@@ -91,6 +91,10 @@ public class HipoDataSource implements DataSource {
     public DataEvent getNextEvent() {
         HipoEvent  hipoEvent = reader.readNextEvent();
         hipoEvent.getDataBuffer();        
+        System.out.println(" GET NEXT HIPO EVENT : DICTIONARY SIZE = " + 
+                hipoEvent.getSchemaFactory().getSchemaList().size() + "  EVENT LENGTH = "
+                + hipoEvent.getDataBuffer().length);
+        hipoEvent.showNodes();
         HipoDataEvent  evioEvent = new HipoDataEvent(hipoEvent.getDataBuffer(),hipoEvent.getSchemaFactory());
         return evioEvent;
     }
