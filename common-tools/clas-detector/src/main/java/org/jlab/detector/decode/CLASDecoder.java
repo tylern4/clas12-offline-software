@@ -394,7 +394,7 @@ public class CLASDecoder {
                     counter++;
                     progress.updateStatus();
                     if(nevents>0){
-                        if(counter>nevents) break;
+                        if(counter>=nevents) break;
                     }
                 }
             }

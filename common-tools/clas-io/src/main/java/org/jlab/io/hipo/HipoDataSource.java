@@ -90,11 +90,11 @@ public class HipoDataSource implements DataSource {
     @Override
     public DataEvent getNextEvent() {
         HipoEvent  hipoEvent = reader.readNextEvent();
-        hipoEvent.getDataBuffer();        
+        /*hipoEvent.getDataBuffer();        
         System.out.println(" GET NEXT HIPO EVENT : DICTIONARY SIZE = " + 
                 hipoEvent.getSchemaFactory().getSchemaList().size() + "  EVENT LENGTH = "
                 + hipoEvent.getDataBuffer().length);
-        hipoEvent.showNodes();
+        hipoEvent.showNodes();*/
         HipoDataEvent  evioEvent = new HipoDataEvent(hipoEvent.getDataBuffer(),hipoEvent.getSchemaFactory());
         return evioEvent;
     }
