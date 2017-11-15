@@ -1,4 +1,4 @@
-[ 
+[
   {
     "bank": "BMT::adc",
     "group": 20111,
@@ -12,7 +12,7 @@
        {"name":"time",      "id":6, "type":"float", "info":"time from fitting the pulse"},
        {"name":"ped",       "id":7, "type":"int16", "info":"pedestal from pulse"},
        {"name":"integral",  "id":8, "type":"int32", "info":"integral ADC (sum over the pulse)"},
-       {"name":"timestamp", "id":9, "type":"int64", "info":"timestamp"}	
+       {"name":"timestamp", "id":9, "type":"int64", "info":"timestamp"}
     ]
   },
   {
@@ -38,7 +38,7 @@
        {"name":"sector",    "id":1, "type":"int8",  "info":"sector of CND"},
        {"name":"layer",     "id":2, "type":"int8",  "info":"layer id of CND"},
        {"name":"component", "id":3, "type":"int16", "info":"paddle id of CND"},
-       {"name":"order",     "id":4, "type":"int8",  "info":"order of (0 - ADCD , 1 - ADCN)"},       
+       {"name":"order",     "id":4, "type":"int8",  "info":"order of (0 - ADCD , 1 - ADCN)"},
        {"name":"ADC",       "id":5, "type":"int32", "info":"ADC integral from fit"},
        {"name":"time",      "id":6, "type":"float", "info":"time from fitting the pulse"},
        {"name":"ped",       "id":7, "type":"int16", "info":"pedestal from pulse"}
@@ -64,7 +64,7 @@
        {"name":"sector",    "id":1, "type":"int8",  "info":"sector of CTOF"},
        {"name":"layer",     "id":2, "type":"int8",  "info":"panel id of CTOF (usually 1)"},
        {"name":"component", "id":3, "type":"int16", "info":"paddle id of CTOF"},
-       {"name":"order",     "id":4, "type":"int8",  "info":"order of (0 - ADCU , 1 - ADCD)"},       
+       {"name":"order",     "id":4, "type":"int8",  "info":"order of (0 - ADCU , 1 - ADCD)"},
        {"name":"ADC",       "id":5, "type":"int32", "info":"ADC integral from fit"},
        {"name":"time",      "id":6, "type":"float", "info":"time from fitting the pulse"},
        {"name":"ped",       "id":7, "type":"int16", "info":"pedestal from pulse"}
@@ -82,6 +82,14 @@
        {"name":"TDC",       "id":5, "type":"int32", "info":"TDC value"}
     ]
   },
+  {
+  "bank": "CTOF::pulse",
+  "group": 20413,
+  "info": "digitized bank Central Time-Of-Flight",
+  "items": [
+     {"name":"data",    "id":1, "type":"int8",  "info":"CTOF fadc pulse"}
+   ]
+},
   {
     "bank": "DC::tdc",
     "group": 20612,
@@ -114,7 +122,7 @@
        {"name":"sector",    "id":1, "type":"int8",  "info":"sector of EC"},
        {"name":"layer",     "id":2, "type":"int8",  "info":"panel id of ECAL (1..9)"},
        {"name":"component", "id":3, "type":"int16", "info":"paddle id for ECAL"},
-       {"name":"order",     "id":4, "type":"int8",  "info":"order of (0 - ADCL , 1 - ADCR)"},       
+       {"name":"order",     "id":4, "type":"int8",  "info":"order of (0 - ADCL , 1 - ADCR)"},
        {"name":"ADC",       "id":5, "type":"int32", "info":"ADC integral from fit"},
        {"name":"time",      "id":6, "type":"float", "info":"time from fitting the pulse"},
 	   {"name":"ped",       "id":7, "type":"int16", "info":"pedestal from pulse"}
@@ -122,7 +130,7 @@
   },
   {
     "bank": "ECAL::tdc",
-    "group": 20712,
+    "group": 202,
     "info": "digitized bank ECAL for TDC",
     "items": [
        {"name":"sector",    "id":1, "type":"int8",  "info":"sector of ECAL"},
@@ -131,6 +139,14 @@
        {"name":"order",     "id":4, "type":"int8",  "info":"order of (0 - TDCL , 1 - TDCR)"},
        {"name":"TDC",       "id":5, "type":"int32", "info":"TDC value"}
     ]
+  },
+  {
+    "bank": "ECAL::pulse",
+    "group": 20713,
+    "info": "digitized bank ECAL for packed pulses",
+    "items": [
+         {"name":"data",    "id":1, "type":"int8",  "info":"packed data"}
+      ]
   },
  {
     "bank": "FMT::adc",
@@ -145,7 +161,7 @@
        {"name":"time",      "id":6, "type":"float", "info":"time from fitting the pulse"},
        {"name":"ped",       "id":7, "type":"int16", "info":"pedestal from pulse"},
        {"name":"integral",  "id":8, "type":"int32", "info":"integral ADC (sum over the pulse)"},
-       {"name":"timestamp", "id":9, "type":"int64", "info":"timestamp"}	
+       {"name":"timestamp", "id":9, "type":"int64", "info":"timestamp"}
     ]
   },
    {
@@ -156,12 +172,20 @@
        {"name":"sector",    "id":1, "type":"int8",  "info":"sector of EC"},
        {"name":"layer",     "id":2, "type":"int8",  "info":"panel id of FCAL (1..9)"},
        {"name":"component", "id":3, "type":"int16", "info":"paddle id for ECAL"},
-       {"name":"order",     "id":4, "type":"int8",  "info":"order of (0 - ADCL , 1 - ADCR)"},       
+       {"name":"order",     "id":4, "type":"int8",  "info":"order of (0 - ADCL , 1 - ADCR)"},
        {"name":"ADC",       "id":5, "type":"int32", "info":"ADC integral from fit"},
        {"name":"time",      "id":6, "type":"float", "info":"time from fitting the pulse"},
        {"name":"ped",       "id":7, "type":"int16", "info":"pedestal from pulse"}
     ]
     },
+    {
+     "bank": "FTCAL::pulse",
+     "group": 20913,
+     "info": "Forward Tagger Calorimeter",
+     "items": [
+        {"name":"data",    "id":1, "type":"int8",  "info":"sector of EC"}
+     ]
+     },
    {
     "bank": "FTHODO::adc",
     "group": 21011,
@@ -170,12 +194,20 @@
        {"name":"sector",    "id":1, "type":"int8",  "info":"sector of EC"},
        {"name":"layer",     "id":2, "type":"int8",  "info":"panel id of FCAL (1..9)"},
        {"name":"component", "id":3, "type":"int16", "info":"paddle id for ECAL"},
-       {"name":"order",     "id":4, "type":"int8",  "info":"order of (0 - ADCL , 1 - ADCR)"},       
+       {"name":"order",     "id":4, "type":"int8",  "info":"order of (0 - ADCL , 1 - ADCR)"},
        {"name":"ADC",       "id":5, "type":"int32", "info":"ADC integral from fit"},
        {"name":"time",      "id":6, "type":"float", "info":"time from fitting the pulse"},
        {"name":"ped",       "id":7, "type":"int16", "info":"pedestal from pulse"}
     ]
   },
+  {
+   "bank": "FTHODO::pulse",
+   "group": 21013,
+   "info": "Forward Tagger Hodoscope",
+   "items": [
+      {"name":"data",    "id":1, "type":"int8",  "info":"sector of EC"}
+   ]
+ },
   {
     "bank": "FTOF::adc",
     "group": 21111,
@@ -184,7 +216,7 @@
        {"name":"sector",    "id":1, "type":"int8",  "info":"sector of FTOF"},
        {"name":"layer",     "id":2, "type":"int8",  "info":"panel id of FTOF (1-1A, 2-1B, 3-2B"},
        {"name":"component", "id":3, "type":"int16", "info":"paddle id of FTOF"},
-       {"name":"order",     "id":4, "type":"int8",  "info":"order of (0 - ADCL , 1 - ADCR)"},       
+       {"name":"order",     "id":4, "type":"int8",  "info":"order of (0 - ADCL , 1 - ADCR)"},
        {"name":"ADC",       "id":5, "type":"int32", "info":"ADC integral from fit"},
        {"name":"time",      "id":6, "type":"float", "info":"time from fitting the pulse"},
 	   {"name":"ped",       "id":7, "type":"int16", "info":"pedestal from pulse"}
@@ -202,6 +234,14 @@
        {"name":"TDC",       "id":5, "type":"int32", "info":"TDC value"}
     ]
   },
+  {
+    "bank": "FTOF::pulse",
+    "group": 21113,
+    "info": "digitized bank Forward Time-Of-Flight pulse",
+    "items": [
+       {"name":"data",    "id":1, "type":"int8",  "info":"packed pulse of FTOF"}
+      ]
+  },
    {
     "bank": "FTTRK::adc",
     "group": 21311,
@@ -210,7 +250,7 @@
        {"name":"sector",    "id":1, "type":"int8",  "info":"sector of EC"},
        {"name":"layer",     "id":2, "type":"int8",  "info":"panel id of FCAL (1..9)"},
        {"name":"component", "id":3, "type":"int16", "info":"paddle id for ECAL"},
-       {"name":"order",     "id":4, "type":"int8",  "info":"order of (0 - ADCL , 1 - ADCR)"},       
+       {"name":"order",     "id":4, "type":"int8",  "info":"order of (0 - ADCL , 1 - ADCR)"},
        {"name":"ADC",       "id":5, "type":"int32", "info":"ADC integral from fit"},
        {"name":"time",      "id":6, "type":"float", "info":"time from fitting the pulse"},
        {"name":"ped",       "id":7, "type":"int16", "info":"pedestal from pulse"}
@@ -224,10 +264,30 @@
        {"name":"sector",    "id":1, "type":"int8",  "info":"sector of HTCC"},
        {"name":"layer",     "id":2, "type":"int8",  "info":"half sector HTCC (1 or 2)"},
        {"name":"component", "id":3, "type":"int16", "info":"ring of HTCC (1,2,3,4)"},
-       {"name":"order",     "id":4, "type":"int8",  "info":"order of (0 - ADCL , 1 - ADCR)"},       
+       {"name":"order",     "id":4, "type":"int8",  "info":"order of (0 - ADCL , 1 - ADCR)"},
        {"name":"ADC",       "id":5, "type":"int32", "info":"ADC integral from fit"},
        {"name":"time",      "id":6, "type":"float", "info":"time from fitting the pulse"},
        {"name":"ped",       "id":7, "type":"int16", "info":"pedestal from pulse"}
+    ]
+  },
+  {
+     "bank": "HTCC::tdc",
+     "group": 21512,
+     "info": "digitized bank HTCC",
+     "items": [
+        {"name":"sector",    "id":1, "type":"int8",  "info":"sector of HTCC"},
+        {"name":"layer",     "id":2, "type":"int8",  "info":"layer for HTCC"},
+        {"name":"component", "id":3, "type":"int16", "info":"paddle id of HTCC"},
+        {"name":"order",     "id":4, "type":"int8",  "info":"order of (0 - TDCL , 1 - TDCR)"},
+        {"name":"TDC",       "id":5, "type":"int32", "info":"TDC value"}
+     ]
+   },
+  {
+    "bank": "HTCC::pulse",
+    "group": 21513,
+    "info": "digitized bank HTCC fadc pulse",
+    "items": [
+       {"name":"data",    "id":1, "type":"int8",  "info":"HTCC pulse data"}
     ]
   },
   {
@@ -238,12 +298,32 @@
        {"name":"sector",    "id":1, "type":"int8",  "info":"sector of LTCC"},
        {"name":"layer",     "id":2, "type":"int8",  "info":"half sector LTCC (1 or 2)"},
        {"name":"component", "id":3, "type":"int16", "info":"ring of LTCC (1,2,3,4)"},
-       {"name":"order",     "id":4, "type":"int8",  "info":"order of (0 - ADCL , 1 - ADCR)"},       
+       {"name":"order",     "id":4, "type":"int8",  "info":"order of (0 - ADCL , 1 - ADCR)"},
        {"name":"ADC",       "id":5, "type":"int32", "info":"ADC integral from fit"},
        {"name":"time",      "id":6, "type":"float", "info":"time from fitting the pulse"},
        {"name":"ped",       "id":7, "type":"int16", "info":"pedestal from pulse"}
     ]
-  }, 
+  },
+  {
+     "bank": "LTCC::tdc",
+     "group": 21612,
+     "info": "digitized bank LTCC",
+     "items": [
+        {"name":"sector",    "id":1, "type":"int8",  "info":"sector of LTCC"},
+        {"name":"layer",     "id":2, "type":"int8",  "info":"layer for LTCC"},
+        {"name":"component", "id":3, "type":"int16", "info":"paddle id of LTCC"},
+        {"name":"order",     "id":4, "type":"int8",  "info":"order of (0 - TDCL , 1 - TDCR)"},
+        {"name":"TDC",       "id":5, "type":"int32", "info":"TDC value"}
+     ]
+   },
+  {
+    "bank": "LTCC::pulse",
+    "group": 21613,
+    "info": "digitized bank LTCC fadc pulse",
+    "items": [
+       {"name":"data",    "id":1, "type":"int8",  "info":"LTCC pulse data"}
+      ]
+  },
   {
     "bank": "RF::adc",
     "group": 21711,

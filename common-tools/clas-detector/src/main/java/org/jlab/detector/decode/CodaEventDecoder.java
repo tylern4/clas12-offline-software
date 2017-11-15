@@ -403,8 +403,10 @@ public class CodaEventDecoder {
                 return entries;
 
             } catch (EvioException ex) {
-                System.out.println("Exception in CRATE = " + crate);
+
                 ByteBuffer     compBuffer = node.getByteData(true);
+                System.out.println("Exception in CRATE = " + crate + "  RUN = " + this.runNumber
+                + "  EVENT = " + this.eventNumber + " LENGTH = " + compBuffer.array().length);
                 this.printByteBuffer(compBuffer, 120, 20);
                 //Logger.getLogger(CodaEventDecoder.class.getName()).log(Level.SEVERE, null, ex);
             }
