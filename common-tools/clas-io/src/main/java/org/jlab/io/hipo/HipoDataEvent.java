@@ -90,10 +90,12 @@ public class HipoDataEvent implements DataEvent {
         }
     }
 
+    @Override
     public boolean hasBank(String name) {
         return (this.hipoEvent.hasGroup(name));
     }
 
+    @Override
     public DataBank getBank(String bank_name) {
         if(this.hipoEvent.getSchemaFactory().hasSchema(bank_name)==true){
             Schema schema = this.hipoEvent.getSchemaFactory().getSchema(bank_name);
