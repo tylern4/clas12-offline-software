@@ -80,7 +80,7 @@ public class HipoDataEvent implements DataEvent {
         if(bank==null) return;
         if(bank instanceof HipoDataBank){
             HipoGroup group =  ((HipoDataBank) bank).getGroup();
-            this.hipoEvent.addNodes(group.getNodes());
+            hipoEvent.writeGroup(group);
         }
     }
 
@@ -98,9 +98,10 @@ public class HipoDataEvent implements DataEvent {
     @Override
     public DataBank getBank(String bank_name) {
         if(this.hipoEvent.getSchemaFactory().hasSchema(bank_name)==true){
-            Schema schema = this.hipoEvent.getSchemaFactory().getSchema(bank_name);
-            Map<Integer,HipoNode> map = this.hipoEvent.getGroup(schema.getGroup());
-            HipoDataBank bank = new HipoDataBank(map,schema);
+            //Schema schema = this.hipoEvent.getSchemaFactory().getSchema(bank_name);
+            //Map<Integer,HipoNode> map = this.hipoEvent.getGroup(schema.getGroup());
+            HipoGroup group = hipoEvent.getGroup(bank_name);
+            HipoDataBank bank = new HipoDataBank(group.getNodesMap(),group.getSchema());
             return bank;
         }        
         //HipoDataBank bank = new HipoDataBank();
