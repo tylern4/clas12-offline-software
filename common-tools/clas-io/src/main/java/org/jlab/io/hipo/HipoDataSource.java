@@ -108,6 +108,7 @@ public class HipoDataSource implements DataSource {
         
     }
 
+    @Override
     public DataEvent gotoEvent(int index) {
         HipoEvent  hipoEvent = reader.readEvent(index);
         hipoEvent.getDataBuffer();
@@ -115,10 +116,12 @@ public class HipoDataSource implements DataSource {
         return evioEvent;
     }
     
+    @Override
     public void reset() {
         this.currentEventNumber = 0;
     }
 
+    @Override
     public int getCurrentIndex() {
         return this.currentEventNumber;
     }
