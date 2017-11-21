@@ -688,18 +688,18 @@ public class CodaEventDecoder {
 
     public void readTriggerBank(EvioDataEvent event){
         this.triggerBank = null;
-        System.out.println(" READING TRIGGER BANK");
+        //System.out.println(" READING TRIGGER BANK");
         List<EvioTreeBranch> branches = this.getEventBranches(event);
         for(EvioTreeBranch branch : branches){
             int  crate = branch.getTag();
             EvioTreeBranch cbranch = this.getEventBranch(branches, branch.getTag());
             for(EvioNode node : cbranch.getNodes()){
-                if(node.getTag()==57634){
-                    System.out.println("TRIGGER BANK FOUND ");
+                if(node.getTag()==57634&&crate==112){
+                   // System.out.println("TRIGGER BANK FOUND ");
                     this.triggerBank = ByteDataTransformer.toIntArray(node.getStructureBuffer(false));
-                    if(this.triggerBank!=null){
+                    /*if(this.triggerBank!=null){
                         System.out.println(" TRIGGER BANK LENGTH = " + this.triggerBank.length);
-                    }
+                    }*/
                 }
             }
         }
