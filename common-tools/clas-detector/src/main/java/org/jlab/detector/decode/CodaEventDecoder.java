@@ -696,7 +696,7 @@ public class CodaEventDecoder {
             for(EvioNode node : cbranch.getNodes()){
                 if(node.getTag()==57634&&crate==112){
                    // System.out.println("TRIGGER BANK FOUND ");
-                    this.triggerBank = ByteDataTransformer.toIntArray(node.getStructureBuffer(false));
+                    this.triggerBank = ByteDataTransformer.toIntArray(node.getStructureBuffer(true));
                     /*if(this.triggerBank!=null){
                         System.out.println(" TRIGGER BANK LENGTH = " + this.triggerBank.length);
                     }*/
@@ -720,7 +720,7 @@ public class CodaEventDecoder {
             EvioTreeBranch cbranch = this.getEventBranch(branches, branch.getTag());
             for(EvioNode node : cbranch.getNodes()){
                 if(node.getTag()==57607){
-                    int[] intData = ByteDataTransformer.toIntArray(node.getStructureBuffer(false));
+                    int[] intData = ByteDataTransformer.toIntArray(node.getStructureBuffer(true));
                     for(int loop = 0; loop < intData.length; loop++){
                         int  dataEntry = intData[loop];
                         int  slot      = DataUtils.getInteger(dataEntry, 27, 31 );
@@ -754,7 +754,7 @@ public class CodaEventDecoder {
             EvioTreeBranch cbranch = this.getEventBranch(branches, branch.getTag());
             for(EvioNode node : cbranch.getNodes()){
                 if(node.getTag()==57610){
-                    long[] longData = ByteDataTransformer.toLongArray(node.getStructureBuffer(false));
+                    long[] longData = ByteDataTransformer.toLongArray(node.getStructureBuffer(true));
                     int[]  intData  = ByteDataTransformer.toIntArray(node.getStructureBuffer(false));
                     DetectorDataDgtz entry = new DetectorDataDgtz(crate,0,0);
                     long tStamp = longData[2]&0x00000000ffffffff;
