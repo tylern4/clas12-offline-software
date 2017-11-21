@@ -34,6 +34,8 @@ public class CodaEventDecoder {
     private long  timeStamp = 0L;
     private int triggerBits = 0;
 
+    private int[] triggerBank = null;
+    
     public CodaEventDecoder(){
 
     }
@@ -60,6 +62,10 @@ public class CodaEventDecoder {
         return rawEntries;
     }
 
+    public int[] getTriggerBank(){
+        return this.triggerBank;
+    }
+    
     private void printByteBuffer(ByteBuffer buffer, int max, int columns){
         int n = max;
         if(buffer.capacity()<max) n = buffer.capacity();
@@ -680,7 +686,24 @@ public class CodaEventDecoder {
         return entries;
     }
 
-
+    public void readTriggerBank(EvioDataEvent event){
+        this.triggerBank = null;
+        System.out.println(" READING TRIGGER BANK");
+        List<EvioTreeBranch> branches = this.getEventBranches(event);
+        for(EvioTreeBranch branch : branches){
+            int  crate = branch.getTag();
+            EvioTreeBranch cbranch = this.getEventBranch(branches, branch.getTag());
+            for(EvioNode node : cbranch.getNodes()){
+                if(node.getTag()==57634){
+                    System.out.println("TRIGGER BANK FOUND ");
+                    this.triggerBank = ByteDataTransformer.toIntArray(node.getStructureBuffer(false));
+                    if(this.triggerBank!=null){
+                        System.out.println(" TRIGGER BANK LENGTH = " + this.triggerBank.length);
+                    }
+                }
+            }
+        }
+    }
     /**
      * reads the TDC values from the bank with tag = 57607, decodes
      * them and returns a list of digitized detector object.
