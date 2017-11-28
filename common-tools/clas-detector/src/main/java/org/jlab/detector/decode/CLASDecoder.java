@@ -73,6 +73,7 @@ public class CLASDecoder {
         if(event instanceof EvioDataEvent){
             try {
                 dataList = codaDecoder.getDataEntries( (EvioDataEvent) event);
+                codaDecoder.readTriggerBank((EvioDataEvent) event);
                 if(this.decoderDebugMode>0){
                     System.out.println("\n>>>>>>>>> RAW decoded data");
                     for(DetectorDataDgtz data : dataList){
@@ -289,6 +290,18 @@ public class CLASDecoder {
         
         return event;
     }
+    
+    
+    public HipoDataBank createTriggerBank(DataEvent event){
+        if(codaDecoder.getTriggerBank()!=null){
+            int[] trigger = codaDecoder.getTriggerBank();
+            HipoDataBank bankTrigger = (HipoDataBank) event.createBank("RUN::trigger", trigger.length);
+            for(int i = 0; i < trigger.length; i++) bankTrigger.setInt("trigger", i, trigger[i]);
+            return bankTrigger;
+        }
+        return null;
+    }
+    
     public HipoDataBank createHeaderBank(DataEvent event, int nrun, int nevent, float torus, float solenoid){
         HipoDataBank bank = (HipoDataBank) event.createBank("RUN::config", 1);
         
@@ -307,6 +320,7 @@ public class CLASDecoder {
         bank.setFloat("torus",    0, torus);
         bank.setFloat("solenoid", 0, solenoid);        
         bank.setLong("timestamp", 0, timeStamp);        
+        
         
         
         return bank;
@@ -387,7 +401,11 @@ public class CLASDecoder {
                     EvioDataEvent event = (EvioDataEvent) reader.getNextEvent();
                     DataEvent  decodedEvent = decoder.getDataEvent(event);
                     DataBank   header = decoder.createHeaderBank(decodedEvent, nrun, counter, (float) torus, (float) solenoid);
+                    DataBank   trigger = decoder.createTriggerBank(decodedEvent);
+                    
                     decodedEvent.appendBanks(header);
+                    decodedEvent.appendBanks(trigger);
+                    
                     HipoDataEvent dhe = (HipoDataEvent) decodedEvent;
                     writer.writeEvent(dhe.getHipoEvent());
                     
