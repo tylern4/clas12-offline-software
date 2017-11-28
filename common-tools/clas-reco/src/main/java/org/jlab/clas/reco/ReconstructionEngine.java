@@ -73,6 +73,7 @@ public abstract class ReconstructionEngine implements Engine {
      * @param ed
      * @return
      */
+    @Override
     public EngineData configure(EngineData ed) {
       if(constManagerMap == null)
       constManagerMap   = new ConcurrentHashMap<String,ConstantsManager>();
@@ -90,6 +91,7 @@ public abstract class ReconstructionEngine implements Engine {
         return ed;
     }
 
+    @Override
     public EngineData execute(EngineData input) {
 
         EngineData output = input;
@@ -197,11 +199,13 @@ public abstract class ReconstructionEngine implements Engine {
         */
     }
 
+    @Override
     public EngineData executeGroup(Set<EngineData> set) {
         return null;
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
     public Set<EngineDataType> getInputDataTypes() {
         return ClaraUtil.buildDataTypes(Clas12Types.EVIO,
                 Clas12Types.HIPO,
@@ -213,6 +217,7 @@ public abstract class ReconstructionEngine implements Engine {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
     public Set<EngineDataType> getOutputDataTypes() {
         return ClaraUtil.buildDataTypes(Clas12Types.EVIO,
                 Clas12Types.HIPO,
@@ -224,6 +229,7 @@ public abstract class ReconstructionEngine implements Engine {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
     public Set<String> getStates() {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         return new HashSet<String>();
@@ -234,6 +240,7 @@ public abstract class ReconstructionEngine implements Engine {
         return this;
     }
 
+    @Override
     public String getDescription() {
         return this.engineDescription;
     }
@@ -242,20 +249,24 @@ public abstract class ReconstructionEngine implements Engine {
         return this.engineName;
     }
 
+    @Override
     public String getVersion() {
         return this.engineVersion;
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
     public String getAuthor() {
         return this.engineAuthor;
         // new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
     public void reset() {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
     public void destroy() {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

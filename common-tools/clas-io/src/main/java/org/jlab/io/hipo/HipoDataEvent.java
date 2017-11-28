@@ -44,6 +44,7 @@ public class HipoDataEvent implements DataEvent {
         this.hipoEvent.getSchemaFactory().copy(factory);
     }
     
+    @Override
     public String[] getBankList() {
         List<Schema> schemaList = hipoEvent.getSchemaFactory().getSchemaList();
         List<String> existingBanks = new ArrayList<String>();
@@ -248,10 +249,14 @@ public class HipoDataEvent implements DataEvent {
         this.hipoEvent.showGroupByOrder(order);
     }
     
+    @Override
     public DataBank createBank(String bank_name, int rows) {
         if(this.hipoEvent.getSchemaFactory().hasSchema(bank_name)==false){
-            System.out.println(">>>>> error : descriptor not found : " + bank_name);
-            //this.hipoEvent.getSchemaFactory().show();
+            System.out.println(">>>>> error :  descriptor not found : " + bank_name);
+            System.out.println(">>>>> error : number of descriptors : " + 
+                    hipoEvent.getSchemaFactory().getSchemaList().size());
+            System.out.println();
+            this.hipoEvent.getSchemaFactory().show();
             return null;
         }
         HipoGroup group = this.hipoEvent.getSchemaFactory().getSchema(bank_name).createGroup(rows);

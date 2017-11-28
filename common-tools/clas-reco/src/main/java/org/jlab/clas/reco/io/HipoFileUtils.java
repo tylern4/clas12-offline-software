@@ -7,6 +7,8 @@ package org.jlab.clas.reco.io;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jlab.clas.physics.EventFilter;
 import org.jlab.clas.physics.GenericKinematicFitter;
 import org.jlab.clas.physics.Particle;
@@ -75,7 +77,11 @@ public class HipoFileUtils {
                  for(Schema schema : list){
                      for(String key : keepSchema){
                          if(schema.getName().contains(key)==true||keep.compareTo("ALL")==0){
-                             writerFactory.addSchema(schema);
+                             try {
+                                 writerFactory.addSchema(schema);
+                             } catch (Exception ex) {
+                                 Logger.getLogger(HipoFileUtils.class.getName()).log(Level.SEVERE, null, ex);
+                             }
                              writerFactory.addFilter(schema.getName());
                              writer.defineSchema(schema);
                              System.out.println("\t >>>>> adding schema to writer : " + schema.getName());
