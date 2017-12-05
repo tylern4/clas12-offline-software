@@ -105,8 +105,10 @@ public abstract class ReconstructionEngine implements Engine {
             try {
                 //ByteBuffer bb = (ByteBuffer) input.getData();
                 HipoEvent hipoEvent = (HipoEvent) input.getData();
+                hipoEvent.setSchemaFactory(engineDictionary, false);
                 dataEventHipo = new HipoDataEvent(hipoEvent);
-                dataEventHipo.initDictionary(engineDictionary);
+                
+                //dataEventHipo.initDictionary(engineDictionary);
                 //dataEventHipo = new HipoDataEvent(bb.array(),this.engineDictionary);
             } catch (Exception e) {
                 String msg = String.format("Error reading input event%n%n%s", ClaraUtil.reportException(e));
