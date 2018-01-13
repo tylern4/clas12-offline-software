@@ -32,5 +32,6 @@
     <module>htcc</module>
     <module>cnd</module>
     <module>rich</module>
+    <module>eb</module>
   </modules>
 </project>
