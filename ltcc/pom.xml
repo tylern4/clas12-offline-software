@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.jlab.clas12.detector</groupId>
-  <artifactId>clas12detector-ec</artifactId>
+  <artifactId>clasrec-ltcc</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
@@ -19,7 +19,7 @@
       <url>https://clasweb.jlab.org/clas12maven</url>
     </repository>
   </repositories>
-  
+
   <dependencies>
     <dependency>
       <groupId>org.jlab.coda</groupId>
@@ -46,21 +46,9 @@
     </dependency>
 
     <dependency>
-      <groupId>cnuphys</groupId>
-      <artifactId>swimmer</artifactId>
-      <version>2.0-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>cnuphys</groupId>
-      <artifactId>snr</artifactId>
-      <version>2.0-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>cnuphys</groupId>
-      <artifactId>splot</artifactId>
-      <version>2.0-SNAPSHOT</version>
+      <groupId>org.jlab.plugins</groupId>
+      <artifactId>jMath</artifactId>
+      <version>1.0</version>
     </dependency>
   </dependencies>
 
@@ -69,4 +57,4 @@
     <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
 
- </project>
+</project>

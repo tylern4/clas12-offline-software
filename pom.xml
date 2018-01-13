@@ -28,5 +28,6 @@
     <module>cvt</module>
     <module>ft</module>
     <module>ec</module>
+    <module>ltcc</module>
   </modules>
 </project>
