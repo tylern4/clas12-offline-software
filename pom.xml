@@ -30,5 +30,6 @@
     <module>ec</module>
     <module>ltcc</module>
     <module>htcc</module>
+    <module>cnd</module>
   </modules>
 </project>
