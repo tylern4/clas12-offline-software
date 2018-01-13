@@ -23,5 +23,6 @@
     <module>clas-reco</module> 
     <module>clas-analysis</module> 
     <module>cnuphys</module>
+    <module>dc</module>
   </modules>
 </project>
