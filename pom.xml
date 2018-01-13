@@ -25,5 +25,6 @@
     <module>cnuphys</module>
     <module>dc</module>
     <module>tof</module>
+    <module>cvt</module>
   </modules>
 </project>
