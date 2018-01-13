@@ -24,5 +24,6 @@
     <module>clas-analysis</module> 
     <module>cnuphys</module>
     <module>dc</module>
+    <module>tof</module>
   </modules>
 </project>
