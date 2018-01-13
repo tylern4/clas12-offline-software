@@ -27,5 +27,6 @@
     <module>tof</module>
     <module>cvt</module>
     <module>ft</module>
+    <module>ec</module>
   </modules>
 </project>
