@@ -26,5 +26,6 @@
     <module>dc</module>
     <module>tof</module>
     <module>cvt</module>
+    <module>ft</module>
   </modules>
 </project>
