@@ -31,5 +31,6 @@
     <module>ltcc</module>
     <module>htcc</module>
     <module>cnd</module>
+    <module>rich</module>
   </modules>
 </project>
