@@ -29,5 +29,6 @@
     <module>ft</module>
     <module>ec</module>
     <module>ltcc</module>
+    <module>htcc</module>
   </modules>
 </project>
