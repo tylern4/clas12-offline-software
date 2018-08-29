@@ -1,46 +1,9 @@
 ---
-
 sudo: required
-
-language: java
-
-env:
-    - CLAS12DIR /home/travis/build/JeffersonLab/clas12-offline-software/coatjava
-
-jdk:
-- oraclejdk8
-
-# this affects which java version is used:
-addons:
-  apt:
-    packages:
-      - oracle-java8-installer
-
-before_install:
-    - ls -lthra
-    - java -version
-    - echo "starting build..."
-
-install:
-  - java -version
-  - ./build-coatjava.sh
-
+language: cpp
+services:
+    - docker
 script:
-  - ls -lthra
-  - which groovy
-  - echo "starting advanced tests..."
-  - cd validation/advanced-tests/
-  - ./run-advanced-tests.sh
-  - ./run-eb-tests.sh -100 electronproton
-  - ./run-eb-tests.sh -100 electrongamma
-  - ./run-eb-tests.sh -100 electronprotonC
-  - ./run-eb-tests.sh -100 electronneutronC
-  - cd -
-  - echo "finished advanced tests"
-  - mvn cobertura:cobertura &> /dev/null # for codecov
+    - docker build -t coatjava -f docker/Dockerfile .
+    - docker images -a
 
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
-
-notifications:
-  emails: false
