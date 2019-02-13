@@ -75,7 +75,7 @@ public class HitReader implements IMatchedHit {
         List<BaseHit> hitList = hitReader.get_MatchedHits(event, MH, triggerPhase, constants3, constants7);
 
         if (hitList.size() == 0) {
-            // System.err.println("there is no FTOF bank ");
+            // LOGGER.warn("there is no FTOF bank ");
             _CTOFHits = new ArrayList<Hit>();
             return;
         }
@@ -294,14 +294,14 @@ public class HitReader implements IMatchedHit {
         for (Hit fhit : CTOFhits) {
             boolean match = false;
             for (int i = 0; i < trks.size(); i++) { // looping over the tracks find the intersection of the track with that plane
-                Line3d trk = trks.get(i); //System.out.println(" trk line "+trk.toString());
+                Line3d trk = trks.get(i); //LOGGER.debug(" trk line "+trk.toString());
 
 //                CTOFDetHit[] HitArray = new CTOFDetHit[48];
                 List<DetHit> detHits = ctofDetector.getIntersections(trk);
 
                 if (detHits != null && detHits.size() > 0) {
                     for (DetHit detHit : detHits) {
-                        CTOFDetHit matchedHit = new CTOFDetHit(detHit); //System.out.println(" matched hits "+fhit.toString());
+                        CTOFDetHit matchedHit = new CTOFDetHit(detHit); //LOGGER.debug(" matched hits "+fhit.toString());
                         if(matchedHit.getPaddle() == fhit.get_Paddle()) {  // match is found
                             match = true;
                             // create a new FTOF hit for each intersecting track with this hit counter 
@@ -360,9 +360,9 @@ public class HitReader implements IMatchedHit {
 
         if (ADCandTDCLists != null) {
             Collections.sort(ADCandTDCLists);
-//             System.out.println("Trigger phase: " + timeJitter);
+//             LOGGER.debug("Trigger phase: " + timeJitter);
 //             for(BaseHit h : ADCandTDCLists)
-//             System.out.println(h.get_Sector()+":"+h.get_Layer()+":"+h.get_Component()+"   --   "+h.ADC1+"; "+h.ADC2+"; "+h.ADCTime1+"; "+h.ADCTime2+"; "+h.TDC1+"; "+h.TDC2+"; ");
+//             LOGGER.debug(h.get_Sector()+":"+h.get_Layer()+":"+h.get_Component()+"   --   "+h.ADC1+"; "+h.ADC2+"; "+h.ADCTime1+"; "+h.ADCTime2+"; "+h.TDC1+"; "+h.TDC2+"; ");
             double t1 = -1;
             double t2 = -1; // t1, t2 not yet used in selection
             int adc1 = -1;
@@ -518,7 +518,7 @@ public class HitReader implements IMatchedHit {
                     hit.TDCbankHitIdx2 = tdc_idx2;
 
                     matchLists.add(hit);
-//                    System.out.println(i+")  s "+hit.get_Sector()+" l "+hit.get_Layer()+" c "+hit.get_Component()+" adcL "+hit.get_ADC1()+" adcR "+hit.get_ADC2()+" tdcL "+
+//                    LOGGER.debug(i+")  s "+hit.get_Sector()+" l "+hit.get_Layer()+" c "+hit.get_Component()+" adcL "+hit.get_ADC1()+" adcR "+hit.get_ADC2()+" tdcL "+
 //                    hit.get_TDC1()+" tdcR "+hit.get_TDC2() +" tdcLx "+hit.TDCbankHitIdx1+" tdcRx "+hit.TDCbankHitIdx2);
 
                 }
@@ -536,7 +536,7 @@ public class HitReader implements IMatchedHit {
         int    cycles = table.getIntValue("cycles", 0,0,0);
         double triggerphase=0;
         if(cycles > 0) triggerphase=period*((timestamp+phase)%cycles);
-//        System.out.println(period + " " + phase + " " + cycles + " " + timestamp + " " + triggerphase);
+//        LOGGER.debug(period + " " + phase + " " + cycles + " " + timestamp + " " + triggerphase);
         return triggerphase;
     }
 }

@@ -244,7 +244,7 @@ public class HitReader {
         1: this.getConstantsManager().getConstants(newRun, "/calibration/dc/time_to_distance/t2d")
         */
         if (!event.hasBank("HitBasedTrkg::HBHits")) {
-            //System.err.println("there is no HB dc bank ");
+            //LOGGER.warn("there is no HB dc bank ");
             _HBHits = new ArrayList<>();
             return;
         }
@@ -355,7 +355,7 @@ public class HitReader {
         1: this.getConstantsManager().getConstants(newRun, "/calibration/dc/time_to_distance/t2d")
         */
         if (!event.hasBank("TimeBasedTrkg::TBHits") || !event.hasBank("RECHB::Event")) {
-            //System.err.println("there is no HB dc bank ");
+            //LOGGER.warn("there is no HB dc bank ");
             _TBHits = new ArrayList<>();
             return;
         }
@@ -558,11 +558,11 @@ public class HitReader {
         } else {
             for(int i = 0; i<CableSwaps.length; i++) {
                 if(CableSwaps[i][0]==sector && CableSwaps[i][1]==layer && CableSwaps[i][2]==wire) {
-                   // System.out.println(" swapped "+sector+", "+layer+", "+wire);
+                   // LOGGER.debug(" swapped "+sector+", "+layer+", "+wire);
                     _sector = CableSwaps[i][3];
                     _layer  = CableSwaps[i][4];
                     _wire   = CableSwaps[i][5];
-                  //  System.out.println("    to  "+_sector+", "+_layer+", "+_wire);
+                  //  LOGGER.debug("    to  "+_sector+", "+_layer+", "+_wire);
                 }
             }
         }
@@ -582,9 +582,9 @@ public class HitReader {
 
         for (int s=1; s<7; s++) {
            if (trigger_bits[s]) {
-               System.out.println("Trigger bit set for electron in sector "+s);
+               LOGGER.debug("Trigger bit set for electron in sector "+s);
            }
-          if (trigger_bits[31])System.out.println("Trigger bit set from random pulser");
+          if (trigger_bits[31])LOGGER.debug("Trigger bit set from random pulser");
         }
 }
     }

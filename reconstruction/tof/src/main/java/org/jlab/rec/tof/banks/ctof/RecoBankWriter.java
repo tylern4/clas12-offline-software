@@ -3,6 +3,8 @@ package org.jlab.rec.tof.banks.ctof;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.io.base.DataBank;
 import org.jlab.io.base.DataEvent;
 import org.jlab.rec.tof.cluster.Cluster;
@@ -14,7 +16,7 @@ import org.jlab.rec.tof.hit.ctof.Hit;
  *
  */
 public class RecoBankWriter {
-
+    public static Logger LOGGER = LogManager.getLogger(RecoBankWriter.class.getName());
     public RecoBankWriter() {
         // TODO Auto-generated constructor stub
     }
@@ -29,7 +31,7 @@ public class RecoBankWriter {
 
         DataBank bank = event.createBank("CTOF::rawhits", hitlist.size());
         if (bank == null) {
-            System.err.println("COULD NOT CREATE A BANK!!!!!! for hitlist of size " + hitlist.size());
+            LOGGER.warn("COULD NOT CREATE A BANK!!!!!! for hitlist of size " + hitlist.size());
             return null;
         }
 
@@ -65,7 +67,7 @@ public class RecoBankWriter {
 
         DataBank bank = event.createBank("CTOF::hits", hitlist.size());
         if (bank == null) {
-            System.err.println("COULD NOT CREATE A BANK!!!!!!");
+            LOGGER.warn("COULD NOT CREATE A BANK!!!!!!");
             return null;
         }
         for (int i = 0; i < hitlist.size(); i++) {
@@ -119,7 +121,7 @@ public class RecoBankWriter {
 
         DataBank bank = event.createBank("CTOF::clusters", cluslist.size());
         if (bank == null) {
-            System.err.println("COULD NOT CREATE A BANK!!!!!!");
+            LOGGER.warn("COULD NOT CREATE A BANK!!!!!!");
             return null;
         }
         for (int i = 0; i < cluslist.size(); i++) {

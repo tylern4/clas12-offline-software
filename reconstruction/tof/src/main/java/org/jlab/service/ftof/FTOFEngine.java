@@ -96,11 +96,11 @@ public class FTOFEngine extends ReconstructionEngine {
 
     @Override
     public boolean processDataEvent(DataEvent event) {
-        // System.out.println(" PROCESSING EVENT ....");
+        // LOGGER.debug(" PROCESSING EVENT ....");
         // Constants.DEBUGMODE = true;
         //setRunConditionsParameters( event) ;
         if(event.hasBank("RUN::config")==false ) {
-		System.err.println("RUN CONDITIONS NOT READ!");
+		LOGGER.warn("RUN CONDITIONS NOT READ!");
 		return true;
 	}
 		
@@ -111,16 +111,16 @@ public class FTOFEngine extends ReconstructionEngine {
         int  newRun = bank.getInt("run", 0);
         long timeStamp = bank.getLong("timestamp", 0);
         if (newRun<=0) {
-            System.err.println("FTOFEngine:  got run <= 0 in RUN::config, skipping event.");
+            LOGGER.warn("FTOFEngine:  got run <= 0 in RUN::config, skipping event.");
             return false;
         }
         if (timeStamp==-1) {
-            System.err.println("FTOFEngine:  got 0 timestamp, skipping event");
+            LOGGER.warn("FTOFEngine:  got 0 timestamp, skipping event");
             return false;
         }
         
         if (geometry == null) {
-            System.err.println(" FTOF Geometry not loaded !!!");
+            LOGGER.warn(" FTOF Geometry not loaded !!!");
             return false;
         }
         // Get the list of track lines which will be used for matching the FTOF
@@ -215,7 +215,7 @@ public class FTOFEngine extends ReconstructionEngine {
         if (Constants.DEBUGMODE) { // if running in DEBUG MODE print out the
             // reconstructed info about the hits and the
             // clusters
-            System.out.println("=============== All Hits ===============");
+            LOGGER.debug("=============== All Hits ===============");
             for (Hit hit : hits) {
                 hit.printInfo();
             }
@@ -223,7 +223,7 @@ public class FTOFEngine extends ReconstructionEngine {
                     .println("==================================================");
             for (Cluster cls : clusters) {
                 cls.printInfo();
-                System.out.println("contains:");
+                LOGGER.debug("contains:");
                 for (AHit hit : cls) {
                     hit.printInfo();
                 }
@@ -270,7 +270,7 @@ public class FTOFEngine extends ReconstructionEngine {
         // String inputFile = args[0];
         // String outputFile = args[1];
 
-        System.err.println(" \n[PROCESSING FILE] : " + inputFile);
+        LOGGER.warn(" \n[PROCESSING FILE] : " + inputFile);
 
         HipoDataSource reader = new HipoDataSource();
         reader.open(inputFile);
@@ -295,12 +295,12 @@ public class FTOFEngine extends ReconstructionEngine {
             //en0.processDataEvent(event);
             //en1.processDataEvent(event);
             en.processDataEvent(event);
-            System.out.println("  EVENT " + counter);
+            LOGGER.debug("  EVENT " + counter);
             //if (counter > 3066)
             //	break;
             // event.show();
             // if(counter%100==0)
-            //System.out.println("run " + counter + " events");
+            //LOGGER.debug("run " + counter + " events");
             //if (event.hasBank("HitBasedTrkg::HBTracks")) {
             //    
             //}
@@ -308,7 +308,7 @@ public class FTOFEngine extends ReconstructionEngine {
         }
         writer.close();
         double t = System.currentTimeMillis() - t1;
-        System.out.println(t1 + " TOTAL  PROCESSING TIME = "
+        LOGGER.debug(t1 + " TOTAL  PROCESSING TIME = "
                 + (t / (float) counter));
     }
 }

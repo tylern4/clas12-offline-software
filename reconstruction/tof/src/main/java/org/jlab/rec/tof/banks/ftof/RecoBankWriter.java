@@ -3,6 +3,8 @@ package org.jlab.rec.tof.banks.ftof;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.io.base.DataBank;
 import org.jlab.io.base.DataEvent;
 import org.jlab.io.hipo.HipoDataEvent;
@@ -17,7 +19,7 @@ import org.jlab.rec.tof.hit.ftof.Hit;
  *
  */
 public class RecoBankWriter {
-
+    public static Logger LOGGER = LogManager.getLogger(RecoBankWriter.class.getName());
     public RecoBankWriter() {
         // TODO Auto-generated constructor stub
     }
@@ -94,7 +96,7 @@ public class RecoBankWriter {
             bankName = "FTOF::hbhits";
         DataBank bank = event.createBank(bankName, hitlist.size());
         if (bank == null) {
-            System.err.println("COULD NOT CREATE A BANK!!!!!!"+bankName);
+            LOGGER.warn("COULD NOT CREATE A BANK!!!!!!"+bankName);
             return null;
         }
         for (int i = 0; i < hitlist.size(); i++) {
@@ -164,7 +166,7 @@ public class RecoBankWriter {
 
             //DataBank bank = this.CreateOutputBank(event, "FTOF::clusters", cluslist.size());
             if (bank == null) {
-                System.err.println("COULD NOT CREATE A BANK!!!!!!");
+                LOGGER.warn("COULD NOT CREATE A BANK!!!!!!");
                 return null;
             }
             for (int i = 0; i < cluslist.size(); i++) {
@@ -214,7 +216,7 @@ public class RecoBankWriter {
             DataBank bank = event.createBank("FTOF::matchedclusters",
                 matchedClusters.size());
             if (bank == null) {
-                System.err.println("COULD NOT CREATE A BANK!!!!!!");
+                LOGGER.warn("COULD NOT CREATE A BANK!!!!!!");
                 return null;
             }
             for (int i = 0; i < matchedClusters.size(); i++) {

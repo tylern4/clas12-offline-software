@@ -186,7 +186,7 @@ public class HipoDataBank implements DataBank  {
     }
 
     public void show() {
-        System.out.println(" SHOWING BANK");
+        LOGGER.debug(" SHOWING BANK");
         this.hipoGroup.show();
     }
 

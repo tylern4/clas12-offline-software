@@ -3,6 +3,9 @@ package org.jlab.rec.cvt.track;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.clas.swimtools.Swim;
 
 import org.jlab.geom.prim.Point3D;
@@ -29,7 +32,7 @@ import org.jlab.rec.cvt.trajectory.TrajectoryFinder;
  *
  */
 public class TrackCandListFinder {
-
+    public static Logger LOGGER = LogManager.getLogger(Cluster.class.getName());
     public TrackCandListFinder() {
         X = new ArrayList<Double>();
         Y = new ArrayList<Double>();
@@ -180,7 +183,7 @@ public class TrackCandListFinder {
 
                 // if the fit failed then use the uncorrected SVT points since the z-correction in resetting the SVT cross points sometimes fails 
                 if (fitTrk.get_helix() == null) {
-                    //System.err.println("Error in Helical Track fitting -- helix not found -- trying to refit using the uncorrected crosses...");
+                    //LOGGER.warn("Error in Helical Track fitting -- helix not found -- trying to refit using the uncorrected crosses...");
                     MeasArrays = this.get_HelixMeasurementsArrays(list, shift, ignoreErr, true);
 
                     X = MeasArrays._X;
@@ -194,7 +197,7 @@ public class TrackCandListFinder {
                     fitTrk.fit(X, Y, Z, Rho, ErrRt, ErrRho, ErrZ);
                     Number_Of_Iterations = Max_Number_Of_Iterations + 1;
                     //if(fitTrk.get_helix()==null) 
-                    //System.err.println("Error in Helical Track fitting -- helix not found -- refit FAILED");
+                    //LOGGER.warn("Error in Helical Track fitting -- helix not found -- refit FAILED");
                 }
 
                 // if the fit is successful
@@ -268,7 +271,7 @@ public class TrackCandListFinder {
 
                 // if the fit failed then use the uncorrected SVT points since the z-correction in resetting the SVT cross points sometimes fails 
                 if (fitTrk.get_helix() == null) {
-                    //System.err.println("Error in Helical Track fitting -- helix not found -- trying to refit using the uncorrected crosses...");
+                    //LOGGER.warn("Error in Helical Track fitting -- helix not found -- trying to refit using the uncorrected crosses...");
                     MeasArrays = this.get_HelixMeasurementsArrays(crossList.get(i), shift, ignoreErr, true);
 
                     X = MeasArrays._X;
@@ -282,7 +285,7 @@ public class TrackCandListFinder {
                     fitTrk.fit(X, Y, Z, Rho, ErrRt, ErrRho, ErrZ);
                     Number_Of_Iterations = Max_Number_Of_Iterations + 1;
                     //if(fitTrk.get_helix()==null) 
-                    //System.err.println("Error in Helical Track fitting -- helix not found -- refit FAILED");
+                    //LOGGER.warn("Error in Helical Track fitting -- helix not found -- refit FAILED");
                 }
 
                 // if the fit is successful
@@ -377,7 +380,7 @@ public class TrackCandListFinder {
                 cand.addAll(crossesToFit);
             }
             if (fitTrk.get_ray() == null) {
-                //System.err.println("Error in  Track fitting -- ray not found -- trying to refit using the uncorrected crosses...");
+                //LOGGER.warn("Error in  Track fitting -- ray not found -- trying to refit using the uncorrected crosses...");
                 MeasArrays = this.get_RayMeasurementsArrays(crossesToFit, false, true);
 
                 fitTrk.fit(MeasArrays._X, MeasArrays._Y, MeasArrays._Z, MeasArrays._Y_prime, MeasArrays._ErrRt, MeasArrays._ErrY_prime, MeasArrays._ErrZ);
@@ -387,7 +390,7 @@ public class TrackCandListFinder {
                 if (fitTrk.get_ray() == null) {
                     continue;
                 }
-                //System.err.println("Error in  Track fitting -- track not found -- refit FAILED");
+                //LOGGER.warn("Error in  Track fitting -- track not found -- refit FAILED");
             }
             cand.update_Crosses(cand.get_ray().get_yxslope(), cand.get_ray().get_yxinterc(), svt_geo);
 
@@ -453,7 +456,7 @@ public class TrackCandListFinder {
 			// reset the arrays
 			NewMeasArrays = this.get_RayMeasurementsArrays(crossesToFitWithBMT, false, false);
 			fitTrk.fit(MeasArrays._X, MeasArrays._Y, MeasArrays._Z, MeasArrays._Y_prime, MeasArrays._ErrRt, MeasArrays._ErrY_prime, MeasArrays._ErrZ);
-			//System.out.println(" *** NEW Refit cand with mm "+cand.get_ray().get_dirVec().toString()+
+			//LOGGER.debug(" *** NEW Refit cand with mm "+cand.get_ray().get_dirVec().toString()+
 			//		" slope xy "+fitTrk.get_ray().get_yxslope()+" slope yz "+fitTrk.get_ray().get_yzslope()+
 			//		" intec xy "+fitTrk.get_ray().get_yxinterc()+" inter yz "+fitTrk.get_ray().get_yzinterc());
 			// if fit OK
@@ -464,7 +467,7 @@ public class TrackCandListFinder {
 				
 				cand.update_Crosses(fitTrk.get_ray().get_yxslope(),fitTrk.get_ray().get_yzslope(),svt_geo);
 			
-				//System.out.println(" *** Refit cand with mm after reset SVT crosses "+cand.get_ray().get_dirVec().toString()+
+				//LOGGER.debug(" *** Refit cand with mm after reset SVT crosses "+cand.get_ray().get_dirVec().toString()+
 				//		" slope xy "+cand.get_ray().get_yxslope()+" slope yz "+cand.get_ray().get_yzslope()+
 				//		" intec xy "+cand.get_ray().get_yxinterc()+" inter yz "+cand.get_ray().get_yzinterc());
 				//KalFitCosmics kf = new KalFitCosmics(cand, svt_geo);
@@ -541,7 +544,7 @@ public class TrackCandListFinder {
             Point3D Point = geo.recalcCrossFromTrajectoryIntersWithModulePlanes(s, s1, s2, l1, l2, trajX1, trajY1, trajZ1, trajX2, trajY2, trajZ2);
 
             //set the cross to that point
-            //System.out.println(" trajX1 "+trajX1+" trajY1 "+trajY1+" trajZ1 "+trajZ1+" trajX2 "+trajX2+" trajY2 "+trajY2+" trajZ2 "+trajZ2);
+            //LOGGER.debug(" trajX1 "+trajX1+" trajY1 "+trajY1+" trajZ1 "+trajZ1+" trajX2 "+trajX2+" trajY2 "+trajY2+" trajZ2 "+trajZ2);
             hitsOnTrack.get(j).set_Point(Point);
 
             hitsOnTrack.get(j).set_Dir(trj.get_ray().get_dirVec());
@@ -658,7 +661,7 @@ public class TrackCandListFinder {
 
         }
         if (resetSVTMeas) {
-            //System.err.println("Error in Helical Track fitting -- helix not found -- trying to refit using the uncorrected crosses...");
+            //LOGGER.warn("Error in Helical Track fitting -- helix not found -- trying to refit using the uncorrected crosses...");
             for (int j = shift; j < shift + j0; j++) {
                 X.add(j, SVTcrossesInTrk.get(j - shift).get_Point0().x());
                 Y.add(j, SVTcrossesInTrk.get(j - shift).get_Point0().y());
@@ -669,11 +672,11 @@ public class TrackCandListFinder {
             }
         }
         //	if(Constants.DEBUGMODE) {
-        //		System.out.println(" FIT ARRAYS ");
+        //		LOGGER.debug(" FIT ARRAYS ");
         //		for(int i =0; i<X.length; i++)
-        //			System.out.println("X["+i+"] = "+X[i]+ "  Y["+i+"] = "+Y[i]);
+        //			LOGGER.debug("X["+i+"] = "+X[i]+ "  Y["+i+"] = "+Y[i]);
         //		for(int i =0; i<Z.length; i++)
-        //			System.out.println("Rho["+i+"] = "+Rho[i]+ "  Z["+i+"] = "+Z[i]);
+        //			LOGGER.debug("Rho["+i+"] = "+Rho[i]+ "  Z["+i+"] = "+Z[i]);
         //	}
         HelixMeasurements MeasArray = new HelixMeasurements(X, Y, Z, Rho, ErrZ, ErrRho, ErrRt);
 
@@ -698,7 +701,7 @@ public class TrackCandListFinder {
         BMTZdetcrossesInTrk.clear();
 
         //make lists
-        for (Cross c : arrayList) { //System.out.println(" getting measurement arrays "+c.printInfo());
+        for (Cross c : arrayList) { //LOGGER.debug(" getting measurement arrays "+c.printInfo());
             if (c.get_Detector().equalsIgnoreCase("SVT")) {
                 SVTcrossesInTrk.add(c);
             }
@@ -711,7 +714,7 @@ public class TrackCandListFinder {
                 }
             }
         }
-        //System.out.println("................there are "+SVTcrossesInTrk.size()+" SVT crosses.....");
+        //LOGGER.debug("................there are "+SVTcrossesInTrk.size()+" SVT crosses.....");
         ((ArrayList<Double>) X).ensureCapacity(SVTcrossesInTrk.size() + BMTZdetcrossesInTrk.size());
         ((ArrayList<Double>) Y).ensureCapacity(SVTcrossesInTrk.size() + BMTZdetcrossesInTrk.size());
         ((ArrayList<Double>) Z).ensureCapacity(SVTcrossesInTrk.size() + BMTCdetcrossesInTrk.size());
@@ -765,8 +768,8 @@ public class TrackCandListFinder {
 
         }
         if (resetSVTMeas) {
-            System.out.println("resetting " + SVTcrossesInTrk.size() + " crosses.....");
-            //System.err.println("Error in Helical Track fitting -- helix not found -- trying to refit using the uncorrected crosses...");
+            LOGGER.debug("resetting " + SVTcrossesInTrk.size() + " crosses.....");
+            //LOGGER.warn("Error in Helical Track fitting -- helix not found -- trying to refit using the uncorrected crosses...");
             for (int j = 0; j < SVTcrossesInTrk.size(); j++) {
                 X.add(j, SVTcrossesInTrk.get(j).get_Point0().x());
                 Y.add(j, SVTcrossesInTrk.get(j).get_Point0().y());
@@ -945,10 +948,10 @@ public class TrackCandListFinder {
                 }
                 double m_x = MMCrosses.get(i).get_Point().x();
                 double m_y = MMCrosses.get(i).get_Point().y();
-                //System.out.println(" lookin to match "+MMCrosses.get(i).printInfo());
+                //LOGGER.debug(" lookin to match "+MMCrosses.get(i).printInfo());
                 double cosAngMeasToTrk = (x * m_x + y[j] * m_y) / Math.sqrt((x * x + y[j] * y[j]) * (m_x * m_x + m_y * m_y)); // the cosine between the measured (x,y) cross coords and the (x,y) trajectory should be close to 1
                 // opening angle must be within about 11 degrees to start the search for nearest point
-                //System.out.println(" cosAngMeasToTrk "+cosAngMeasToTrk);
+                //LOGGER.debug(" cosAngMeasToTrk "+cosAngMeasToTrk);
                 if (cosAngMeasToTrk < 0.98) {
                     continue;
                 }
@@ -962,7 +965,7 @@ public class TrackCandListFinder {
             }
             if (closestCross != null) {
                 //if(minCosAngMeasToTrk<matchCutOff) 
-                //	System.out.println("matched "+closestCross.printInfo());
+                //	LOGGER.debug("matched "+closestCross.printInfo());
                 matchedMMCrosses.add(closestCross);
 
             }
@@ -1085,7 +1088,7 @@ public class TrackCandListFinder {
                 if (Math.abs(st.get_CalcCentroidStrip() - cls.get_Centroid()) < 4) {
                     tf.setHitResolParams("SVT", cls.get_Sector(), cls.get_Layer(), cls,
                             st, svt_geo, bmt_geo, trajFinal);
-                    //System.out.println("trying to associate a cluster ");cls.printInfo(); System.out.println(" to "+st.get_CalcCentroidStrip()+" dStp = "+(st.get_CalcCentroidStrip()-cls.get_Centroid()));
+                    //LOGGER.debug("trying to associate a cluster ");cls.printInfo(); LOGGER.debug(" to "+st.get_CalcCentroidStrip()+" dStp = "+(st.get_CalcCentroidStrip()-cls.get_Centroid()));
                     cls.set_AssociatedTrackID(k);
                     for (FittedHit h : cls) {
                         h.set_AssociatedTrackID(k);

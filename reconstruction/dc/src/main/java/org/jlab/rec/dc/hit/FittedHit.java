@@ -600,7 +600,7 @@ public class FittedHit extends Hit implements Comparable<Hit> {
         this.set_WireMaxSag(MaxSag);
         
         return x;
-        //System.out.println(this.printInfo()+ "x0 "+ DcDetector.getWireMidpoint(this.get_Superlayer()-1, this.get_Layer()-1, this.get_Wire()-1).x
+        //LOGGER.debug(this.printInfo()+ "x0 "+ DcDetector.getWireMidpoint(this.get_Superlayer()-1, this.get_Layer()-1, this.get_Wire()-1).x
         //+" x "+x);
     }
     

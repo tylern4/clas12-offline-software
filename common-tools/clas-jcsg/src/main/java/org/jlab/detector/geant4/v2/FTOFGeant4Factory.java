@@ -147,8 +147,8 @@ public final class FTOFGeant4Factory extends Geant4Factory {
             }
         }
 
-        System.err.println("ERROR!!!");
-        System.err.println("Component: sector: " + sector + ", layer: " + layer + ", paddle: " + paddle + " doesn't exist");
+        LOGGER.warn("ERROR!!!");
+        LOGGER.warn("Component: sector: " + sector + ", layer: " + layer + ", paddle: " + paddle + " doesn't exist");
         throw new IndexOutOfBoundsException();
     }
 
@@ -163,8 +163,8 @@ public final class FTOFGeant4Factory extends Geant4Factory {
     public Plane3D getFrontalFace(int sector, int layer) {
         if (sector < 1 || sector > 6
                 || layer < 1 || layer > 3) {
-            System.err.println("ERROR!!!");
-            System.err.println("Component: sector: " + sector + ", layer: " + layer + " doesn't exist");
+            LOGGER.warn("ERROR!!!");
+            LOGGER.warn("Component: sector: " + sector + ", layer: " + layer + " doesn't exist");
             throw new IndexOutOfBoundsException();
         }
 
@@ -181,8 +181,8 @@ public final class FTOFGeant4Factory extends Geant4Factory {
     public Plane3D getMidPlane(int sector, int layer) {
         if (sector < 1 || sector > 6
                 || layer < 1 || layer > 3) {
-            System.err.println("ERROR!!!");
-            System.err.println("Component: sector: " + sector + ", layer: " + layer + " doesn't exist");
+            LOGGER.warn("ERROR!!!");
+            LOGGER.warn("Component: sector: " + sector + ", layer: " + layer + " doesn't exist");
             throw new IndexOutOfBoundsException();
         }
 
@@ -215,13 +215,13 @@ public final class FTOFGeant4Factory extends Geant4Factory {
                     double x=(pad.getLineY().origin().x+pad.getLineY().end().x)/2;
                     double y=(pad.getLineY().origin().y+pad.getLineY().end().y)/2;
                     double z=(pad.getLineY().origin().z+pad.getLineY().end().z)/2;
-//                    System.out.println(pad.getLineY().origin().toString());
-//                    System.out.println(pad.getLineY().end().toString());
+//                    LOGGER.debug(pad.getLineY().origin().toString());
+//                    LOGGER.debug(pad.getLineY().end().toString());
                     double dx=pad.getLineY().end().x-pad.getLineY().origin().x;
                     double dz=pad.getLineY().end().z-pad.getLineY().origin().z;
                     double tilt=Math.toDegrees(Math.atan(dx/dz));
-//                    System.out.println(tilt);
-                    System.out.println(comp + "\t" + pad.getLineY().origin().x + "\t" + pad.getLineY().origin().y +  "\t" + pad.getLineY().origin().z + "\t" + pad.getXHalfLength() + "\t" + pad.getYHalfLength() + "\t" + pad.getZHalfLength());
+//                    LOGGER.debug(tilt);
+                    LOGGER.debug(comp + "\t" + pad.getLineY().origin().x + "\t" + pad.getLineY().origin().y +  "\t" + pad.getLineY().origin().z + "\t" + pad.getXHalfLength() + "\t" + pad.getYHalfLength() + "\t" + pad.getZHalfLength());
                 }
             }
         }

@@ -1,6 +1,9 @@
 package org.jlab.rec.eb;
 
 import java.util.ArrayList;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.io.base.DataBank;
 import org.jlab.io.base.DataEvent;
 
@@ -9,7 +12,7 @@ import org.jlab.io.base.DataEvent;
  * @author devita
  */
 public class EBRadioFrequency {
-
+    public static Logger LOGGER = LogManager.getLogger(EBRadioFrequency.class.getName());
     private EBCCDBConstants ccdb;
     private int debugMode = 0;
     
@@ -37,7 +40,7 @@ public class EBRadioFrequency {
             int    cycles = ccdb.getInteger(EBCCDBEnum.RF_JITTER_CYCLES);
             long   timeStamp = bank.getLong("timestamp", 0);
             if(cycles>0 && timeStamp!=-1) triggerPhase=period*((timeStamp+phase)%cycles);
-//            System.out.println(period + " " + phase + " " + cycles + " " + timeStamp + " " + triggerPhase);
+//            LOGGER.debug(period + " " + phase + " " + cycles + " " + timeStamp + " " + triggerPhase);
         
         }
         // if RUN::rf bank does not exist but tdc bnk exist, reconstruct RF signals from TDC hits and save to bank
@@ -118,7 +121,7 @@ public class EBRadioFrequency {
             if(this._tdc.size()>0) {               
                 int deltaTDC = tdc - this._tdc.get(this._tdc.size()-1);
                 if(deltaTDC>((double) (rfCycles+1)*rfBucketLength)/rfTdc2Time) { // allow for an extra 2.004 ns
-//                    System.out.println("Found missing hits in RF sequence for signal ID " + this._id + ", TDC = " + tdc 
+//                    LOGGER.debug("Found missing hits in RF sequence for signal ID " + this._id + ", TDC = " + tdc 
 //                            + ", DeltaTDC = " + deltaTDC  + "(" + deltaTDC*EBConstants.RF_TDC2TIME+ ")");
                     skip = true;
                 }
@@ -165,11 +168,11 @@ public class EBRadioFrequency {
         }
         
         public void print(){
-            System.out.println("RF signal with ID = " + this._id + " N. Hits = " + this._tdc.size() + " and Time = (" + this.getTime() + "+/-" + this.getRMS() + ") ns");
+            LOGGER.debug("RF signal with ID = " + this._id + " N. Hits = " + this._tdc.size() + " and Time = (" + this.getTime() + "+/-" + this.getRMS() + ") ns");
             for(int i=0; i<this._tdc.size(); i++) {
                 int dtdc = 0;
                 if(i<this._tdc.size()-1) dtdc = this._tdc.get(i+1)-this._tdc.get(i);
-                System.out.println("\t" + i + "\t" + this._tdc.get(i) + "\t" + dtdc + "\t" + (this._tdc.get(i)%6840) + "\t"  + this._time.get(i));
+                LOGGER.debug("\t" + i + "\t" + this._tdc.get(i) + "\t" + dtdc + "\t" + (this._tdc.get(i)%6840) + "\t"  + this._time.get(i));
             }
         }
     }

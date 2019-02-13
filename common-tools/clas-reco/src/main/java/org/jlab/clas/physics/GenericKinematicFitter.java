@@ -36,7 +36,7 @@ public class GenericKinematicFitter {
      */
     public PhysicsEvent  getPhysicsEvent(DataEvent  event){
         //if(event instanceof DataEvent){
-            //System.out.println("   CHECK FOR  PARTICLE = " + event.hasBank("EVENT::particle"));
+            //LOGGER.debug("   CHECK FOR  PARTICLE = " + event.hasBank("EVENT::particle"));
         if(event.hasBank("REC::Particle")){
             DataBank evntBank = (DataBank) event.getBank("REC::Particle");
             int nrows = evntBank.rows();

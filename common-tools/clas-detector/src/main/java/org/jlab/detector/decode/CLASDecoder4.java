@@ -7,6 +7,9 @@ package org.jlab.detector.decode;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.detector.base.DetectorType;
 import org.jlab.io.base.DataBank;
 import org.jlab.io.base.DataEvent;
@@ -29,7 +32,7 @@ import org.jlab.utils.system.ClasUtilsFile;
  * @author gavalian
  */
 public class CLASDecoder4 {
-    
+    public static Logger LOGGER = LogManager.getLogger(CLASDecoder4.class.getName());
     private CodaEventDecoder          codaDecoder = null; 
     private DetectorEventDecoder  detectorDecoder = null;
     private List<DetectorDataDgtz>       dataList = new ArrayList<DetectorDataDgtz>();    
@@ -83,7 +86,7 @@ public class CLASDecoder4 {
     public void setRunNumber(int run, boolean fixed){        
         this.isRunNumberFixed = fixed;
         this.detectorDecoder.setRunNumber(run);
-        System.out.println(" SETTING RUN NUMBER TO " + run + " FIXED = " + this.isRunNumberFixed);
+        LOGGER.debug(" SETTING RUN NUMBER TO " + run + " FIXED = " + this.isRunNumberFixed);
     }
     
     public CodaEventDecoder getCodaEventDecoder() {
@@ -118,9 +121,9 @@ public class CLASDecoder4 {
                 //-----------------------------------------------------------------------------
                 //this.decoderDebugMode = 4;
                 if(this.decoderDebugMode>0){
-                    System.out.println("\n>>>>>>>>> RAW decoded data");
+                    LOGGER.debug("\n>>>>>>>>> RAW decoded data");
                     for(DetectorDataDgtz data : dataList){
-                        System.out.println(data);
+                        LOGGER.debug(data);
                     }
                 }
                 int runNumberCoda = codaDecoder.getRunNumber();
@@ -129,9 +132,9 @@ public class CLASDecoder4 {
                 detectorDecoder.translate(dataList);
                 detectorDecoder.fitPulses(dataList);
                 if(this.decoderDebugMode>0){
-                    System.out.println("\n>>>>>>>>> TRANSLATED data");
+                    LOGGER.debug("\n>>>>>>>>> TRANSLATED data");
                     for(DetectorDataDgtz data : dataList){
-                        System.out.println(data);
+                        LOGGER.debug(data);
                     }
                 }
             } catch (Exception e) {
@@ -140,9 +143,9 @@ public class CLASDecoder4 {
         }
         
         /*for(DetectorDataDgtz data : dataList){
-            System.out.println(data);
+            LOGGER.debug(data);
         }*/
-        //System.out.println("\t >>>>> digitized data : size = " + dataList.size());
+        //LOGGER.debug("\t >>>>> digitized data : size = " + dataList.size());
     }
     /**
      * return list of digitized ADC values from internal list
@@ -169,7 +172,7 @@ public class CLASDecoder4 {
             }
         }
         
-        //System.out.println("\t>>>>> produced list = " + entries.size()
+        //LOGGER.debug("\t>>>>> produced list = " + entries.size()
         //+ "  adc store = " + adc.size());
         return adc;
     }
@@ -193,7 +196,7 @@ public class CLASDecoder4 {
                 }
             }
         }
-        //System.out.println("\t>>>>> produced list  TYPE = "  + type + "  size = " + entries.size()
+        //LOGGER.debug("\t>>>>> produced list  TYPE = "  + type + "  size = " + entries.size()
         //+ "  tdc store = " + adc.size());
         return tdc;
     }    
@@ -217,7 +220,7 @@ public class CLASDecoder4 {
                 }
             }
         }
-//        System.out.println("\t>>>>> produced list  TYPE = "  + type + "  size = " + entries.size() + "  vtp store = " + vtp.size());
+//        LOGGER.debug("\t>>>>> produced list  TYPE = "  + type + "  size = " + entries.size() + "  vtp store = " + vtp.size());
         return vtp;
     }
     
@@ -240,7 +243,7 @@ public class CLASDecoder4 {
                 }
             }
         }
-//        System.out.println("\t>>>>> produced list  TYPE = "  + type + "  size = " + entries.size() + "  vtp store = " + vtp.size());
+//        LOGGER.debug("\t>>>>> produced list  TYPE = "  + type + "  size = " + entries.size() + "  vtp store = " + vtp.size());
         return scaler;
     }
     
@@ -520,7 +523,7 @@ public class CLASDecoder4 {
             
             if(inputList.isEmpty()==true){
                 parser.printUsage();
-                System.out.println("\n >>>> error : no input file is specified....\n");
+                LOGGER.debug("\n >>>> error : no input file is specified....\n");
                 System.exit(0);
             }
             
@@ -529,7 +532,7 @@ public class CLASDecoder4 {
             
             if(modeDevel.compareTo("run")!=0&&modeDevel.compareTo("devel")!=0){
                 parser.printUsage();
-                System.out.println("\n >>>> error : mode has to be set to \"run\" or \"devel\" ");
+                LOGGER.debug("\n >>>> error : mode has to be set to \"run\" or \"devel\" ");
                 System.exit(0);
             }
             
@@ -548,7 +551,7 @@ public class CLASDecoder4 {
             decoder.setDebugMode(debug);
             
             //HipoDataSync writer = new HipoDataSync();
-            System.out.println(" OUTPUT WRITER CHANGED TO JNP HIPO");
+            LOGGER.debug(" OUTPUT WRITER CHANGED TO JNP HIPO");
             HipoWriter writer = new HipoWriter();
             writer.setCompressionType(compression);
             writer.getSchemaFactory().initFromDirectory(ClasUtilsFile.getResourceDir("CLAS12DIR", "etc/bankdefs/hipo4"));
@@ -560,7 +563,7 @@ public class CLASDecoder4 {
             
             writer.open(outputFile);
             ProgressPrintout progress = new ProgressPrintout();
-            System.out.println("INPUT LIST SIZE = " + inputList.size());
+            LOGGER.debug("INPUT LIST SIZE = " + inputList.size());
             int nevents = parser.getOption("-n").intValue();
             int counter = 0;
             
@@ -606,7 +609,7 @@ public class CLASDecoder4 {
             decoder.initEvent(event);
             decoder.getEntriesADC(DetectorType.FTOF);
             decoder.getEntriesTDC(DetectorType.FTOF);
-            System.out.println("----");
+            LOGGER.debug("----");
           
             DataBank  bankADC = decoder.getDataBankADC("FTOF::adc", DetectorType.FTOF);
             DataBank  bankTDC = decoder.getDataBankTDC("FTOF::tdc", DetectorType.FTOF);            
@@ -616,7 +619,7 @@ public class CLASDecoder4 {
             decodedEvent.show();
             icounter++;
         }
-        System.out.println("done... processed events " + icounter);
+        LOGGER.debug("done... processed events " + icounter);
         */
     }
 }

@@ -210,7 +210,7 @@ public class CommandLineParser {
             if(this.parsedParameters.containsKey(entry.getKey())==false){
                 System.out.println("\n\n You are missing an argument : \n");
                 System.out.println(entry.getValue().getName() + " " + entry.getValue().getDescription());
-                System.out.println("\n---\n\n");                
+                System.out.println("\n---\n\n");
             }
         }
     }

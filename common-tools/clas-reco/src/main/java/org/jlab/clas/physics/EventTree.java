@@ -20,6 +20,9 @@ import javax.swing.JTextField;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.groot.base.GStyle;
 import org.jlab.groot.data.DataVector;
 import org.jlab.groot.data.H1F;
@@ -38,7 +41,7 @@ import org.jlab.io.hipo.HipoDataSource;
  * @author gavalian
  */
 public class EventTree extends Tree implements TreeProvider {
-    
+    public static Logger LOGGER = LogManager.getLogger(EventTree.class.getName());
     private Map<String,EventTreeBranch>  treeBranches = new LinkedHashMap<String,EventTreeBranch>();
     private Tree treeObject = new Tree("Event");
     private GenericKinematicFitter kinFitter = new GenericKinematicFitter(11);
@@ -65,7 +68,7 @@ public class EventTree extends Tree implements TreeProvider {
     public int readEntry(int entry) {
         DataEvent event = reader.gotoEvent(entry);
         if(event==null){
-            System.out.println(" NULL event for entry #" + entry);
+            LOGGER.debug(" NULL event for entry #" + entry);
         } else {
             this.processEvent(event);
         }
@@ -76,7 +79,7 @@ public class EventTree extends Tree implements TreeProvider {
     public boolean readNext() {
         if(reader.hasEvent()==false) return false;        
         DataEvent event = reader.getNextEvent();
-        System.out.println("reading event");
+        LOGGER.debug("reading event");
         this.processEvent(event);
         return true;
     }
@@ -92,7 +95,7 @@ public class EventTree extends Tree implements TreeProvider {
         if(treeBranches.containsKey(name)==false){
             treeBranches.put(name, branch);
         } else {
-            System.out.println("TREE Branch already exists : " + name);
+            LOGGER.debug("TREE Branch already exists : " + name);
         }
     }
     
@@ -103,7 +106,7 @@ public class EventTree extends Tree implements TreeProvider {
         if(treeBranches.containsKey(name)==false){
             treeBranches.put(name, branch);
         } else {
-            System.out.println("TREE Branch already exists : " + name);
+            LOGGER.debug("TREE Branch already exists : " + name);
         }
     }
     
@@ -121,7 +124,7 @@ public class EventTree extends Tree implements TreeProvider {
                 for(int i = 0; i < properties.size();i++){
                     String branch = item.getValue().getLeafPropertyName(i);
                     this.addBranch(branch, "", "GeV");
-                    System.out.println("adding a branch with name = " + branch);
+                    LOGGER.debug("adding a branch with name = " + branch);
                 }
             }
         }
@@ -137,7 +140,7 @@ public class EventTree extends Tree implements TreeProvider {
         EventFilter  filter = new EventFilter("11:2112:321:Xn:X-:X+");
         for(Map.Entry<String,EventTreeBranch> entry : treeBranches.entrySet()){
             if(entry.getValue().getFilter().isValid(recEvent.getReconstructed())){
-                //System.out.println("passed the filter");
+                //LOGGER.debug("passed the filter");
                 Map<String,EventTreeLeaf>  leafs = entry.getValue().getLeafs();
                 for(Map.Entry<String,EventTreeLeaf> item : leafs.entrySet()){
                     List<String> properties = item.getValue().getProperties();
@@ -173,15 +176,15 @@ public class EventTree extends Tree implements TreeProvider {
             String name = entry.getKey();
             DefaultMutableTreeNode base = this.dynamicTree.addObject( new DefaultMutableTreeNode(name));
             //tree.addObject(base);
-            System.out.println("creating base = " + name);
+            LOGGER.debug("creating base = " + name);
             EventTreeBranch branch = entry.getValue();
             for(Map.Entry<String,EventTreeLeaf> item : branch.getLeafs().entrySet()){
                 DefaultMutableTreeNode particle = this.dynamicTree.addObject(base, item.getValue().getName(),true);
                 
-                System.out.println("adding leaf = " + item.getValue().getName());
+                LOGGER.debug("adding leaf = " + item.getValue().getName());
                 item.getValue().getProperties();
                 for(String property : item.getValue().getProperties()){
-                    System.out.println("adding property = " + property);
+                    LOGGER.debug("adding property = " + property);
                     this.dynamicTree.addObject(particle, property);
                 }
             }
@@ -195,7 +198,7 @@ public class EventTree extends Tree implements TreeProvider {
     
     public List<DataVector> actionTreeNode(TreePath[] path, int limit) {
         List<DataVector> result = new ArrayList<DataVector>();
-        //System.out.println("Got callback to compute something");
+        //LOGGER.debug("Got callback to compute something");
         boolean pathOK = true;
         
         for(TreePath p : path){
@@ -282,7 +285,7 @@ public class EventTree extends Tree implements TreeProvider {
             
             this.addLeaf(name, particle, expression, new String[]{strOne,strTwo,strThree});
             //this.getCanvas().divide(Integer.parseInt(stringCOLS), Integer.parseInt(stringROWS));
-            System.out.println(" ADDING BRANCH ----> ");
+            LOGGER.debug(" ADDING BRANCH ----> ");
             this.initTree();
         }
 
@@ -409,7 +412,7 @@ public class EventTree extends Tree implements TreeProvider {
             String inputFile = args[0];
             
             if(inputFile.endsWith(".hipo")==true){
-                System.out.println("----> opening a HIPO DST Studio");
+                LOGGER.debug("----> opening a HIPO DST Studio");
                 final EventTree  evtTree = new EventTree();
                 evtTree.setSource(inputFile);                
                 

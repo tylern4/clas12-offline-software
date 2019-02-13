@@ -1,6 +1,9 @@
 package org.jlab.geom.base;
 
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.geom.Showable;
 import org.jlab.geom.prim.Line3D;
 import org.jlab.geom.prim.Point3D;
@@ -41,6 +44,7 @@ import org.jlab.geom.prim.Transformation3D;
  * @author jnhankins
  */
 public interface Component extends Transformable, Showable {
+    Logger LOGGER = LogManager.getLogger(Component.class.getName());
     /**
      * Returns the component's id number.
      * @return the id
@@ -151,7 +155,7 @@ public interface Component extends Transformable, Showable {
     String getType();
     
     /**
-     * Invokes {@code System.out.println(this)}.
+     * Invokes {@code LOGGER.debug(this)}.
      */
     void show();
 }

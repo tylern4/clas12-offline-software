@@ -24,6 +24,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.SoftBevelBorder;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.io.base.DataEvent;
 import org.jlab.io.base.DataEventType;
 import org.jlab.io.evio.EvioETSource;
@@ -38,7 +41,7 @@ import org.jlab.io.ui.DialogUtilities;
  * @author gavalian
  */
 public class DataSourceProcessorPane extends JPanel implements ActionListener {
-    
+    public static Logger LOGGER = LogManager.getLogger(DataSourceProcessorPane.class.getName());
     public static int  TOOLBAR = 1;
     public static int  SQUARE  = 1;
     
@@ -212,7 +215,7 @@ public class DataSourceProcessorPane extends JPanel implements ActionListener {
     
     @Override
     public void actionPerformed(ActionEvent e) {
-        System.out.println("[action] --> " + e.getActionCommand());
+        LOGGER.debug("[action] --> " + e.getActionCommand());
         
         if(e.getActionCommand().compareTo("PlayFile")==0){
             mediaPlay.setEnabled(false);
@@ -263,7 +266,7 @@ public class DataSourceProcessorPane extends JPanel implements ActionListener {
             
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 String fileName = fc.getSelectedFile().getAbsolutePath();
-                System.out.println("file -> " + fileName);
+                LOGGER.debug("file -> " + fileName);
                 EvioSource source = new EvioSource();
                 source.open(fileName);
                 //This is where a real application would open the file.
@@ -279,12 +282,12 @@ public class DataSourceProcessorPane extends JPanel implements ActionListener {
         
         
         if(e.getActionCommand().compareTo("ResetListeners")==0){
-            System.out.println("\n   >>>> resetting all listeners");
+            LOGGER.debug("\n   >>>> resetting all listeners");
             for(IDataEventListener listener : this.dataProcessor.getEventListeners()){
                 try {
                     listener.resetEventListener();
                 } catch (Exception exc){
-                    System.out.println("\n   >>>> error resetting listener : " + listener.getClass().getName());
+                    LOGGER.debug("\n   >>>> error resetting listener : " + listener.getClass().getName());
                 }
             }
         }
@@ -311,7 +314,7 @@ public class DataSourceProcessorPane extends JPanel implements ActionListener {
             
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 String fileName = fc.getSelectedFile().getAbsolutePath();
-                System.out.println("file -> " + fileName);
+                LOGGER.debug("file -> " + fileName);
                 HipoDataSource source = new HipoDataSource();
                 source.open(fileName);
 
@@ -329,7 +332,7 @@ public class DataSourceProcessorPane extends JPanel implements ActionListener {
     }
     
     private void startProcessorTimer(){
-        //System.out.println(" starting timer ");
+        //LOGGER.debug(" starting timer ");
         class CrunchifyReminder extends TimerTask {
             boolean hasFinished = false;
             public void run() {
@@ -338,12 +341,12 @@ public class DataSourceProcessorPane extends JPanel implements ActionListener {
                     dataProcessor.processNextEvent(0, DataEventType.EVENT_STOP);
                     return;
                 }*/
-                //System.out.println("running");
+                //LOGGER.debug("running");
                 for (int i=1 ; i<=50 ; i++) {
                     boolean status = dataProcessor.processNextEvent(eventDelay,DataEventType.EVENT_ACCUMULATE);
                     if(status==false&&hasFinished==false){
                         hasFinished = true;
-                        System.out.println("[DataProcessingPane] ----> task is done...");
+                        LOGGER.debug("[DataProcessingPane] ----> task is done...");
                     }
                 }
                 statusLabel.setText(dataProcessor.getStatusString());
@@ -372,20 +375,20 @@ public class DataSourceProcessorPane extends JPanel implements ActionListener {
             public void dataEventAction(DataEvent event) {
                 ncount++;
                 if(event.getType() == DataEventType.EVENT_START){
-                    System.out.println(" ---> start event " + ncount);
+                    LOGGER.debug(" ---> start event " + ncount);
                 }
                 
                 if(event.getType() == DataEventType.EVENT_STOP){
-                    System.out.println(" ---> stop event " + ncount);
+                    LOGGER.debug(" ---> stop event " + ncount);
                 }
             }
 
             public void timerUpdate() {
-                System.out.println("update is called");
+                LOGGER.debug("update is called");
             }
 
             public void resetEventListener() {
-                System.out.println("reset is called");
+                LOGGER.debug("reset is called");
                 ncount = 0;
             }
             

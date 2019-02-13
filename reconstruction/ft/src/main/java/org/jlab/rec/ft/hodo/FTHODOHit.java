@@ -24,7 +24,7 @@ public class FTHODOHit implements Comparable<FTHODOHit>{
 		this.set_Dz(geometry.getDoubleValue("z", Sector, Layer, ID));
 		this.set_DGTZIndex(i);
 		this.set_ClusterIndex(0);
-//		System.out.println(this._Dx + " " + this._Dy);
+//		LOGGER.debug(this._Dx + " " + this._Dy);
 	}
 
 	public FTHODOHit(int i, int Sector, int Layer, int ID, int ADC, float time, IndexedTable charge2Energy, IndexedTable timeOffsets, IndexedTable geometry) {
@@ -42,7 +42,7 @@ public class FTHODOHit implements Comparable<FTHODOHit>{
 		this.set_Dz(geometry.getDoubleValue("z", Sector, Layer, ID));
 		this.set_DGTZIndex(i);
 		this.set_ClusterIndex(0);
-//		System.out.println(this._Dx + " " + this._Dy);
+//		LOGGER.debug(this._Dx + " " + this._Dy);
 	}
 	
 
@@ -247,7 +247,7 @@ public class FTHODOHit implements Comparable<FTHODOHit>{
 	}
 
         public void showHit() {
-            System.out.println(this.get_Layer()     + "\t" 
+            System.out.println(this.get_Layer()     + "\t"
                         + this.get_Sector()    + "\t " 
                         + this.get_ID()        + "\t"
                         + this.get_Edep()      + "\t"

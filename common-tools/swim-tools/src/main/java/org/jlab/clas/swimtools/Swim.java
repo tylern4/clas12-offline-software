@@ -13,6 +13,8 @@ import cnuphys.swimZ.SwimZException;
 import cnuphys.swimZ.SwimZResult;
 import cnuphys.swimZ.SwimZStateVector;
 import org.apache.commons.math3.util.FastMath;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.geom.prim.Vector3D;
 
 /**
@@ -21,7 +23,7 @@ import org.jlab.geom.prim.Vector3D;
  */
 
 public class Swim {
-
+    public static Logger LOGGER = LogManager.getLogger(Swim.class.getName());
     private double _x0;
     private double _y0;
     private double _z0;
@@ -195,7 +197,7 @@ public class Swim {
                         szr = PC.RCF_z.sectorAdaptiveRK(sector, _charge, _pTot, start, z_cm, stepSizeCM, hdata);
                 } catch (SwimZException e) {
                         szr = null;
-                        //System.err.println("[WARNING] Tilted SwimZ Failed for p = " + _pTot);
+                        //LOGGER.warn("[WARNING] Tilted SwimZ Failed for p = " + _pTot);
                 }
             }
 
@@ -279,7 +281,7 @@ public class Swim {
                         szr = PC.CF_z.adaptiveRK(_charge, _pTot, start, z_cm, stepSizeCM, hdata);
                 } catch (SwimZException e) {
                         szr = null;
-                        //System.err.println("[WARNING] SwimZ Failed for p = " + _pTot);
+                        //LOGGER.warn("[WARNING] SwimZ Failed for p = " + _pTot);
 
                 }
             }
@@ -530,7 +532,7 @@ public class Swim {
             double dtrk = y[0] * _n.x() + y[1] * _n.y() + y[2] * _n.z();
 
             double accuracy = 20e-6; // 20 microns
-            // System.out.println(" dist "+dtrk*100+ " state "+y[0]*100+",
+            // LOGGER.debug(" dist "+dtrk*100+ " state "+y[0]*100+",
             // "+y[1]*100+" , "+y[2]*100);
             if (_dir < 0) {
                     return dtrk < _d;
@@ -622,7 +624,7 @@ public class Swim {
                 value[6] = lastY[6] * 100;
                 value[7] = lastY[7] * 10; // Conversion from kG.m to T.cm
 
-                // System.out.println("\nCOMPARE plane swims DIRECTION = " +
+                // LOGGER.debug("\nCOMPARE plane swims DIRECTION = " +
                 // dir);
                 // for (int i = 0; i < 8; i++) {
                 // System.out.print(String.format("%-8.5f ", value[i]));
@@ -656,25 +658,25 @@ public class Swim {
 //
 //		double fract = (Math.abs(tv1 - v1) / Math.max(tv1, v1));
 //		if (fract > 0.9) {
-//			System.out.println("\nBig Diff fract = " + fract + "   direction = " + dir + "   DIST = " + d);
+//			LOGGER.debug("\nBig Diff fract = " + fract + "   direction = " + dir + "   DIST = " + d);
 //
 //			double vtxR = Math.sqrt(_x0 * _x0 + _y0 * _y0 + _z0 * _z0);
-//			System.out.println("VTX: (" + _x0 + ", " + _y0 + ", " + _z0 + ") VtxR: " + vtxR + "   P: " + _pTot
+//			LOGGER.debug("VTX: (" + _x0 + ", " + _y0 + ", " + _z0 + ") VtxR: " + vtxR + "   P: " + _pTot
 //					+ "  theta: " + _theta + "  phi: " + _phi);
 //
 //			printV("tV", tvalue);
 //			printV(" V", value);
-//			// System.out.println("tV: (" + tvalue[0]/100 + ", " + tvalue[1]/100
+//			// LOGGER.debug("tV: (" + tvalue[0]/100 + ", " + tvalue[1]/100
 //			// + ", " + tvalue[2]/100 + ")");
-//			// System.out.println(" V: (" + value[0]/100 + ", " + value[1]/100 +
+//			// LOGGER.debug(" V: (" + value[0]/100 + ", " + value[1]/100 +
 //			// ", " + value[2]/100 + ")");
 //		}
 //
-//		// System.out.println();
+//		// LOGGER.debug();
 //		// for (int i = 0; i < 8; i++) {
 //		// System.out.print(String.format("%-8.5f ", value[i]));
 //		// }
-//		// System.out.println();
+//		// LOGGER.debug();
 
         return value;
 
@@ -685,7 +687,7 @@ public class Swim {
             double y = v[1] / 100;
             double z = v[2] / 100;
             double r = Math.sqrt(x * x + y * y + z * z);
-            System.out.println(String.format("%s: (%-8.5f, %-8.5f, %-8.5f) R: %-8.5f", pfx, z, y, z, r));
+            LOGGER.debug(String.format("%s: (%-8.5f, %-8.5f, %-8.5f) R: %-8.5f", pfx, z, y, z, r));
     }
 
     /**

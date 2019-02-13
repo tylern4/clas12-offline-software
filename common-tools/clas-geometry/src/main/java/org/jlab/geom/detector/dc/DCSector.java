@@ -40,7 +40,7 @@ public class DCSector extends AbstractSector<DCSuperlayer> {
      */
     public Plane3D getRegionMiddlePlane(int regionId) {
         if (regionId < 0 || 2<regionId) {
-            System.err.println("DCSector: getRegionMiddlePlane(int regionId): regionId="+regionId+" is invalid");
+            LOGGER.warn("DCSector: getRegionMiddlePlane(int regionId): regionId="+regionId+" is invalid");
             return new Plane3D();
         }
         

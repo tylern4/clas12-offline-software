@@ -27,7 +27,7 @@ public class HitReader {
 
             // Check that the file has the dgtz bank for CND.	 
 		if(event.hasBank("CND::adc")==false || event.hasBank("CND::tdc")==false) {
-			//System.err.println("there is no CND bank :-(");
+			//LOGGER.warn("there is no CND bank :-(");
 			return new ArrayList<HalfHit>();
 		} 
 
@@ -72,7 +72,7 @@ public class HitReader {
                  			int o = bankTDC.getByte("order", j);
 
 					if(s==sector && l == layer  && o == order+2 ){
-					//System.out.println("s "+ s+" sector "+sector+" l "+l+" layer "+layer+" o "+o+" order "+order);
+					//LOGGER.debug("s "+ s+" sector "+sector+" l "+l+" layer "+layer+" o "+o+" order "+order);
 					tdc = bankTDC.getInt("TDC",j);
 					indextdc=j;
 					break;

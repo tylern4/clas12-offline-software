@@ -31,18 +31,18 @@ public class HipoDataDictionary implements DataDictionary {
         SchemaFactory factory = new SchemaFactory();
         factory.initFromDirectory("CLAS12DIR", "etc/bankdefs/hipo");
         List<Schema> entries = factory.getSchemaList();
-        //System.out.println(" schema size = " + entries.size());
+        //LOGGER.debug(" schema size = " + entries.size());
         for(Schema sch : entries){
             HipoDataDescriptor desc = new HipoDataDescriptor(sch);
             descriptors.put(desc.getName(), desc);
-            //System.out.println("name = " + sch.getName() + "  desc = " + desc.getName());
+            //LOGGER.debug("name = " + sch.getName() + "  desc = " + desc.getName());
         }
-        System.out.println("  >>>>> loading default dictionary : entries = " + descriptors.size());
+        LOGGER.debug("  >>>>> loading default dictionary : entries = " + descriptors.size());
     }
     
     @Override
     public void init(String format) {
-        System.out.println("---- INITIALIZATION NOT IMPLEMENTED ----");
+        LOGGER.debug("---- INITIALIZATION NOT IMPLEMENTED ----");
     }
 
     @Override
@@ -82,11 +82,11 @@ public class HipoDataDictionary implements DataDictionary {
         
         String[] list = dict.getDescriptorList();
         for(String item : list){
-            System.out.println("---> " + item);
+            LOGGER.debug("---> " + item);
             HipoDataDescriptor desc = (HipoDataDescriptor) dict.getDescriptor(item);
             String[] entries = desc.getEntryList();
             for(int i = 0; i < entries.length; i++){
-                System.out.println("\t\t---> " + entries[i]);
+                LOGGER.debug("\t\t---> " + entries[i]);
             }
         }
     }

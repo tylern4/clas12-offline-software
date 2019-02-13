@@ -8,6 +8,9 @@ package org.jlab.detector.decode;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.detector.base.DetectorDescriptor;
 import org.jlab.detector.base.DetectorType;
 import org.jlab.utils.data.DataUtils;
@@ -17,7 +20,7 @@ import org.jlab.utils.data.DataUtils;
  * @author gavalian
  */
 public class DetectorDataDgtz implements Comparable<DetectorDataDgtz> {
-    
+    public static Logger LOGGER = LogManager.getLogger(DetectorDataDgtz.class.getName());
     private final List<ADCData>       adcStore   = new ArrayList<ADCData>();
     private final List<TDCData>       tdcStore   = new ArrayList<TDCData>();
     private final List<VTPData>       vtpStore   = new ArrayList<VTPData>();
@@ -222,11 +225,11 @@ public class DetectorDataDgtz implements Comparable<DetectorDataDgtz> {
          */
         public short getPulseValue(int bin){
             if(adcPulse.isEmpty()==true){
-                System.out.println("[ADCData] error --> does not contain a pulse");
+                LOGGER.debug("[ADCData] error --> does not contain a pulse");
                 return (short) 0;
             }
             if(bin<0||bin>=adcPulse.get(0).length){
-                System.out.println("[ADCData] error --> index out of bounds "
+                LOGGER.debug("[ADCData] error --> index out of bounds "
                 + " index = " + bin + "  pulse size = " + adcPulse.get(0).length);
                 return 0;
             }

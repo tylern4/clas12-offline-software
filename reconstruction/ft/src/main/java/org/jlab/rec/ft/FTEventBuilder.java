@@ -2,6 +2,9 @@ package org.jlab.rec.ft;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.detector.calib.utils.ConstantsManager;
 import org.jlab.io.base.DataBank;
 import org.jlab.io.base.DataEvent;
@@ -12,7 +15,7 @@ import org.jlab.rec.ft.cal.FTCALConstantsLoader;
 import org.jlab.utils.groups.IndexedTable;
 
 public class FTEventBuilder {
-
+    public static Logger LOGGER = LogManager.getLogger(FTEventBuilder.class.getName());
     public int debugMode = 0;
 
     private double solenoidField;
@@ -42,7 +45,7 @@ public class FTEventBuilder {
 
     public void init(double field) {
         if (debugMode >= 1) {
-            System.out.println("New event");
+            LOGGER.debug("New event");
         }
         this.solenoidField = field;
 //        this.FTparticles.clear();
@@ -160,12 +163,12 @@ public class FTEventBuilder {
         for (int i = 0; i < particles.size(); i++) {
             FTParticle track = particles.get(i);
             if (debugMode >= 1) {
-                System.out.println("Searching for matching signal in the hodoscope:");
+                LOGGER.debug("Searching for matching signal in the hodoscope:");
             }
             int iHodo = track.getDetectorHit(responses, "FTHODO", FTConstants.CAL_HODO_DISTANCE_MATCHING, FTConstants.CAL_HODO_TIME_MATCHING);
             if (iHodo > 0) {
                 if (debugMode >= 1) {
-                    System.out.println("found signal " + iHodo);
+                    LOGGER.debug("found signal " + iHodo);
                 }
                 track.setCharge(-1);
                 track.setHodoscopeIndex(responses.get(iHodo).getId());
@@ -178,7 +181,7 @@ public class FTEventBuilder {
     }
 
     public void showResponses(List<FTResponse> responses) {
-        System.out.println("\nFound " + responses.size() + " clusters in FT detector");
+        LOGGER.debug("\nFound " + responses.size() + " clusters in FT detector");
         for (int i = 0; i < responses.size(); i++) {
             responses.get(i).show();
         }
@@ -186,13 +189,13 @@ public class FTEventBuilder {
 
     public void writeBanks(DataEvent event, List<FTParticle> particles) {
         if (debugMode >= 1) {
-            System.out.println("Preparing to output track bank with " + particles.size() + " FTparticles");
+            LOGGER.debug("Preparing to output track bank with " + particles.size() + " FTparticles");
         }
         if (particles.size() != 0) {
             if (event instanceof EvioDataEvent) {
                 EvioDataBank banktrack = (EvioDataBank) event.getDictionary().createBank("FTRec::tracks", particles.size());
                 if (debugMode >= 1) {
-                    System.out.println("Creating output track bank with " + particles.size() + " FTparticles");
+                    LOGGER.debug("Creating output track bank with " + particles.size() + " FTparticles");
                 }
                 for (int i = 0; i < particles.size(); i++) {
                     banktrack.setInt("ID", i, particles.get(i).get_ID());
@@ -215,7 +218,7 @@ public class FTEventBuilder {
             } else {
                 DataBank banktrack = event.createBank("FT::particles", particles.size());
                 if (debugMode >= 1) {
-                    System.out.println("Creating output track bank with " + particles.size() + " FTparticles");
+                    LOGGER.debug("Creating output track bank with " + particles.size() + " FTparticles");
                 }
                 for (int i = 0; i < particles.size(); i++) {
                     banktrack.setShort("id", i, (short) particles.get(i).get_ID());
@@ -231,7 +234,7 @@ public class FTEventBuilder {
                     if (debugMode >= 1) {
                         particles.get(i).show();
                         particles.get(i).show();
-                        System.out.println(particles.get(i).getDirection().x() + " " + particles.get(i).getDirection().y() + " " + particles.get(i).getDirection().z());
+                        LOGGER.debug(particles.get(i).getDirection().x() + " " + particles.get(i).getDirection().y() + " " + particles.get(i).getDirection().z());
                     }
                 }
                 if (banktrack != null) {

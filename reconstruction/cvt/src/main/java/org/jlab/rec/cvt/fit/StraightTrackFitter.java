@@ -3,6 +3,8 @@ package org.jlab.rec.cvt.fit;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.geom.prim.Point3D;
 import org.jlab.geom.prim.Vector3D;
 import org.jlab.rec.cvt.trajectory.Ray;
@@ -12,7 +14,7 @@ import org.jlab.rec.cvt.trajectory.Ray;
  * coordinates) to a line using LineFitter.
  */
 public class StraightTrackFitter {
-
+    public static Logger LOGGER = LogManager.getLogger(StraightTrackFitter.class.getName());
     private Ray _ray;  // fit ray
 
     private LineFitter _linefitYX = new LineFitter();
@@ -63,14 +65,14 @@ public class StraightTrackFitter {
 
         for (int j = 0; j < errRt.size(); j++) {
             if (errRt.get(j) == 0) {
-                System.err.println("Point errors ill-defined --  fit exiting");
+                LOGGER.warn("Point errors ill-defined --  fit exiting");
                 return FitStatus.LineFitFailed;
             }
         }
 
         for (int j = 0; j < errZ.size(); j++) {
             if (errZ.get(j) == 0) {
-                System.err.println("Point errors ill-defined --  fit exiting");
+                LOGGER.warn("Point errors ill-defined --  fit exiting");
                 return FitStatus.LineFitFailed;
             }
         }

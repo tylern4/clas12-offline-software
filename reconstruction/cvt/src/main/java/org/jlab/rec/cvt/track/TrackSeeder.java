@@ -3,6 +3,9 @@ package org.jlab.rec.cvt.track;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.clas.swimtools.Swim;
 
 import org.jlab.geom.prim.Point3D;
@@ -14,6 +17,7 @@ import org.jlab.rec.cvt.fit.HelicalTrackFitter;
 import org.jlab.rec.cvt.svt.Constants;
 
 public class TrackSeeder {
+    public static Logger LOGGER = LogManager.getLogger(TrackSeeder.class.getName());
     public int NBINS = 36;
 
     public TrackSeeder() {
@@ -177,7 +181,7 @@ public class TrackSeeder {
           // loop until a good circular fit. removing far crosses each time
           boolean circlefitstatusOK = false;
           while( ! circlefitstatusOK && seedcrs.size()>=4 ){
-            //System.out.println( " While loop on circle fit " );
+            //LOGGER.debug( " While loop on circle fit " );
             Xs.clear();
             Ys.clear();
             Ws.clear();
@@ -202,7 +206,7 @@ public class TrackSeeder {
 
             // if not a good fit, check for outliers 
             if (!circlefitstatusOK ||  pars.chisq()/(double)(Xs.size()-3)>10) {
-              //System.out.println(" check circular fit" );
+              //LOGGER.debug(" check circular fit" );
               double d = pars.doca();
               double r = pars.rho();
               double f = pars.phi();
@@ -231,7 +235,7 @@ public class TrackSeeder {
                   double res = 0.5*r*ri*ri - (1+r*d)*ri*Math.sin(f-fi)+0.5*r*d*d+d;
                   res = res*res;
                   if( Math.abs(res - maxresiduals) < 1.e-3 ) {
-                    //System.out.println(" remove detector " + c .get_Detector() + " region " + c.get_Region() + " sector " + c.get_Sector()  );
+                    //LOGGER.debug(" remove detector " + c .get_Detector() + " region " + c.get_Region() + " sector " + c.get_Sector()  );
                     seedcrs.remove(c);
                     break;
                   }
@@ -468,7 +472,7 @@ public class TrackSeeder {
                 //i=fitIter;
             }
         }
-        //System.out.println(" Seed fitter "+fitTrk.get_chisq()[0]+" "+fitTrk.get_chisq()[1]); 
+        //LOGGER.debug(" Seed fitter "+fitTrk.get_chisq()[0]+" "+fitTrk.get_chisq()[1]); 
         if(chisqMax>Constants.CIRCLEFIT_MAXCHI2)
             cand=null;
         return cand;

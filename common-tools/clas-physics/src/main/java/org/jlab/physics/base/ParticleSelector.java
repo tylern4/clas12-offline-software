@@ -6,6 +6,8 @@
 
 package org.jlab.physics.base;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.clas.pdg.PDGDatabase;
 import org.jlab.clas.pdg.PDGParticle;
 import org.jlab.clas.physics.Particle;
@@ -16,7 +18,7 @@ import org.jlab.clas.physics.PhysicsEvent;
  * @author gavalian
  */
 public class ParticleSelector {
-    
+    public static Logger LOGGER = LogManager.getLogger(ParticleSelector.class.getName());
     public static int TYPE_GENERATED    = 1;
     public static int TYPE_RECONSTRUCED = 2;
     public static int TYPE_MATCHED      = 3;
@@ -73,7 +75,7 @@ public class ParticleSelector {
     }
     
     private boolean parseParticleID(String text){
-        //System.err.println("[DEBUG] ---> parsing particle ID = " + text);
+        //LOGGER.warn("[DEBUG] ---> parsing particle ID = " + text);
         if(text.length()==1&&(text.compareTo("+")==0
                 ||text.compareTo("-")==0||text.compareTo("n")==0)){
             particleID   = 0;
@@ -93,7 +95,7 @@ public class ParticleSelector {
             return true;
         }
         
-        //System.err.println("TEXT = " + text + "  Check = " + text.matches("[0-9]+"));
+        //LOGGER.warn("TEXT = " + text + "  Check = " + text.matches("[0-9]+"));
         
         if (text.matches("-?[0-9]+") == true && text.length() > 0){
             particleID   = Integer.parseInt(text);
@@ -108,7 +110,7 @@ public class ParticleSelector {
             } else {
                 return false;
             }            
-            //System.err.println("Parsing as number : " + text);            
+            //LOGGER.warn("Parsing as number : " + text);            
         }
     }
     
@@ -137,13 +139,13 @@ public class ParticleSelector {
             trimmed = selectorFormat.substring(1, selectorFormat.length()-1);
             this.particleSign = 1;
         } else {
-            System.err.println("[ParticleSelector] ---> Syntax error. in string ("
+            LOGGER.warn("[ParticleSelector] ---> Syntax error. in string ("
                     +this.selectorFormat + ").");
             return;
         }
         
         //trimmed = selectorFormat.substring(2, selectorFormat.length()-1);
-        //System.err.println("[DEBUG]--> trimmed string = (" + trimmed + ")");
+        //LOGGER.warn("[DEBUG]--> trimmed string = (" + trimmed + ")");
         String[] tokens = trimmed.split(",");
         if(tokens.length>0){
             this.parseParticleID(tokens[0]);
@@ -181,43 +183,43 @@ public class ParticleSelector {
             }        
             
         } catch (Exception ex){
-            System.out.println("ERROR: getting particle beam or target has failed");
+            LOGGER.debug("ERROR: getting particle beam or target has failed");
         }
         
         
         if(this.particleSelectionType==ParticleSelector.TYPE_RECONSTRUCED&&event.countByPid(particleID)<particleSkip) {
-            //System.out.println("debug 1");
+            //LOGGER.debug("debug 1");
             return false;
         }
         if(this.particleSelectionType==ParticleSelector.TYPE_GENERATED&&event.mc().countByPid(particleID)<particleSkip){ 
-            //System.out.println("debug 2");
+            //LOGGER.debug("debug 2");
             return false;
         }
         
-        //System.out.println("debug 3");
+        //LOGGER.debug("debug 3");
         try {
             
             Particle  fromEvent = event.getParticleByPid(particleID, particleSkip);
             
             if(this.particleSelectionType==ParticleSelector.TYPE_GENERATED){
-                //System.out.println("debug 4");
+                //LOGGER.debug("debug 4");
                 fromEvent = event.mc().getByPid(particleID, particleSkip);
             }
             
             if(this.particleSelectionType==ParticleSelector.TYPE_MATCHED){
-                //System.out.println("debug 5");
+                //LOGGER.debug("debug 5");
                 fromEvent = event.getParticleMatchByPid(particleID,particleSkip);                
             }
             
             if(fromEvent.p()<0.0000001){
-                //System.out.println(" momentum is toooooo small");
+                //LOGGER.debug(" momentum is toooooo small");
                 return false;
             }
             
             if(this.overridePid==false){
                 p.copyParticle(fromEvent);
                 p.changePid(this.particleID);
-                //System.out.println("----------->>>>>> COPY IS DONE ON " + fromEvent.toString());
+                //LOGGER.debug("----------->>>>>> COPY IS DONE ON " + fromEvent.toString());
                 if(this.particleSign<0) p.vector().invert();
                 return true;                
             }            
@@ -332,6 +334,6 @@ public class ParticleSelector {
     public static void main(String[] args){
         ParticleSelector selector = new ParticleSelector("-{211,2,2212}",3);
         //selector.parse("-(211,2,2212)");
-        System.out.println(selector.toString());
+        LOGGER.debug(selector.toString());
     }
 }

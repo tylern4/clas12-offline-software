@@ -5,12 +5,15 @@
  */
 package org.jlab.rec.rich;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  *
  * @author mcontalb
  */
 public class RICHTool{
-
+    public static Logger LOGGER = LogManager.getLogger(RICHTool.class.getName());
     //------------------------------
     public void RICHTool(){
     //------------------------------
@@ -220,7 +223,7 @@ public class RICHTool{
     //------------------------------
 
         // return global idx on the RICH plane
-	//System.out.println("gdX pmt "+pmt+" anode "+anode+" --> "+nxp[pmt-1]+" "+Anode2idx(anode));
+	//LOGGER.debug("gdX pmt "+pmt+" anode "+anode+" --> "+nxp[pmt-1]+" "+Anode2idx(anode));
 	if(pmt>391)return nxp[pmt-1]-(Anode2idx(anode)-1);
         return nxp[pmt-1]+(Anode2idx(anode)-1);
     }
@@ -231,7 +234,7 @@ public class RICHTool{
     //------------------------------
 
         // return global idy on the RICH plane
-	//System.out.println("gdY pmt "+pmt+" anode "+anode+" -->  "+nyp[pmt-1]+" "+Anode2idy(anode));
+	//LOGGER.debug("gdY pmt "+pmt+" anode "+anode+" -->  "+nyp[pmt-1]+" "+Anode2idy(anode));
 	if(pmt>391)return nyp[pmt-1]-(Anode2idy(anode)-1);
         return nyp[pmt-1]+(Anode2idy(anode)-1);
     }
@@ -241,7 +244,7 @@ public class RICHTool{
     public void NewGeo(){
     //------------------------------
 
-	if(debugMode>=1) System.out.println("Sto in newGeo");
+	if(debugMode>=1) LOGGER.debug("Sto in newGeo");
         for(int irow=0; irow<NROW; irow++){ // loop on rows
 
             for(int ipmt=pfirst[irow];ipmt<=plast[irow];ipmt++){ // loop on pmts
@@ -256,7 +259,7 @@ public class RICHTool{
 		   nxp[ipmt-1]=15+(28-(plast[irow]-pfirst[irow]+1)+(ipmt-pfirst[irow])*2)*4+8; 
 		}
 
-		if(debugMode>=1) System.out.println("PMT "+ipmt+" Nx "+nxp[ipmt-1]+" Ny "+nyp[ipmt-1]);
+		if(debugMode>=1) LOGGER.debug("PMT "+ipmt+" Nx "+nxp[ipmt-1]+" Ny "+nyp[ipmt-1]);
 
 	    }
 	}
@@ -276,7 +279,7 @@ public class RICHTool{
 	xcol[0]=9; //arbitrary
         for(i=1;i<NCOL;i++) xcol[i]=xcol[i-1]+4;
 
-	if(debugMode>=1) System.out.println("Sto in initGeo");
+	if(debugMode>=1) LOGGER.debug("Sto in initGeo");
         for(int crow=0; crow<NROW; crow++){ // loop on rows
 
             for(int ipmt=pfirst[crow];ipmt<=plast[crow];ipmt++){ // loop on pmts
@@ -294,7 +297,7 @@ public class RICHTool{
 
                 yp[ipmt-1]= yrow[ccrow];
                 xp[ipmt-1]= xcol[ccol];
-		if(debugMode>=1) System.out.println("PMT "+ipmt+" COL "+ccol+" "+xcol[ccol]+" ROW "+(ccrow+1)+" "+yrow[ccrow]);
+		if(debugMode>=1) LOGGER.debug("PMT "+ipmt+" COL "+ccol+" "+xcol[ccol]+" ROW "+(ccrow+1)+" "+yrow[ccrow]);
 
 	    }
 	}
@@ -321,7 +324,7 @@ public class RICHTool{
                 if(cm==0)x[j]=x1; else x[j]=x[j-1]+1;
                 y[j]=y1-rw;
                 // printf("Pixel %2d X %3d Y %3d\n",j+1,x[j],y[j]);
-		if(debugMode>=1)  System.out.println("Pixel"+(j+1)+" "+x[j]+" "+y[j]);
+		if(debugMode>=1)  LOGGER.debug("Pixel"+(j+1)+" "+x[j]+" "+y[j]);
             }
         }
 	*/

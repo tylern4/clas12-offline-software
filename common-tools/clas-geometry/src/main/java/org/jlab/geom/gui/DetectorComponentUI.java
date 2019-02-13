@@ -6,6 +6,9 @@
 package org.jlab.geom.gui;
 
 import java.awt.Polygon;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.geom.DetectorId;
 import org.jlab.geom.prim.Path3D;
 
@@ -14,7 +17,7 @@ import org.jlab.geom.prim.Path3D;
  * @author gavalian
  */
 public class DetectorComponentUI {
-    
+    public static Logger LOGGER = LogManager.getLogger(DetectorComponentUI.class.getName());
     public int SECTOR = 0;
     public int LAYER  = 0;
     public int COMPONENT = 0;
@@ -33,11 +36,11 @@ public class DetectorComponentUI {
     }
     
     public void show(){
-        System.out.println("POLYGON");
+        LOGGER.debug("POLYGON");
         int[] x = this.shapePolygon.xpoints;
         int[] y = this.shapePolygon.ypoints;
         for(int loop = 0; loop < x.length;loop++){
-            System.out.println("\t  " + loop + " X/Y : " + x[loop] + " : " + y[loop]);
+            LOGGER.debug("\t  " + loop + " X/Y : " + x[loop] + " : " + y[loop]);
         }
     }
 }

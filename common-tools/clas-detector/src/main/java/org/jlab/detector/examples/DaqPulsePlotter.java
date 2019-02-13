@@ -202,26 +202,26 @@ public class DaqPulsePlotter implements IDataEventListener,DetectorListener,Acti
 
     @Override
     public void resetEventListener() {
-        System.out.println(" DETECTORS Present = " + this.detectorMap.size());
+        LOGGER.debug(" DETECTORS Present = " + this.detectorMap.size());
         for(Map.Entry<Integer,DetectorCollection<H1F>> entry : this.detectorMap.entrySet()){
             Integer key = entry.getKey();
-            System.out.println(DetectorType.getType(key) + " ---> " + entry.getValue().getList().size());
+            LOGGER.debug(DetectorType.getType(key) + " ---> " + entry.getValue().getList().size());
         }
         this.detectorMap.clear();
     }
 
     @Override
     public void processShape(DetectorShape2D shape) {
-        System.out.println(" doing somethig");
+        LOGGER.debug(" doing somethig");
         this.drawSectorLayer(shape.getDescriptor().getType(), 
                 shape.getDescriptor().getSector(), 
                 shape.getDescriptor().getLayer());
     }
     
     public void drawSectorLayer(DetectorType type, int sector, int layer){
-        System.out.println(" looking for type = " + type);
+        LOGGER.debug(" looking for type = " + type);
         if(this.detectorMap.containsKey(type.getDetectorId())==true){
-            System.out.println(" plotting type = " + type);
+            LOGGER.debug(" plotting type = " + type);
             DetectorCollection<H1F> collection = this.detectorMap.get(type.getDetectorId());
             Set<Integer> components = collection.getComponents(sector, layer);
             //EmbeddedCanvas c = this.canvasTab.getCanvas();
@@ -230,7 +230,7 @@ public class DaqPulsePlotter implements IDataEventListener,DetectorListener,Acti
             int counter = 0;
             int counterCanvas = 0;
             
-            System.out.println("COLLECTION HAS " + collection.getList().size() 
+            LOGGER.debug("COLLECTION HAS " + collection.getList().size() 
                     + "  COMPONENTS = " + components.size());
             int   bunch = Integer.parseInt(this.comboBunch.getSelectedItem().toString());
             List<IDataSet> datasetList = new ArrayList<IDataSet>();
@@ -255,7 +255,7 @@ public class DaqPulsePlotter implements IDataEventListener,DetectorListener,Acti
             int  sector = Integer.parseInt(this.comboSector.getSelectedItem().toString());
             int   layer = Integer.parseInt(this.comboLayer.getSelectedItem().toString());
             int   bunch = Integer.parseInt(this.comboBunch.getSelectedItem().toString());
-            System.out.println(name + " " + sector +  "  " + layer + " " + bunch);
+            LOGGER.debug(name + " " + sector +  "  " + layer + " " + bunch);
             if(this.detectorMap.containsKey(DetectorType.getType(name).getDetectorId())==true){
                 DetectorCollection<H1F> collection = this.detectorMap.get(DetectorType.getType(name).getDetectorId());                
                 Set<Integer> components = collection.getComponents(sector, layer);
@@ -264,7 +264,7 @@ public class DaqPulsePlotter implements IDataEventListener,DetectorListener,Acti
                 c.divide(3, 4);
                 int counter = 0;
                 int counterCanvas = 0;
-                System.out.println("COLLECTION HAS " + collection.getList().size() 
+                LOGGER.debug("COLLECTION HAS " + collection.getList().size() 
                         + "  COMPONENTS = " + components.size());
                 
                 for(Integer key : components){

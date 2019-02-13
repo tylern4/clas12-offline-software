@@ -60,7 +60,7 @@ public class FTHODOConstantsLoader {
 //
 //        public static synchronized void Load(int runno, String var) {
 //
-//            System.out.println(" LOADING CONSTANTS ");
+//            LOGGER.debug(" LOADING CONSTANTS ");
 ////		if (CSTLOADED == true) 
 ////			return null;
 //            dbprovider = new DatabaseConstantProvider(runno, var); // reset using the new variation
@@ -87,7 +87,7 @@ public class FTHODOConstantsLoader {
 //	       
 //	        mips_charge[iSec-1][iLay-1][iCom-1]    = imips_charge;
 //	        mips_energy[iSec-1][iLay-1][iCom-1]    = imips_energy;
-//	        if(debugMode>=1) System.out.println("energy_to_charge table: " + iCom + " " + imips_charge + " " + imips_energy );
+//	        if(debugMode>=1) LOGGER.debug("energy_to_charge table: " + iCom + " " + imips_charge + " " + imips_energy );
 //	    }
 //	    // 2) Offsets : TIME_OFFSET 
 //	    for(int i =0; i< dbprovider.length("/calibration/ft/fthodo/time_offsets/time_offset"); i++) {
@@ -98,7 +98,7 @@ public class FTHODOConstantsLoader {
 //	        double ioffset = dbprovider.getDouble("/calibration/ft/fthodo/time_offsets/time_offset", i);
 //	       
 //	        time_offset[iSec-1][iLay-1][iCom-1] = ioffset;
-//	        if(debugMode>=1) System.out.println("time_offsets: " + iCom + " " + ioffset );
+//	        if(debugMode>=1) LOGGER.debug("time_offsets: " + iCom + " " + ioffset );
 //	    }
 //	    // 3) Status : STATUS 
 //	    for(int i =0; i< dbprovider.length("/calibration/ft/fthodo/status/status"); i++) {
@@ -109,7 +109,7 @@ public class FTHODOConstantsLoader {
 //	        int istatus = dbprovider.getInteger("/calibration/ft/fthodo/status/status", i);
 //	       
 //	        status[iSec-1][iLay-1][iCom-1] = istatus;
-//	        if(debugMode>=1) System.out.println("status: " + iCom + " " + istatus );
+//	        if(debugMode>=1) LOGGER.debug("status: " + iCom + " " + istatus );
 //	    }
 //	    // 4) Geometry 
 //	    for(int i =0; i< dbprovider.length("/geometry/ft/fthodo/x"); i++) {
@@ -124,10 +124,10 @@ public class FTHODOConstantsLoader {
 //	        px[iSec-1][iLay-1][iCom-1] = x;
 //	        py[iSec-1][iLay-1][iCom-1] = y;
 //	        pz[iSec-1][iLay-1][iCom-1] = z;
-//	        if(debugMode>=1) System.out.println("geometry: " + iCom + " " + x + " " + y + " " + z);
+//	        if(debugMode>=1) LOGGER.debug("geometry: " + iCom + " " + x + " " + y + " " + z);
 //	    }
 //	CSTLOADED = true;
-//    System.out.println("SUCCESSFULLY LOADED FTHODO CALIBRATION CONSTANTS....");
+//    LOGGER.debug("SUCCESSFULLY LOADED FTHODO CALIBRATION CONSTANTS....");
 ////	return dbprovider;
 //	
 //	}

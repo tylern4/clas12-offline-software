@@ -2,13 +2,16 @@ package org.jlab.rec.dc.timetodistance;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.detector.calib.utils.DatabaseConstantProvider;
 import org.jlab.rec.dc.Constants;
 import org.jlab.utils.groups.IndexedTable;
 
 
 public class TableLoader {
-
+    public static Logger LOGGER = LogManager.getLogger(TableLoader.class.getName());
     public TableLoader() {
             // TODO Auto-generated constructor stub
     }
@@ -39,7 +42,7 @@ public class TableLoader {
                                                 double Xalpha = -(Math.toDegrees(Math.acos(Math.cos(Math.toRadians(30.)) + (icosalpha)*(1. - Math.cos(Math.toRadians(30.)))/5.)) - 30.);
                                                 double Xtime=(2*tb+1);
                                                 double Xdoca=tde.interpolateOnGrid((double) ibfield*0.5, Xalpha, Xtime, s, r);
-                                                    System.out.println("s "+(s+1)+" sl "+(r+1)+" time "+(2*tb+1)
+                                                    LOGGER.debug("s "+(s+1)+" sl "+(r+1)+" time "+(2*tb+1)
                                                             +" icosalpha "+icosalpha+" Xalpha "+Xalpha+" B "+ ibfield*0.5 + " dis "+ (float)DISTFROMTIME[s][r][ibfield][icosalpha][tb] +" "+
                                                           (float) Xdoca );
                                             }
@@ -54,7 +57,7 @@ public class TableLoader {
     
     public static synchronized void FillT0Tables(int run, String variation) {
         if (T0LOADED) return;
-        System.out.println(" T0 TABLE FILLED..... for Run "+run+" with VARIATION "+variation);
+        LOGGER.debug(" T0 TABLE FILLED..... for Run "+run+" with VARIATION "+variation);
         DatabaseConstantProvider dbprovider = new DatabaseConstantProvider(run, variation);
         dbprovider.loadTable("/calibration/dc/time_corrections/T0Corrections");
         //disconnect from database. Important to do this after loading tables.
@@ -77,7 +80,7 @@ public class TableLoader {
             T0ERR[iSec - 1][iSly - 1][iSlot - 1][iCab - 1] = t0Error;
             Constants.setT0(T0);
             Constants.setT0Err(T0ERR);
-            //System.out.println("T0 = "+t0);
+            //LOGGER.debug("T0 = "+t0);
         }
         T0LOADED = true;
     }
@@ -87,7 +90,7 @@ public class TableLoader {
         //CCDBTables 1 =  "/calibration/dc/time_to_distance/t2d";
         //CCDBTables 2 =  "/calibration/dc/time_corrections/T0_correction";	
         if (T2DLOADED) return;
-        System.out.println(" T2D TABLE FILLED.....");
+        LOGGER.debug(" T2D TABLE FILLED.....");
         double stepSize = 0.0010;
         DecimalFormat df = new DecimalFormat("#");
         df.setRoundingMode(RoundingMode.CEILING);
@@ -131,7 +134,7 @@ public class TableLoader {
                                                 tbin = nBinsT-1;
                                             if(tbin>maxBinIdxT[s][r][ibfield][icosalpha]) {
                                                 maxBinIdxT[s][r][ibfield][icosalpha] = tbin; 
-                                            } //System.out.println("tbin "+tbin+" tmax "+tmax+ "s "+s+" sl "+r );
+                                            } //LOGGER.debug("tbin "+tbin+" tmax "+tmax+ "s "+s+" sl "+r );
                                             if(DISTFROMTIME[s][r][ibfield][icosalpha][tbin]==0) {
                                                 // firstbin = bin;
                                                 // bincount = 0;				    	 
@@ -201,7 +204,7 @@ public class TableLoader {
         //delBf = 0.15;
         double deltatime_bfield = delBf*Math.pow(bfield,2)*tmax*(tab.getDoubleValue("b1", s+1,r+1,0)*xhatalpha+tab.getDoubleValue("b2", s+1,r+1,0)*Math.pow(xhatalpha, 2)+
                      tab.getDoubleValue("b3", s+1,r+1,0)*Math.pow(xhatalpha, 3)+tab.getDoubleValue("b4", s+1,r+1,0)*Math.pow(xhatalpha, 4));
-        // System.out.println("dB "+deltatime_bfield+" raw time "+time);
+        // LOGGER.debug("dB "+deltatime_bfield+" raw time "+time);
         //calculate the time at alpha deg. and at a non-zero bfield	          
         time += deltatime_bfield;
         //added deta(T0) correction
@@ -214,8 +217,8 @@ public class TableLoader {
 	//	CalibrationConstantsLoader.Load(10, "default");
 	//	TableLoader tbl = new TableLoader();
 	//	TableLoader.Fill();
-		//System.out.println(maxBinIdxT[1][0][0]+" "+maxBinIdxT[1][0][5]+" "+DISTFROMTIME[1][0][0][maxBinIdxT[1][0][0]]+ " "+DISTFROMTIME[1][0][5][maxBinIdxT[1][0][5]]);
-		//System.out.println(tbl.interpolateOnGrid(2.5, Math.toRadians(0.000000), 1000) );
+		//LOGGER.debug(maxBinIdxT[1][0][0]+" "+maxBinIdxT[1][0][5]+" "+DISTFROMTIME[1][0][0][maxBinIdxT[1][0][0]]+ " "+DISTFROMTIME[1][0][5][maxBinIdxT[1][0][5]]);
+		//LOGGER.debug(tbl.interpolateOnGrid(2.5, Math.toRadians(0.000000), 1000) );
 	  //579: B 2.5 alpha 0 d 1.3419999999999992 alpha 1 1.3474999999999997
 	   
 	//}

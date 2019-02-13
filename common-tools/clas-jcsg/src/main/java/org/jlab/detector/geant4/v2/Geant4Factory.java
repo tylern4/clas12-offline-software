@@ -5,6 +5,8 @@
  */
 package org.jlab.detector.geant4.v2;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.detector.volume.Geant4Basic;
 import org.jlab.geometry.prim.Straight;
 import java.util.HashMap;
@@ -18,7 +20,7 @@ import org.jlab.detector.volume.G4World;
  * @author kenjo
  */
 public abstract class Geant4Factory {
-
+    public static Logger LOGGER = LogManager.getLogger(Geant4Factory.class.getName());
     protected G4World motherVolume = new G4World("fc");
     protected final HashMap<String, String> properties = new HashMap<>();
 

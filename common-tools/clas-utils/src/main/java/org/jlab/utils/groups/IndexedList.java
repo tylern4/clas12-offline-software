@@ -5,6 +5,9 @@
  */
 package org.jlab.utils.groups;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -16,7 +19,7 @@ import java.util.TreeMap;
  * @param <T> - indexed collection type
  */
 public class IndexedList<T> {
-
+    public static Logger LOGGER = LogManager.getLogger(IndexedList.class.getName());
     private final Map<Long,T>  collection = new LinkedHashMap<Long,T>();
     private int                indexSize = 3;
     
@@ -30,7 +33,7 @@ public class IndexedList<T> {
     
     public void add(T item, int... index){
         if(index.length!=this.indexSize){
-            System.out.println("HashCollection:: error can not add item, inconsistency of index count.");
+            LOGGER.debug("HashCollection:: error can not add item, inconsistency of index count.");
             return;
         }
         long code = IndexGenerator.hashCode(index);
@@ -55,7 +58,7 @@ public class IndexedList<T> {
     
     public void show(){        
         for(Map.Entry<Long,T>  entry : this.collection.entrySet()){
-            System.out.println(String.format("[%s] : ", 
+            LOGGER.debug(String.format("[%s] : ", 
                     IndexGenerator.getString(entry.getKey())) + entry.getValue());
         }
     }

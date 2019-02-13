@@ -3,6 +3,8 @@ package org.jlab.rec.cvt.cross;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.geom.prim.Point3D;
 import org.jlab.geom.prim.Vector3D;
 import org.jlab.rec.cvt.cluster.Cluster;
@@ -17,7 +19,7 @@ import org.jlab.rec.cvt.svt.Geometry;
  *
  */
 public class Cross extends ArrayList<Cluster> implements Comparable<Cross> {
-
+    public static Logger LOGGER = LogManager.getLogger(Cross.class.getName());
     /**
      * serial id
      */
@@ -365,9 +367,9 @@ public class Cross extends ArrayList<Cluster> implements Comparable<Cross> {
         this.set_Dir(dirAtBstPlane);
         this.set_PointErr(interPointErr);
 
-        //System.out.println("[Cross] in setCrossPars interPoint "+interPoint.toString());
+        //LOGGER.debug("[Cross] in setCrossPars interPoint "+interPoint.toString());
         //if(dirAtBstPlane!=null)
-        //	System.out.println("                              dirAtBstPlane "+dirAtBstPlane.toString());
+        //	LOGGER.debug("                              dirAtBstPlane "+dirAtBstPlane.toString());
     }
 
     @Override
@@ -548,10 +550,10 @@ public class Cross extends ArrayList<Cluster> implements Comparable<Cross> {
 
         // check that the correct lists are created
         for (int i = 0; i < theListsByRegion.size(); i++) {
-            System.out.println(" i " + i);
+            LOGGER.debug(" i " + i);
             for (int j = 0; j < theListsByRegion.get(i).size(); j++) {
                 Cross c = theListsByRegion.get(i).get(j);
-                System.out.println(c.get_Detector() + " " + c.get_Region() + " " + c.get_Point0().toVector3D().phi());
+                LOGGER.debug(c.get_Detector() + " " + c.get_Region() + " " + c.get_Point0().toVector3D().phi());
             }
         }
 

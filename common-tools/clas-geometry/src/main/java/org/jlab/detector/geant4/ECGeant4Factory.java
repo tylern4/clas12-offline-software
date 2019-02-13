@@ -114,7 +114,7 @@ public class ECGeant4Factory {
         Line3D uLine  = this.lineU(layer);
         double offset = strip*dw + dw*0.5;
         Line3D crop  = new Line3D(uLine.origin().x()-offset,-1000.0,0.0, uLine.origin().x()-offset,+1000.0,0.0); 
-        //System.out.println("U _ LINE");uLine.show();
+        //LOGGER.debug("U _ LINE");uLine.show();
         Line3D vi = crop.distance(vLine);
         Line3D wi = crop.distance(wLine);
         return new Line3D(vi.midpoint(),wi.midpoint());
@@ -140,7 +140,7 @@ public class ECGeant4Factory {
                 vLine.end().y() + offset*Math.cos(alpha)
                 ,0.0); 
         
-        //System.out.println("U _ LINE");uLine.show();
+        //LOGGER.debug("U _ LINE");uLine.show();
         Line3D ui = crop.distance(uLine);
         Line3D wi = crop.distance(wLine);
         return new Line3D(ui.midpoint(),wi.midpoint());        
@@ -159,7 +159,7 @@ public class ECGeant4Factory {
         double yh  = 394.2/2.0;
         Geant4Basic basic = new Geant4Basic("volume","trd",xh,xh,0.2,yh,zw);
         //Geant4Basic basic = new Geant4Basic("volume","box",xh,yh,zw);
-        //System.out.println(basic.toString());
+        //LOGGER.debug(basic.toString());
         return basic;
     }
     

@@ -8,6 +8,8 @@ package org.jlab.rec.dc.trajectory;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.detector.geant4.v2.DCGeant4Factory;
 import org.jlab.detector.geant4.v2.FTOFGeant4Factory;
 import org.jlab.detector.geant4.v2.ECGeant4Factory;
@@ -22,7 +24,7 @@ import org.jlab.geom.prim.Vector3D;
  *
  */
 public class TrajectorySurfaces {
-
+    public static Logger LOGGER = LogManager.getLogger(TrajectorySurfaces.class.getName());
     private List<ArrayList<Surface>> _DetectorPlanes = new ArrayList<ArrayList<Surface>>();
     
     public List<ArrayList<Surface>> getDetectorPlanes() {
@@ -47,7 +49,7 @@ public class TrajectorySurfaces {
         for(int is =0; is<6; is++) {
             int index =0;
 
-            System.out.println(" CREATING SURFACES FOR SECTOR "+(is+1));
+            LOGGER.debug(" CREATING SURFACES FOR SECTOR "+(is+1));
             this._DetectorPlanes.add(new ArrayList<Surface>());
             //add FMT
             for(int i=0;i<6;i++) { 

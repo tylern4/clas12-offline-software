@@ -8,6 +8,9 @@ package org.jlab.io.utils;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.io.bos.BosDataBank;
 import org.jlab.io.bos.BosDataEvent;
 import org.jlab.io.evio.EvioDataBank;
@@ -20,7 +23,7 @@ import org.jlab.io.evio.EvioFactory;
  */
 
 public class Bos2EvioPartBank {
-    
+    public static Logger LOGGER = LogManager.getLogger(Bos2EvioPartBank.class.getName());
     private TreeMap<String,EvioDataBank>  evioDataBanks = new TreeMap<String,EvioDataBank>();
     private TreeMap<String,BosDataBank>    bosDataBanks = new TreeMap<String,BosDataBank>();
     private EvioDataDictionary            dictionary    = null;
@@ -86,10 +89,10 @@ public class Bos2EvioPartBank {
         if(bos_event.hasBank("TGPB")){
             //BosDataBank hevt = (BosDataBank) bos_event.getBank("HEVT");
             BosDataBank tagr = (BosDataBank) bos_event.getBank("TAGR:1");
-            //System.err.println("[bos::tagr]---> found banks.... ");
+            //LOGGER.warn("[bos::tagr]---> found banks.... ");
             //float[] startTime  = hevt.getFloat("STT");
             //if(startTime!=null){
-                //System.err.println("[bos::tagr]---> start time = " + startTime[0]);
+                //LOGGER.warn("[bos::tagr]---> start time = " + startTime[0]);
                 EvioDataBank evioTGPBp = EvioFactory.createEvioBank("TAGGER::tgpb",tagr.rows());
                 int nrows = tagr.rows();
                 for(int loop = 0; loop < nrows; loop++){
@@ -148,11 +151,11 @@ public class Bos2EvioPartBank {
                         dbank.time = echbBank.getFloat("t_hit")[ecindex];
                         dbank.energy = echbBank.getFloat("E_hit")[ecindex];
                     } else {
-                        System.err.println("ERROR IN ECHB BANK tbid = " + ecindex 
+                        LOGGER.warn("ERROR IN ECHB BANK tbid = " + ecindex 
                             + " rows = " + echbBank.rows());
                     }
                 } else {
-                    System.err.println("ERROR IN TBID BANK tbid = " + tbid 
+                    LOGGER.warn("ERROR IN TBID BANK tbid = " + tbid 
                             + " rows = " + tbidBank.rows());
                 }
             }

@@ -46,7 +46,7 @@ public class CVTReconstruction extends ReconstructionEngine {
   
     public void setRunConditionsParameters(DataEvent event, String Fields, int iRun, boolean addMisAlignmts, String misAlgnFile) {
         if (event.hasBank("RUN::config") == false) {
-            System.err.println("RUN CONDITIONS NOT READ!");
+            LOGGER.warn("RUN CONDITIONS NOT READ!");
             return;
         }
 
@@ -55,7 +55,7 @@ public class CVTReconstruction extends ReconstructionEngine {
         boolean isMC = false;
         boolean isCosmics = false;
         DataBank bank = event.getBank("RUN::config");
-        //System.out.println(bank.getInt("Event")[0]);
+        //LOGGER.debug(bank.getInt("Event")[0]);
         if (bank.getByte("type", 0) == 0) {
             isMC = true;
         }
@@ -71,11 +71,11 @@ public class CVTReconstruction extends ReconstructionEngine {
 
         if (Fields.equals(newConfig) == false) {
             // Load the Constants
-            
-            System.out.println("  CHECK CONFIGS..............................." + FieldsConfig + " = ? " + newConfig);
+
+            LOGGER.debug("  CHECK CONFIGS..............................." + FieldsConfig + " = ? " + newConfig);
             Constants.Load(isCosmics, isSVTonly, (double) bank.getFloat("solenoid", 0));
             // Load the Fields
-            //System.out.println("************************************************************SETTING FIELD SCALE *****************************************************");
+            //LOGGER.debug("************************************************************SETTING FIELD SCALE *****************************************************");
             //TrkSwimmer.setMagneticFieldScale(bank.getFloat("solenoid", 0)); // something changed in the configuration
             //double shift =0;
             //if(bank.getInt("run", 0)>1840)
@@ -129,7 +129,7 @@ public class CVTReconstruction extends ReconstructionEngine {
        
         recHandler.loadCrosses();
 
-        //System.out.println(" Number of crosses "+crosses.get(0).size()+" + "+crosses.get(1).size());
+        //LOGGER.debug(" Number of crosses "+crosses.get(0).size()+" + "+crosses.get(1).size());
         if(Constants.isCosmicsData()==true) { 
             List<StraightTrack> cosmics = recHandler.cosmicsTracking();   
         	rbc.appendCVTCosmicsBanks(event, recHandler.getSVThits(), recHandler.getBMThits(), 
@@ -146,7 +146,7 @@ public class CVTReconstruction extends ReconstructionEngine {
     }
     
     public boolean init() {
-        System.out.println(" ........................................ trying to connect to db ");
+        LOGGER.debug(" ........................................ trying to connect to db ");
 //        CCDBConstantsLoader.Load(new DatabaseConstantProvider( "sqlite:///clas12.sqlite", "default"));
         CCDBConstantsLoader.Load(new DatabaseConstantProvider(10, "default"));
                
@@ -175,7 +175,7 @@ public class CVTReconstruction extends ReconstructionEngine {
        String inputFile = "/Users/ziegler/Desktop/Work/Files/Data/ENG/central_2348_uncookedSkim.hipo";
         //String inputFile = "/Users/ziegler/Desktop/Work/Files/Data/skim_clas_002436.evio.90.hipo";
 //String inputFile="/Users/ziegler/Desktop/Work/Files/LumiRuns/random/decoded_2341.hipo";
-        System.err.println(" \n[PROCESSING FILE] : " + inputFile);
+        LOGGER.warn(" \n[PROCESSING FILE] : " + inputFile);
 
         CVTReconstruction en = new CVTReconstruction();
         en.init();
@@ -197,7 +197,7 @@ public class CVTReconstruction extends ReconstructionEngine {
             
 
             DataEvent event = reader.getNextEvent();
-            System.out.println("  EVENT " + event.getBank("RUN::config").getInt("event",0)+" count "+counter);
+            LOGGER.debug("  EVENT " + event.getBank("RUN::config").getInt("event",0)+" count "+counter);
             
             if (counter > 0) {
                 t1 = System.currentTimeMillis();
@@ -218,12 +218,12 @@ public class CVTReconstruction extends ReconstructionEngine {
             //if(event.getBank("RUN::config").getInt("event",0)>=2000) break;
             //event.show();
             //if(counter%100==0)
-            //System.out.println("run "+counter+" events");
+            //LOGGER.debug("run "+counter+" events");
 
         }
         writer.close();
         double t = System.currentTimeMillis() - t1;
-        //System.out.println(t1 + " TOTAL  PROCESSING TIME = " + (t / (float) counter));
+        //LOGGER.debug(t1 + " TOTAL  PROCESSING TIME = " + (t / (float) counter));
         */
         HipoDataSource reader = new HipoDataSource();
         reader.open("/home/fbossu/Data/Tracking/sim/test/gen_cvt1.hipo");
@@ -247,7 +247,7 @@ public class CVTReconstruction extends ReconstructionEngine {
         EBTBengine.init();
         EBTBengine.processDataEvent(testEvent);
 
-        System.out.println(isWithinXPercent(10.0, testEvent.getBank("REC::Particle").getFloat("px", 0), -0.375)+" "+
+        LOGGER.debug(isWithinXPercent(10.0, testEvent.getBank("REC::Particle").getFloat("px", 0), -0.375)+" "+
 		isWithinXPercent(10.0, testEvent.getBank("REC::Particle").getFloat("py", 0), 0.483)
 		+" "+isWithinXPercent(10.0, testEvent.getBank("REC::Particle").getFloat("pz", 0), 0.674)
 		+" "+isWithinXPercent(30.0, testEvent.getBank("REC::Particle").getFloat("vz", 0), -13.9));

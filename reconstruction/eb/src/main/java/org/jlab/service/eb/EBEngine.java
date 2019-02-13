@@ -64,7 +64,7 @@ public class EBEngine extends ReconstructionEngine {
             run=de.getBank("RUN::config").getInt("run",0);
         }
         if (run<=0) {
-            System.out.println("EBEngine:  found no run number, CCDB constants not loaded, skipping event.");
+            LOGGER.warn("EBEngine:  found no run number, CCDB constants not loaded, skipping event.");
             return false;
         }
 
@@ -234,7 +234,7 @@ public class EBEngine extends ReconstructionEngine {
 
     public void dropBanks(DataEvent de) {
         if (this.alreadyDroppedBanks==false) {
-            System.out.println("["+this.getName()+"]  dropping REC banks!\n");
+            LOGGER.debug("["+this.getName()+"]  dropping REC banks!\n");
             this.alreadyDroppedBanks=true;
         }
         de.removeBank(eventBank);
@@ -259,7 +259,7 @@ public class EBEngine extends ReconstructionEngine {
 
         requireConstants(EBCCDBConstants.getAllTableNames());
         this.getConstantsManager().setVariation("default");
-        System.out.println("["+this.getName()+"] --> event builder is ready....");
+        LOGGER.debug("["+this.getName()+"] --> event builder is ready....");
         return true;
     }
     

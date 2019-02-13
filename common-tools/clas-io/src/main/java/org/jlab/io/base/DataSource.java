@@ -1,10 +1,13 @@
 package org.jlab.io.base;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.File;
 import java.nio.ByteBuffer;
 
 public interface DataSource {
-    
+    Logger LOGGER = LogManager.getLogger(DataBank.class.getName());
     boolean hasEvent();
     void open(File file);
     void open(String filename);

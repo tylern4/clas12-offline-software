@@ -1,7 +1,10 @@
 package org.jlab.rec.fmt;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.geom.prim.Line3D;
 import org.jlab.geom.prim.Point3D;
+import org.jlab.jnp.utils.constats.ConstantProvider;
 
 
 /**
@@ -9,8 +12,8 @@ import org.jlab.geom.prim.Point3D;
  * @author defurne, ziegler
  *
  */
-public class Constants {
-	
+public class Constants{
+	public static Logger LOGGER = LogManager.getLogger(Constants.class.getName());
 	public static final int FVT_Nlayers = 6;
 	public static int FVT_Nstrips ;// Number of strips
         public static int FVT_Halfstrips ; // In the middle of the FMT, 320 strips are split in two. 
@@ -123,10 +126,10 @@ public class Constants {
 			}
 			
 		
-			//System.out.println(Constants.getLocalRegion(i)+" strip-1 = "+i+" x' "+FVT_stripsXloc[i][1]+" y' "+FVT_stripsYloc[i][1]+" length "+FVT_stripslength[i]+" FVT_Beamhole "+FVT_Beamhole);
+			//LOGGER.debug(Constants.getLocalRegion(i)+" strip-1 = "+i+" x' "+FVT_stripsXloc[i][1]+" y' "+FVT_stripsYloc[i][1]+" length "+FVT_stripslength[i]+" FVT_Beamhole "+FVT_Beamhole);
 		}
 		areConstantsLoaded = true;
-		System.out.println("*****   FMT constants loaded!");
+		LOGGER.debug("*****   FMT constants loaded!");
 	}
 	private static int getLocalRegion(int i) {
 		// To represent the geometry we divide the barrel micromega disk into 3 regions according to the strip numbering system.

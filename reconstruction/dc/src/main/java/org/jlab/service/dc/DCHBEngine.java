@@ -112,7 +112,7 @@ public class DCHBEngine extends DCEngine {
                Constants.setWIREDIST(0);
            }
 
- //          if (debug.get()) System.out.println("NEW RUN INIT = " + (System.currentTimeMillis() - startTime));
+ //          if (debug.get()) LOGGER.debug("NEW RUN INIT = " + (System.currentTimeMillis() - startTime));
        }
 
         /* 1 */
@@ -386,7 +386,7 @@ public class DCHBEngine extends DCEngine {
         while (reader.hasEvent()) {
 
             counter++;
-            System.out.println("************************************************************* ");
+            LOGGER.debug("************************************************************* ");
             DataEvent event = reader.getNextEvent();
             if (counter > 0) {
                 t1 = System.currentTimeMillis();
@@ -397,14 +397,14 @@ public class DCHBEngine extends DCEngine {
             // Processing TB
             en2.processDataEvent(event);
             writer.writeEvent(event);
-            System.out.println("PROCESSED  EVENT " + event.getBank("RUN::config").getInt("event", 0));
+            LOGGER.debug("PROCESSED  EVENT " + event.getBank("RUN::config").getInt("event", 0));
             
             if(counter>40)
                 break;
         }
         writer.close();
         double t = System.currentTimeMillis() - t1;
-        System.out.println(t1 + " TOTAL  PROCESSING TIME = " + (t / (float) counter));
+        LOGGER.debug(t1 + " TOTAL  PROCESSING TIME = " + (t / (float) counter));
     }
 
 }

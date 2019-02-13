@@ -6,6 +6,9 @@
 
 package org.jlab.utils.system;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -15,67 +18,66 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 /**
  *
  * @author gavalian
  */
 public class ClasUtilsFile {
-    
+    public static Logger LOGGER = LogManager.getLogger(ClasUtilsFile.class.getName());
     private static String moduleString = "[ClasUtilsFile] --> ";
-            
+
     public static String getName(){ return moduleString; }
     /**
      * prints a log message with the module name included.
-     * @param log 
+     * @param log
      */
     public static void printLog(String log){
-        System.out.println(ClasUtilsFile.getName() + " " + log);
+        LOGGER.debug(ClasUtilsFile.getName() + " " + log);
     }
     /**
      * returns package resource directory with given enviromental variable
      * and relative path.
      * @param env
      * @param rpath
-     * @return 
+     * @return
      */
     public static String getResourceDir(String env, String rpath){
-        
+
         String envString = System.getenv(env);
         if(envString==null){
             ClasUtilsFile.printLog("Environment variable ["+env+"] is not defined");
             envString = System.getProperty(env);
         }
-        
+
         if(envString == null){
             ClasUtilsFile.printLog("System property ["+env+"] is not defined");
             return null;
         }
-        
+
         StringBuilder str = new StringBuilder();
         int index = envString.length()-1;
         str.append(envString);
         //Char fileSeparator =
         if(envString.charAt(index)!='/' && rpath.startsWith("/")==false) str.append('/');
-        str.append(rpath);        
+        str.append(rpath);
         return str.toString();
     }
     /**
      * returns list of files in the directory. absolute path is given.
      * This function will not exclude ".*" and "*~" files.
      * @param directory
-     * @return 
+     * @return
      */
-    public static List<String>  getFileList(String directory){        
+    public static List<String>  getFileList(String directory){
         List<String> fileList = new ArrayList<String>();
         File[] files = new File(directory).listFiles();
-        System.out.println("FILE LIST LENGTH = " + files.length);
+        LOGGER.debug("FILE LIST LENGTH = " + files.length);
         for (File file : files) {
             if (file.isFile()) {
                 if(file.getName().startsWith(".")==true||
                         file.getName().endsWith("~")){
-                    System.out.println("[FileUtils] ----> skipping file : " + file.getName());
+                    LOGGER.debug("[FileUtils] ----> skipping file : " + file.getName());
                 } else {
                     fileList.add(file.getAbsolutePath());
                 }
@@ -88,7 +90,7 @@ public class ClasUtilsFile {
      * and a relative path.
      * @param env
      * @param rpath
-     * @return 
+     * @return
      */
     public static List<String>  getFileList(String env, String rpath){
         String directory = ClasUtilsFile.getResourceDir(env, rpath);
@@ -103,12 +105,12 @@ public class ClasUtilsFile {
      * @param env
      * @param rpath
      * @param ext
-     * @return 
+     * @return
      */
     public static List<String>  getFileList(String env, String rpath, String ext){
         String directory = ClasUtilsFile.getResourceDir(env, rpath);
         if(directory!=null) return new ArrayList<String>();
-        
+
         List<String> files = ClasUtilsFile.getFileList(directory);
         List<String> selected = new ArrayList<String>();
         for(String item : files){
@@ -116,9 +118,9 @@ public class ClasUtilsFile {
         }
         return selected;
     }
-    
+
     public static void   writeFile(String filename, List<String> lines){
-        System.out.println("writing file --->  " + filename);
+        LOGGER.debug("writing file --->  " + filename);
         BufferedWriter writer = null;
         try {
             writer = new BufferedWriter(new FileWriter(filename));
@@ -126,19 +128,19 @@ public class ClasUtilsFile {
                 writer.write (line +"\n");
             }  writer.close();
         } catch (IOException ex) {
-            Logger.getLogger(ClasUtilsFile.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex);
         } finally {
             try {
                 writer.close();
             } catch (IOException ex) {
-                Logger.getLogger(ClasUtilsFile.class.getName()).log(Level.SEVERE, null, ex);
+                LOGGER.error(ex);
             }
         }
     }
     /**
-     * Reads a text file into a list of strings  
+     * Reads a text file into a list of strings
      * @param filename
-     * @return 
+     * @return
      */
     public static List<String>   readFile(String filename){
         List<String>  lines = new ArrayList<String>();
@@ -150,18 +152,18 @@ public class ClasUtilsFile {
             BufferedReader bufferedReader =  new BufferedReader(fileReader);
 
             while((line = bufferedReader.readLine()) != null) {
-                //System.out.println(line);
+                //LOGGER.debug(line);
                 lines.add(line);
-            }   
+            }
             // Always close files.
-            bufferedReader.close();         
+            bufferedReader.close();
         }
         catch(FileNotFoundException ex) {
-            ClasUtilsFile.printLog("Unable to open file : '" + filename + "'");             
+            ClasUtilsFile.printLog("Unable to open file : '" + filename + "'");
         }
         catch(IOException ex) {
-            ClasUtilsFile.printLog( "Error reading file : '" + filename + "'");                  
-            // Or we could just do this: 
+            ClasUtilsFile.printLog( "Error reading file : '" + filename + "'");
+            // Or we could just do this:
             // ex.printStackTrace();
         }
         return lines;
@@ -169,7 +171,7 @@ public class ClasUtilsFile {
     /**
      * Reads a text file into one string.
      * @param filename
-     * @return 
+     * @return
      */
     public static String readFileString(String filename){
         List<String> lines = ClasUtilsFile.readFile(filename);
@@ -180,7 +182,7 @@ public class ClasUtilsFile {
     /**
      * Returs relative paths of file names from list of absolute paths.
      * @param files
-     * @return 
+     * @return
      */
     public static List<String>  getFileNamesRelative(List<String> files){
         List<String>  newList = new ArrayList<String>();
@@ -194,7 +196,7 @@ public class ClasUtilsFile {
         }
         return newList;
     }
-    
+
     /**
      * returns a new file name which is composed of the file name given and then by adding
      * given string to it. if flag preservePath is true, then file name will have the same
@@ -202,17 +204,17 @@ public class ClasUtilsFile {
      * @param filename
      * @param addition
      * @param preservePath
-     * @return 
+     * @return
      */
     public static String createFileName(String filename, String addition, boolean preservePath){
-        
+
         String inputFile = filename;
-        
+
         if(filename.contains("/")==true&&preservePath==false){
             int index_slash = filename.lastIndexOf("/");
             inputFile = filename.substring(index_slash+1,filename.length());
         }
-        
+
         StringBuilder str = new StringBuilder();
         int index = inputFile.lastIndexOf(".");
         //int index = filename.lastIndexOf(".");
@@ -221,9 +223,9 @@ public class ClasUtilsFile {
         str.append(inputFile.substring(index, inputFile.length()));
         return str.toString();
     }
-    
+
     public static void main(String[] args){
         String output_file = ClasUtilsFile.createFileName("/Users/gavalian/Work/Software/Release-9.0/COATJAVA/coatjava/../datasets/gemc/eklambda/gemc_eklambda_A0001_gen.evio", "_header", true);
-        System.out.println(output_file);
+        LOGGER.debug(output_file);
     }
 }

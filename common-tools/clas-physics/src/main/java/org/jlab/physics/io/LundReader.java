@@ -13,8 +13,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.clas.physics.Particle;
 import org.jlab.clas.physics.PhysicsEvent;
 
@@ -23,6 +24,7 @@ import org.jlab.clas.physics.PhysicsEvent;
  * @author gavalian
  */
 public class LundReader {
+	public static Logger LOGGER = LogManager.getLogger(LundReader.class.getName());
 	private final ArrayList<String> inputFiles = new ArrayList<String>();
 	private BufferedReader reader = null;
 	private PhysicsEvent physEvent = new PhysicsEvent();
@@ -49,7 +51,7 @@ public class LundReader {
 			File file = new File(inputFiles.get(counter));
 			reader = new BufferedReader(new FileReader(file));
 		} catch (FileNotFoundException ex) {
-			Logger.getLogger(LundReader.class.getName()).log(Level.SEVERE, null, ex);
+			LOGGER.error(ex);
 		}
 		return true;
 	}
@@ -65,9 +67,9 @@ public class LundReader {
 			if (header == null)
 				return false;
 			String[] tokens = header.trim().split("\\s+");
-			// System.err.println("TOKENS size = " + tokens.length);
+			// LOGGER.warn("TOKENS size = " + tokens.length);
 			// for(int loop = 0; loop < tokens.length; loop++){
-			// System.err.println(" token " + loop + " = " + tokens[loop]);
+			// LOGGER.warn(" token " + loop + " = " + tokens[loop]);
 			// }
 			if (tokens.length != 10)
 				return false;
@@ -89,11 +91,11 @@ public class LundReader {
 				String particleLine = reader.readLine();
 				if (particleLine != null) {
 					String[] params = particleLine.trim().split("\\s+");
-					// System.err.println("PARAMS LENGTH = " + params.length);
+					// LOGGER.warn("PARAMS LENGTH = " + params.length);
 					if (params.length == 14) {
 
 						int pid = Integer.parseInt(params[3]);
-						// System.err.println("PID = " + pid);
+						// LOGGER.warn("PID = " + pid);
 						int status = Integer.parseInt(params[2]);
 						double px = Double.parseDouble(params[6]);
 						double py = Double.parseDouble(params[7]);
@@ -109,7 +111,7 @@ public class LundReader {
 			}
 			return true;
 		} catch (IOException ex) {
-			Logger.getLogger(LundReader.class.getName()).log(Level.SEVERE, null, ex);
+			LOGGER.error(ex);
 		}
 		return false;
 	}

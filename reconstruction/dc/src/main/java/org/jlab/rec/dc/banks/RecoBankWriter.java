@@ -421,7 +421,7 @@ public class RecoBankWriter {
             bank.setByte("LR", i, (byte) hitlist.get(i).get_LeftRightAmb());
 
             // checks the existing schema to fill the time
-            //System.out.println(" has entry "+bank.getDescriptor().hasEntry("time"));
+            //LOGGER.debug(" has entry "+bank.getDescriptor().hasEntry("time"));
             /*
             correctedTime = (this.get_Time() - this.get_DeltaTimeBeta());
             */
@@ -465,7 +465,7 @@ public class RecoBankWriter {
             }
 
         }
-        //System.out.println(" Created Bank "); bank.show();
+        //LOGGER.debug(" Created Bank "); bank.show();
         return bank;
 
     }

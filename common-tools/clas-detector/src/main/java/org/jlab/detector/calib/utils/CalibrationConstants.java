@@ -83,7 +83,7 @@ public class CalibrationConstants extends IndexedTable {
                 //str.append(" ");
             }
             linesFile.add(str.toString());
-            //System.out.println(str.toString());
+            //LOGGER.debug(str.toString());
         }
         
         ClasUtilsFile.writeFile(file, linesFile);

@@ -102,18 +102,18 @@ public abstract class PrismaticComponent extends AbstractComponent {
         v = firstFace.get(2).vectorFrom(firstFace.get(0));
         n = u.cross(v);
         if (n.dot(direction) > 0.001) {
-            System.err.println("PrismaticComponent: #"+componentId+" "+n.dot(direction)+" > 0");
+            LOGGER.warn("PrismaticComponent: #"+componentId+" "+n.dot(direction)+" > 0");
             for (Point3D point: firstFace)
-                 System.err.println("\t"+point);
+                 LOGGER.warn("\t"+point);
             throw new IllegalArgumentException("the first face is not counter-clockwise: componentId="+componentId);
         }
         u = secondFace.get(1).vectorFrom(secondFace.get(0));
         v = secondFace.get(2).vectorFrom(secondFace.get(0));
         n = u.cross(v);
         if (n.dot(direction) > 0.001) {
-            System.err.println("PrismaticComponent: #"+componentId+" "+n.dot(direction)+" > 0");
+            LOGGER.warn("PrismaticComponent: #"+componentId+" "+n.dot(direction)+" > 0");
             for (Point3D point: secondFace)
-                 System.err.println("\t"+point);
+                 LOGGER.warn("\t"+point);
             throw new IllegalArgumentException("the second face is not clockwise: componentId="+componentId);
         }
         
@@ -186,9 +186,9 @@ public abstract class PrismaticComponent extends AbstractComponent {
             w = u.cross(v);
             w.unit();
             if (n.dot(w) < (1-Math.ulp(1.0)*10)) {
-                System.err.println("PrismaticComponent: isCoplanarConvex(List<Point3D> points): "+n.dot(w)+" < "+(1-Math.ulp(1.0)*10));
+                LOGGER.warn("PrismaticComponent: isCoplanarConvex(List<Point3D> points): "+n.dot(w)+" < "+(1-Math.ulp(1.0)*10));
                 for (Point3D point: points)
-                     System.err.println("\t"+point);
+                     LOGGER.warn("\t"+point);
                 return false;
             }
         }

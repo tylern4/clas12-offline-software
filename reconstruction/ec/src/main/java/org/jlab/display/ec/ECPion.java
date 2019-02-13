@@ -7,6 +7,9 @@ package org.jlab.display.ec;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.clas.detector.DetectorParticle;
 import org.jlab.clas.detector.DetectorResponse;
 import org.jlab.clas.physics.GenericKinematicFitter;
@@ -24,7 +27,7 @@ import org.jlab.io.evio.EvioSource;
  * @author gavalian
  */
 public class ECPion {
-    
+    public static Logger LOGGER = LogManager.getLogger(ECPion.class.getName());
     public static List<DetectorResponse>  readEC(EvioDataEvent event){
         List<DetectorResponse>  ecResponse = new ArrayList<DetectorResponse>();
         if(event.hasBank("ECDetector::clusters")==true){
@@ -75,7 +78,7 @@ public class ECPion {
                     );
             p.addResponse(rPCAL.get(i));
             particles.add(p);
-            //System.out.println(p);
+            //LOGGER.debug(p);
         }
         
         List<DetectorResponse> rECIN  = ECPion.getResponseForLayer(ecResponses, 4);
@@ -122,12 +125,12 @@ public class ECPion {
         }
         
         
-        //System.out.println("--------------  EVENT -------------");
+        //LOGGER.debug("--------------  EVENT -------------");
         for(DetectorParticle p : particles){
             double energy = p.getEnergy(DetectorType.ECAL);
             //p.getPhysicsParticle(22);
-            //System.out.println(" energy = " + energy);
-            //System.out.println(p);
+            //LOGGER.debug(" energy = " + energy);
+            //LOGGER.debug(p);
         }
         
         Vector3 n1 = particles.get(0).getCrossDir();
@@ -158,18 +161,18 @@ public class ECPion {
                 particles.get(1).getResponse(DetectorType.ECAL, 4)!=null                
                 ){
             /*
-            System.out.println("  ENERGIES = " + (e1/0.27) + "  " + (e2/0.27));
-            System.out.println(particles.get(0));
-            System.out.println(particles.get(1));
-            System.out.println(gen);*/
+            LOGGER.debug("  ENERGIES = " + (e1/0.27) + "  " + (e2/0.27));
+            LOGGER.debug(particles.get(0));
+            LOGGER.debug(particles.get(1));
+            LOGGER.debug(gen);*/
             g1.combine(g2, +1);
-            System.out.println(g1.vector().mass2());
+            LOGGER.debug(g1.vector().mass2());
         }
 
-        //System.out.println("  ENERGIES = " + (e1/0.27) + "  " + (e2/0.27));
-        //System.out.println(particles.get(0));
-        //System.out.println(particles.get(1));
-        //System.out.println(gen);
+        //LOGGER.debug("  ENERGIES = " + (e1/0.27) + "  " + (e2/0.27));
+        //LOGGER.debug(particles.get(0));
+        //LOGGER.debug(particles.get(1));
+        //LOGGER.debug(gen);
     }
     
     
@@ -201,18 +204,18 @@ public class ECPion {
         Vector3  dir = g.getCrossDir();
         dir.unit();
         /*
-        System.out.println(" INDEX = " + index_ecin + "  " + index_ecout 
+        LOGGER.debug(" INDEX = " + index_ecin + "  " + index_ecout 
                 + "  energy = " + g.getEnergy(DetectorType.ECAL)
                 + "  " + energy + "  " + String.format("%8.5f %8.5f", dir.theta()*57.29,dir.phi()*57.29));
         */
         
-        //System.out.println(g);
+        //LOGGER.debug(g);
         
         GenericKinematicFitter fitter = new GenericKinematicFitter(11);
         PhysicsEvent gen = fitter.getGeneratedEvent(event);
-        //System.out.println(gen);
+        //LOGGER.debug(gen);
         Particle gamma = gen.getParticle("[22]");
-        System.out.println(String.format("%8.5f %8.5f %8.5f %8.5f %8.5f %8.5f", energy,
+        LOGGER.debug(String.format("%8.5f %8.5f %8.5f %8.5f %8.5f %8.5f", energy,
                 dir.theta()*57.29,dir.phi()*57.29,gamma.vector().p(),
                 gamma.vector().theta()*57.29,gamma.vector().phi()*57.29));
         
@@ -232,7 +235,7 @@ public class ECPion {
             
             //PhysicsEvent gen = fitter.getGeneratedEvent(event);
             //Particle pion = gen.getParticle("[22]+[22,1]");
-            //System.out.println("---> " + pion.mass());
+            //LOGGER.debug("---> " + pion.mass());
         }
     }
 }

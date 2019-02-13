@@ -67,8 +67,8 @@ public final class CTOFGeant4Factory extends Geant4Factory {
     
     public Geant4Basic getPaddle(int ipaddle) {
         if (ipaddle < 1 || ipaddle > npaddles) {
-            System.err.println("ERROR!!!");
-            System.err.println("CTOF Paddle #" + ipaddle + " doesn't exist");
+            LOGGER.warn("ERROR!!!");
+            LOGGER.warn("CTOF Paddle #" + ipaddle + " doesn't exist");
             System.exit(111);
         }
         return motherVolume.getChildren().get(ipaddle - 1);

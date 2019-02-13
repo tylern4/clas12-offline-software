@@ -379,7 +379,7 @@ public class BSTFactory implements Factory <BSTDetector, BSTSector, BSTSuperlaye
 
     @Override
     public void show() {
-        System.out.println(this);
+        LOGGER.debug(this);
     }
     
     @Override

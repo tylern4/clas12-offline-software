@@ -51,7 +51,7 @@ public class StlPrim implements Primitive {
             stlCSG.transform(Transform.unity().scale(scaleFactor));
             polygons.addAll(stlCSG.getPolygons());
         } catch (IOException ex) {
-            System.err.println("STL file is invalid");
+            LOGGER.warn("STL file is invalid");
         }
     }
 
@@ -69,7 +69,7 @@ public class StlPrim implements Primitive {
         try (FileOutputStream outputStream = new FileOutputStream(fname)) {
             stlBuffer.writeTo(outputStream);
         } catch (IOException ex) {
-            Logger.getLogger(StlPrim.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex);
         }
     }
 }

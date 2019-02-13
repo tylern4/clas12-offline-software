@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.jlab.io.base.DataBank;
 import org.jlab.io.base.DataEvent;
 import org.jlab.io.evio.EvioDataBank;
@@ -24,7 +25,7 @@ import org.jlab.io.hipo.HipoDataSync;
  * @author gavalian
  */
 public class Evio2HipoConverter {
-    
+
     public int COMPRESSION_TYPE = 0;
     private Map<String,Integer>   excludedBanks = new LinkedHashMap<String,Integer>();
     

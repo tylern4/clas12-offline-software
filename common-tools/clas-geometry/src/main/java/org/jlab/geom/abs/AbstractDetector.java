@@ -6,6 +6,9 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.geom.DetectorHit;
 import org.jlab.geom.DetectorId;
 import org.jlab.geom.base.Detector;
@@ -90,7 +93,7 @@ public abstract class AbstractDetector<SectorType extends Sector> implements Det
     public final SectorType getSector(int sectorId) {
         SectorType sector = sectorMap.get(sectorId);
         if (sector == null) {
-            System.err.println("AbstractDetector: getSector(int sectorId): no such sector: sectorId=" + sectorId);
+            LOGGER.warn("AbstractDetector: getSector(int sectorId): no such sector: sectorId=" + sectorId);
         }
         return sector;
     }
@@ -129,7 +132,7 @@ public abstract class AbstractDetector<SectorType extends Sector> implements Det
 
     @Override
     public void show() {
-        System.out.println(this);
+        LOGGER.debug(this);
     }
 
     @Override

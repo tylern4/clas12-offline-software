@@ -175,7 +175,7 @@ public class FTCALFactory implements Factory <FTCALDetector, FTCALSector, FTCALS
 
     @Override
     public void show() {
-        System.out.println(this);
+        LOGGER.debug(this);
     }
     
     @Override

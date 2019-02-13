@@ -74,8 +74,8 @@ public class EvioDataSync implements DataSync {
 		 * int extensionIndex = this.evioOutputFile.lastIndexOf("."); if(extensionIndex>=0&&extensionIndex<this.evioOutputFile.length()){ this.evioOutputFile =
 		 * this.evioOutputFile.substring(0, extensionIndex); }
 		 */
-		System.out.println("[EvioDataSync] ---> " + this.evioOutputDirectory);
-		System.out.println("[EvioDataSync] ---> " + this.evioOutputFile);
+		LOGGER.debug("[EvioDataSync] ---> " + this.evioOutputDirectory);
+		LOGGER.debug("[EvioDataSync] ---> " + this.evioOutputFile);
 
 	}
 
@@ -93,7 +93,7 @@ public class EvioDataSync implements DataSync {
 		String dictionary = "<xmlDict>\n" +
 		// EvioDictionaryGenerator.createDAQDictionary(CLASDetectors)
 		        "</xmlDict>\n";
-		System.out.println(dictionary);
+		LOGGER.debug(dictionary);
 		this.currentBytesWritten = (long) 0;
 		this.currentRecordsWritten = (long) 0;
 		File file = new File(filename);
@@ -104,7 +104,7 @@ public class EvioDataSync implements DataSync {
 			// new EventWriter(file, 1000000, 2,
 			// ByteOrder.BIG_ENDIAN, null, null);
 		} catch (EvioException ex) {
-			Logger.getLogger(EvioDataSync.class.getName()).log(Level.SEVERE, null, ex);
+			LOGGER.error(ex);
 		}
 	}
 
@@ -114,11 +114,11 @@ public class EvioDataSync implements DataSync {
 			this.evioWriter.close();
 			this.evioCurrentFileNumber++;
 			this.openFileForWriting();
-			System.out.println("open file # " + this.evioCurrentFileNumber);
+			LOGGER.debug("open file # " + this.evioCurrentFileNumber);
 		}
 
 		try {
-			// System.err.println("[sync] ---> buffer size = " + event.getEventBuffer().limit());
+			// LOGGER.warn("[sync] ---> buffer size = " + event.getEventBuffer().limit());
 			ByteBuffer original = event.getEventBuffer();
 			Long bufferSize = (long) original.capacity();
 			this.currentBytesWritten += bufferSize;
@@ -131,9 +131,9 @@ public class EvioDataSync implements DataSync {
 			clone.flip();
 			evioWriter.writeEvent(clone);
 			// event.getEventBuffer().flip();
-		
+
                 } catch (Exception e){
-                    System.out.println("Something went wrong with writing");   
+                    LOGGER.debug("Something went wrong with writing");
                 }
 	}
 
@@ -145,7 +145,7 @@ public class EvioDataSync implements DataSync {
 			// new EventWriter(file, 1000000, 2,
 			// ByteOrder.BIG_ENDIAN, null, null);
 		} catch (EvioException ex) {
-			Logger.getLogger(EvioDataSync.class.getName()).log(Level.SEVERE, null, ex);
+			LOGGER.error(ex);
 		}
 	}
 
@@ -176,7 +176,7 @@ public class EvioDataSync implements DataSync {
 			ByteOrder byteOrder = writerByteOrder;
 
 			int byteSize = event.getTotalBytes();
-			// System.out.println("base bank size = " + byteSize);
+			// LOGGER.debug("base bank size = " + byteSize);
 			ByteBuffer bb = ByteBuffer.allocate(byteSize);
 			bb.order(byteOrder);
 			event.write(bb);
@@ -184,7 +184,7 @@ public class EvioDataSync implements DataSync {
 
 			return new EvioDataEvent(bb, dict);
 		} catch (EvioException ex) {
-			Logger.getLogger(EvioDataSync.class.getName()).log(Level.SEVERE, null, ex);
+			LOGGER.error(ex);
 		}
 		return null;
 	}
@@ -202,7 +202,7 @@ public class EvioDataSync implements DataSync {
 			ByteOrder byteOrder = writerByteOrder;
 
 			int byteSize = event.getTotalBytes();
-			// System.out.println("base bank size = " + byteSize);
+			// LOGGER.debug("base bank size = " + byteSize);
 			ByteBuffer bb = ByteBuffer.allocate(byteSize);
 			bb.order(byteOrder);
 			event.write(bb);
@@ -211,7 +211,7 @@ public class EvioDataSync implements DataSync {
 			// return new EvioDataEvent(bb);
 			return new EvioDataEvent(bb, EvioFactory.getDictionary());
 		} catch (EvioException ex) {
-			Logger.getLogger(EvioDataSync.class.getName()).log(Level.SEVERE, null, ex);
+			LOGGER.error(ex);
 		}
 		return null;
 	}

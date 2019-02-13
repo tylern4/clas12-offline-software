@@ -30,6 +30,9 @@
 
 package eu.mihosoft.vrl.v3d;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.List;
 
 /**
@@ -38,7 +41,7 @@ import java.util.List;
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public interface Primitive {
-
+    Logger LOGGER = LogManager.getLogger(Primitive.class.getName());
     /**
      * Returns the polygons that define this primitive.
      *

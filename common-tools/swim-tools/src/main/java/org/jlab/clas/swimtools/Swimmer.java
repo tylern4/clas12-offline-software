@@ -5,6 +5,8 @@
  */
 package org.jlab.clas.swimtools;
 import cnuphys.magfield.MagneticFields;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.HashMap;
 /**
@@ -14,7 +16,7 @@ import java.util.HashMap;
 
 
 public class Swimmer {
-    
+    public static Logger LOGGER = LogManager.getLogger(Swimmer.class.getName());
     private static HashMap<Thread, ProbeCollection> swimmers = new HashMap<>();
     
     public static ProbeCollection getProbeCollection(Thread thr){
@@ -73,8 +75,8 @@ public class Swimmer {
         //remove overlap for composite field
         //MagneticFields.getInstance().removeMapOverlap();
         FieldsLoaded = true;
-        System.out.println(" TRACKING ***** ****** ****** THE TORUS IS BEING SCALED BY " + (TorusScale * 100) + "  %   *******  ****** **** ");
-        System.out.println(" TRACKING ***** ****** ****** THE SOLENOID IS BEING SCALED BY " + (SolenoidScale * 100) + "  %   *******  ****** **** ");   
+        LOGGER.debug(" TRACKING ***** ****** ****** THE TORUS IS BEING SCALED BY " + (TorusScale * 100) + "  %   *******  ****** **** ");
+        LOGGER.debug(" TRACKING ***** ****** ****** THE SOLENOID IS BEING SCALED BY " + (SolenoidScale * 100) + "  %   *******  ****** **** ");   
     }
     
     public static synchronized void setMagneticFieldsScales(double SolenoidScale, double TorusScale, 
@@ -98,8 +100,8 @@ public class Swimmer {
         //remove overlap for composite field
         //MagneticFields.getInstance().removeMapOverlap();
         FieldsLoaded = true;
-        System.out.println(" TRACKING ***** ****** ****** THE TORUS IS BEING SCALED BY " + (TorusScale * 100) + "  %   *******  ****** **** ");
-        System.out.println(" TRACKING ***** ****** ****** THE SOLENOID IS BEING SCALED BY " + (SolenoidScale * 100) + "  %   *******  ****** **** ");   
+        LOGGER.debug(" TRACKING ***** ****** ****** THE TORUS IS BEING SCALED BY " + (TorusScale * 100) + "  %   *******  ****** **** ");
+        LOGGER.debug(" TRACKING ***** ****** ****** THE SOLENOID IS BEING SCALED BY " + (SolenoidScale * 100) + "  %   *******  ****** **** ");   
     }
 
     private static double SOLSCALE = -1;

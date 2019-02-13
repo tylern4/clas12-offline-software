@@ -50,7 +50,7 @@ public class AbsDetectorDataDecoder implements DetectorDataDecoder {
     @Override
     public List<DetectorDataDgtz> decode(List<DetectorDataDgtz> dgtzData) {
         if(this.translationTable==null){
-            System.out.println("[AbsDetectorDataDecoder] **** error *** the table for ["
+            LOGGER.debug("[AbsDetectorDataDecoder] **** error *** the table for ["
                     + detectorName + "] is not present.");
             return new ArrayList<DetectorDataDgtz>();
         }
@@ -80,17 +80,17 @@ public class AbsDetectorDataDecoder implements DetectorDataDecoder {
         List<DetectorDataDgtz> translatedData = this.decode(dgtzData);      
         List<DetectorDataDgtz> tdc = AbsDetectorDataDecoder.getTDCData(translatedData);
         List<DetectorDataDgtz> adc = AbsDetectorDataDecoder.getADCData(translatedData);
-        //System.out.println(String.format("%8s: data size = %8d , decoded data size = %d  ADC = %d , TDC = %d",this.getName(),
+        //LOGGER.debug(String.format("%8s: data size = %8d , decoded data size = %d  ADC = %d , TDC = %d",this.getName(),
         //        dgtzData.size(),translatedData.size(),adc.size(),tdc.size()));
 
         List<DataBank>  dataBanks = new ArrayList<DataBank>();
         if(tdc.size()>0){
             DataBank  bankTDC = event.createBank(detectorName+"::tdc", tdc.size());
             if(bankTDC==null){
-                System.out.println(" ERROR Trying to create bank " + detectorName+"::tdc");
-                System.out.println(" TDC ARRAY LENGTH = " + tdc.size());
+                LOGGER.debug(" ERROR Trying to create bank " + detectorName+"::tdc");
+                LOGGER.debug(" TDC ARRAY LENGTH = " + tdc.size());
                 for(DetectorDataDgtz d : tdc){
-                    System.out.println(d);
+                    LOGGER.debug(d);
                 }
             }
             if(bankTDC!=null){
@@ -128,7 +128,7 @@ public class AbsDetectorDataDecoder implements DetectorDataDecoder {
                 System.arraycopy(buffer.array(), 0, pulseBuffer.array(), position, packedLength);
                 position += packedLength;
                 //System.out.print(String.format("%08X : ", data.getDescriptor().getHashCode()));
-                //System.out.println(
+                //LOGGER.debug(
                 //        data.getDescriptor().toString() + " PULSE SIZE = " 
                 //        + pulse.length*2 + "  LENGTH = " + buffer.limit());
                 
@@ -160,7 +160,7 @@ public class AbsDetectorDataDecoder implements DetectorDataDecoder {
         for(DetectorDataDgtz dgtz : dgtzData){
             if(dgtz.getADCSize()>0){
                 for(int i = 0; i < dgtz.getADCSize(); i++){
-                    //System.out.println(" ADC " + i + "  PULSE SIZE = " + dgtz.getADCData(i).getPulseSize());
+                    //LOGGER.debug(" ADC " + i + "  PULSE SIZE = " + dgtz.getADCData(i).getPulseSize());
                 }
                 adc.add(dgtz);
             }

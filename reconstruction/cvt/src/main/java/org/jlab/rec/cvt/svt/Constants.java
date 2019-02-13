@@ -2,13 +2,15 @@ package org.jlab.rec.cvt.svt;
 
 import java.util.ArrayList;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.geom.prim.Point3D;
 import org.jlab.geom.prim.Shape3D;
 import org.jlab.geom.prim.Triangle3D;
 
 public class Constants {
 
-
+    public static Logger LOGGER = LogManager.getLogger(Constants.class.getName());
     /**
      * Constants used in the reconstruction
      */
@@ -383,7 +385,7 @@ public class Constants {
         }
 
         areConstantsLoaded = true;
-        System.out.println(" SVT geometry constants loaded ? " + areConstantsLoaded);
+        LOGGER.debug(" SVT geometry constants loaded ? " + areConstantsLoaded);
 
     }
 

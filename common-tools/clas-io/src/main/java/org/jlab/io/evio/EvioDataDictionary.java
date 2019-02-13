@@ -68,7 +68,7 @@ public class EvioDataDictionary implements DataDictionary {
 	public final void initWithEnv(String envname, String relative_path) {
 		String ENVDIR = System.getenv(envname);
 		if (ENVDIR == null) {
-			System.out.println("---> Warning the CLAS12DIR environment is not defined.");
+			LOGGER.debug("---> Warning the CLAS12DIR environment is not defined.");
 			return;
 		}
 		String dict_path = ENVDIR + "/" + relative_path;
@@ -87,23 +87,23 @@ public class EvioDataDictionary implements DataDictionary {
 		ArrayList<String> ignorePrefixes = new ArrayList<String>();
 		ignorePrefixes.add(".");
 		ignorePrefixes.add("_");
-		System.err.println("[EvioDataDictionary]---> loading bankdefs from directory : " + dirname);
+		LOGGER.warn("[EvioDataDictionary]---> loading bankdefs from directory : " + dirname);
 		File dict_dir = new File(dirname);
 
 		if (dict_dir.exists() == false) {
-			System.err.println("[EvioDataDictionary]---> Directory does not exist.....");
+			LOGGER.warn("[EvioDataDictionary]---> Directory does not exist.....");
 			return;
 		}
 
 		ArrayList<String> xmlFileList = FileUtils.filesInFolder(dict_dir, "xml", ignorePrefixes);
-		System.err.println("[EvioDataDictionary]------> number of XML files located  : " + xmlFileList.size());
+		LOGGER.warn("[EvioDataDictionary]------> number of XML files located  : " + xmlFileList.size());
 		Integer counter = 0;
 		for (String file : xmlFileList) {
 			ArrayList<EvioDataDescriptor> descList = DictionaryLoader.getDescriptorsFromFile(file);
 			// ArrayList<String> descList = DictionaryLoader.descriptorParseXMLtoString(file);
 			for (EvioDataDescriptor desc : descList) {
 				descriptors.put(desc.getName(), desc);
-				// System.out.println(" rev = " + counter + " desc = " + desc.getName());
+				// LOGGER.debug(" rev = " + counter + " desc = " + desc.getName());
 				// ArrayList<EvioDataDescriptor> descList =
 				// EvioDataDescriptor desc = new EvioDataDescriptor();
 				// desc.init(format);
@@ -111,18 +111,18 @@ public class EvioDataDictionary implements DataDictionary {
 				counter++;
 			}
 		}
-		System.err.println("[EvioDataDictionary]--> total number of descriptors found  : " + counter.toString());
+		LOGGER.warn("[EvioDataDictionary]--> total number of descriptors found  : " + counter.toString());
 	}
 
 	public void show() {
 		TablePrintout table = new TablePrintout("Bank:Columns:Tag:Number", "42:8:8:8");
 		for (Map.Entry<String, EvioDataDescriptor> entry : descriptors.entrySet()) {
-			// System.out.println(" step 1 ");
+			// LOGGER.debug(" step 1 ");
 			String name = entry.getKey();
 			String[] info = new String[4];
-			// System.out.println(" step 2 ");
+			// LOGGER.debug(" step 2 ");
 			info[0] = name;
-			// System.out.println(" step 3 ");
+			// LOGGER.debug(" step 3 ");
 			Integer nentries = descriptors.get(name).getEntryList().length;
 			info[1] = nentries.toString();
 			Integer tag = descriptors.get(name).getProperty("tag");
@@ -167,7 +167,7 @@ public class EvioDataDictionary implements DataDictionary {
 
 	public DataBank createBank(String name, int rows) {
 		if (descriptors.containsKey(name) == false) {
-			System.out.println("[EvioDataDictionary]:: ERROR ---> no descriptor with name = " + name + " is found");
+			LOGGER.debug("[EvioDataDictionary]:: ERROR ---> no descriptor with name = " + name + " is found");
 		}
 		EvioDataDescriptor desc = descriptors.get(name);
 		EvioDataBank bank = new EvioDataBank(desc);

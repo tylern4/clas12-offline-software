@@ -3,6 +3,9 @@ package org.jlab.rec.dc.track.fit;
 import Jama.Matrix;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.clas.clas.math.FastMath;
 import org.jlab.clas.swimtools.Swim;
 import org.jlab.geom.prim.Point3D;
@@ -10,6 +13,7 @@ import org.jlab.rec.dc.cross.Cross;
 import org.jlab.rec.dc.track.Track;
 
 public class StateVecs {
+    public static Logger LOGGER = LogManager.getLogger(StateVec.class.getName());
     private double Bmax = 2.366498; // averaged
     
     final double speedLight = 0.002997924580;
@@ -72,7 +76,7 @@ public class StateVecs {
         double BatMeas = iVec.B;
         
         while(Math.signum(Z[f] - Z[i]) *z<Math.signum(Z[f] - Z[i]) *Z[f]) {
-            //System.out.println(" RK step num "+(j+1)+" = "+(float)s+" nSteps = "+nSteps);
+            //LOGGER.debug(" RK step num "+(j+1)+" = "+(float)s+" nSteps = "+nSteps);
             double x =  fVec.x;
             double y =  fVec.y;
             z = fVec.z;
@@ -83,7 +87,7 @@ public class StateVecs {
             covMat.covMat = fCov.covMat; 
             
             s= Math.signum(Z[f] - Z[i]) * stepSize;
-           // System.out.println(" from "+(float)Z[i]+" to "+(float)Z[f]+" at "+(float)z+" By is "+bf[1]+" B is "+Math.sqrt(bf[0]*bf[0]+bf[1]*bf[1]+bf[2]*bf[2])/Bmax+" stepSize is "+s);
+           // LOGGER.debug(" from "+(float)Z[i]+" to "+(float)Z[f]+" at "+(float)z+" By is "+bf[1]+" B is "+Math.sqrt(bf[0]*bf[0]+bf[1]*bf[1]+bf[2]*bf[2])/Bmax+" stepSize is "+s);
             if(Math.signum(Z[f] - Z[i]) *(z+s)>Math.signum(Z[f] - Z[i]) *Z[f])
                 s=Math.signum(Z[f] - Z[i]) *Math.abs(Z[f]-z);
             
@@ -131,7 +135,7 @@ public class StateVecs {
             if (j == nSteps - 1) {
                 s = Math.signum(Z[f] - Z[i]) * Math.abs(z - Z[f]);
             }
-            //System.out.println(" RK step num "+(j+1)+" = "+(float)s+" nSteps = "+nSteps);
+            //LOGGER.debug(" RK step num "+(j+1)+" = "+(float)s+" nSteps = "+nSteps);
             double x =  fVec.x;
             double y =  fVec.y;
             z = fVec.z;
@@ -227,7 +231,7 @@ public class StateVecs {
             kf.setFitFailed = true;
             return;
         }
-        //System.out.println((0)+"] init "+this.trackTraj.get(0).x+","+this.trackTraj.get(0).y+","+
+        //LOGGER.debug((0)+"] init "+this.trackTraj.get(0).x+","+this.trackTraj.get(0).y+","+
         //		this.trackTraj.get(0).z+","+this.trackTraj.get(0).tx+","+this.trackTraj.get(0).ty+" "+1/this.trackTraj.get(0).Q); 
         double err_sl1 = trkcand.get(0).get_Segment1().get_fittedCluster().get_clusterLineFitSlopeErr();
         double err_sl2 = trkcand.get(0).get_Segment2().get_fittedCluster().get_clusterLineFitSlopeErr();
@@ -258,7 +262,7 @@ public class StateVecs {
     public void printMatrix(Matrix C) {
         for (int k = 0; k < 5; k++) {
             for (int j = 0; j < 5; j++) {
-                System.out.println("C["+j+"]["+k+"] = "+C.get(j, k));
+                LOGGER.debug("C["+j+"]["+k+"] = "+C.get(j, k));
             }
         }
     }

@@ -61,7 +61,7 @@ public class DetectorShape3DStore {
             int xmax = this.detectorShapes.get(0).getMaxX();
             int ymin = this.detectorShapes.get(0).getMinY();
             int ymax = this.detectorShapes.get(0).getMaxY();
-            //System.out.println("Updating draw region with Shapes = " + this.detectorShapes.size());
+            //LOGGER.debug("Updating draw region with Shapes = " + this.detectorShapes.size());
             
             for(DetectorShape3D shape : this.detectorShapes){
                 if(shape.getMinX()<xmin) xmin = shape.getMinX();
@@ -109,7 +109,7 @@ public class DetectorShape3DStore {
         int xc = this.getCoordinateX(x,width);
         int yc = this.getCoordinateY(y,height);
         for(DetectorShape3D shape : this.detectorShapes){
-            //System.out.println("COMPONENT " + counter);
+            //LOGGER.debug("COMPONENT " + counter);
             //comp.show();
             if(shape.shapePolygon.contains(xc, yc)==true){
                 shape.isActive = true;
@@ -136,19 +136,19 @@ public class DetectorShape3DStore {
         
         g2d.setColor(new Color(165,155,155));
         g2d.fillRect(xoff, yoff, width, height);
-        //System.out.println("Drawing Detector Layer SIZE = " + this.components.size());
+        //LOGGER.debug("Drawing Detector Layer SIZE = " + this.components.size());
         float[] value = new float[6];
         for(DetectorShape3D shape : this.detectorShapes){
             int[] x = shape.shapePolygon.xpoints;
             int[] y = shape.shapePolygon.ypoints;
-            //System.out.println("POLYGON SIZE = " + x.length);
+            //LOGGER.debug("POLYGON SIZE = " + x.length);
 
             GeneralPath path = new GeneralPath();
             path.moveTo(getX(x[0],width), getY(y[0],height));
             for(int loop = 1; loop < shape.shapePolygon.npoints; loop++){
                 //if(getX(x[loop],width)!=0&&getY(y[loop],height)!=0)
                 path.lineTo(getX(x[loop],width), getY(y[loop],height));
-                /*System.out.println("PLOTTING : " + loop + "  " + x[loop]
+                /*LOGGER.debug("PLOTTING : " + loop + "  " + x[loop]
                 + " " + y[loop]);*/
             }
             
@@ -159,7 +159,7 @@ public class DetectorShape3DStore {
                 if(shape.COMPONENT%2==0) g2d.setColor(this.shapeColorEven);
             } else {
                 Color col = this.colorIntensityMap.getColor(shape.SECTOR, shape.LAYER, shape.COMPONENT);
-                //System.out.println("Setting intensity color");
+                //LOGGER.debug("Setting intensity color");
                 g2d.setColor(col);
             }
                         

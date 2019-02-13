@@ -155,7 +155,7 @@ public class FTParticle {
                     Line3D  dist = cross.distance(response.getPosition().toPoint3D());
                     double hitdistance = dist.length();
                     double timedistance = this.getTime()-response.getTime();
- //                   System.out.println(" LOOP = " + loop + "   distance = " + hitdistance);
+ //                   LOGGER.debug(" LOOP = " + loop + "   distance = " + hitdistance);
                     if(timedistance<timeThresholds&&hitdistance<distanceThreshold&&hitdistance<minimumDistance){
                         minimumDistance = hitdistance;
                         bestIndex       = loop;

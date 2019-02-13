@@ -1,5 +1,7 @@
 package org.jlab.detector.geant4.v2.SVT;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.detector.calib.utils.DatabaseConstantProvider;
 import org.jlab.geometry.prim.Line3d;
 
@@ -28,6 +30,7 @@ import eu.mihosoft.vrl.v3d.Vector3d;
  */
 public class SVTStripFactory
 {
+	public static Logger LOGGER = LogManager.getLogger(SVTStripFactory.class.getName());
 	private boolean bShift = false; // switch to select whether alignment shifts are applied
 	private double scaleT = 1.0, scaleR = 1.0;
 	
@@ -47,7 +50,7 @@ public class SVTStripFactory
 		SVTConstants.load( cp );
 		setApplyAlignmentShifts( applyAlignmentShifts );
 		if( bShift == true && SVTConstants.getDataAlignmentSectorShift() == null ){
-			System.err.println("error: SVTStripFactory: no shifts loaded");
+			LOGGER.warn("error: SVTStripFactory: no shifts loaded");
 			System.exit(-1);
 		}
 	}
@@ -141,7 +144,7 @@ public class SVTStripFactory
 	 */
 	public Line3d getIdealStrip( int aRegion, int aSector, int aModule, int aStrip ) throws IllegalArgumentException // lab frame
 	{
-		//System.out.println("r "+ aRegion +" s "+ aSector +" m "+ aModule );
+		//LOGGER.debug("r "+ aRegion +" s "+ aSector +" m "+ aModule );
 		if( aRegion < 0 || aRegion > SVTConstants.NREGIONS-1 ){ throw new IllegalArgumentException("region out of bounds"); }
 		if( aSector < 0 || aSector > SVTConstants.NSECTORS[aRegion]-1 ){ throw new IllegalArgumentException("sector out of bounds"); }
 		if( aModule < 0 || aModule > SVTConstants.NMODULES-1 ){ throw new IllegalArgumentException("module out of bounds"); }
@@ -210,18 +213,18 @@ public class SVTStripFactory
 		{
 			x1 = x0 - q;
 			z1 = SVTConstants.STRIPLENMAX;
-			//System.out.println("strip end");
+			//LOGGER.debug("strip end");
 			//r = q*Math.sin(a);
 		}
 		else
 		{
 			//x1 = 0;
 			z1 = x0/Math.tan(a);
-			//System.out.println("strip side");
+			//LOGGER.debug("strip side");
 			//r = x0*Math.sin(a);
 		}
 		
-		/*System.out.println();
+		/*LOGGER.debug();
 		System.out.printf("ACTIVESENWID    %8.3f\n", ACTIVESENWID );
 		System.out.printf("ACTIVESENLEN    %8.3f\n", ACTIVESENLEN );
 		System.out.printf("NSTRIPS         % d\n", NSTRIPS );
@@ -234,7 +237,7 @@ public class SVTStripFactory
 		System.out.printf("STRIPWID        % 8.3f\n", STRIPWID );
 		System.out.printf("STRIPWID*1.5    % 8.3f\n", STRIPWID*1.5 );
 		System.out.printf("READOUTPITCH    % 8.3f\n", READOUTPITCH );
-		System.out.println();
+		LOGGER.debug();
 		System.out.printf("s   %3d\n", aStrip );
 		System.out.printf("w  % 8.3f\n", w );
 		System.out.printf("a  % 8.3f\n", Math.toDegrees(a) );
@@ -244,16 +247,16 @@ public class SVTStripFactory
 		System.out.printf("x1 % 8.3f\n", x1 );
 		System.out.printf("z1 % 8.3f\n", z1 );*/
 		
-		/*System.out.println("STRIPWID "+ d );
-		System.out.println("NSTRIPS "+ NSTRIPS );
-		System.out.println("ACTIVESENWID = "+ ACTIVESENWID );
-		System.out.println("calc wid     = "+ ((NSTRIPS-1)*p + 2*1.5*d) );
-		System.out.println("READOUTPITCH = "+ p );
-		System.out.println("STRIPWID*2   = "+ 2*d );
-		System.out.println("STRIPWID*2*1.5 = "+ 2*1.5*d );
-		System.out.println("calc W-(N-1)*p = "+ (ACTIVESENWID - (NSTRIPS-1)*p) );
-		System.out.println("calc (N-1)*p   = "+ (NSTRIPS-1)*p );
-		System.out.println("calc W-3*d     = "+ (ACTIVESENWID - 2*1.5*d) );*/
+		/*LOGGER.debug("STRIPWID "+ d );
+		LOGGER.debug("NSTRIPS "+ NSTRIPS );
+		LOGGER.debug("ACTIVESENWID = "+ ACTIVESENWID );
+		LOGGER.debug("calc wid     = "+ ((NSTRIPS-1)*p + 2*1.5*d) );
+		LOGGER.debug("READOUTPITCH = "+ p );
+		LOGGER.debug("STRIPWID*2   = "+ 2*d );
+		LOGGER.debug("STRIPWID*2*1.5 = "+ 2*1.5*d );
+		LOGGER.debug("calc W-(N-1)*p = "+ (ACTIVESENWID - (NSTRIPS-1)*p) );
+		LOGGER.debug("calc (N-1)*p   = "+ (NSTRIPS-1)*p );
+		LOGGER.debug("calc W-3*d     = "+ (ACTIVESENWID - 2*1.5*d) );*/
 		
 		Line3d stripLine = new Line3d( new Vector3d( x0, 0.0, z0 ), new Vector3d( x1, 0.0, z1 ) );
 		return stripLine.transformed(SVTConstants.getStripFrame( aModule == 1 )); // strip frame -> local frame

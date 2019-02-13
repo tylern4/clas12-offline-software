@@ -1,6 +1,9 @@
 package org.jlab.geom.base;
 
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.geom.DetectorHit;
 import org.jlab.geom.DetectorId;
 import org.jlab.geom.Showable;
@@ -34,6 +37,7 @@ import org.jlab.geom.prim.Transformation3D;
  * the {@code Sector}
  */
 public interface Sector<SuperlayerType extends Superlayer> extends Showable {
+    Logger LOGGER = LogManager.getLogger(Sector.class.getName());
     /**
      * Returns the id of the detector that this sector is contained in.
      * @return the id of this sector's detector
@@ -108,7 +112,7 @@ public interface Sector<SuperlayerType extends Superlayer> extends Showable {
     String getType();
     
     /**
-     * Invokes {@code System.out.println(this)}.
+     * Invokes {@code LOGGER.debug(this)}.
      */
     void show();
 }

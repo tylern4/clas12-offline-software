@@ -4,6 +4,9 @@
 package org.jlab.rec.tof.hit;
 
 import java.text.DecimalFormat;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.geom.prim.Line3D;
 
 import org.jlab.geom.prim.Point3D;
@@ -14,7 +17,7 @@ import org.jlab.utils.groups.IndexedTable;
  *
  */
 public abstract class AHit implements Comparable<AHit> {
-
+    public static Logger LOGGER = LogManager.getLogger(AHit.class.getName());
     /**
      * A hit class describing a hit in either the FTOF or the CTOF
      */
@@ -1267,6 +1270,6 @@ public abstract class AHit implements Comparable<AHit> {
                     + "  zPos =  " + form.format(this.get_Position().z())
                     + "\n ";
         }
-        System.out.println(s);
+        LOGGER.debug(s);
     }
 }

@@ -1,7 +1,10 @@
 package org.jlab.rec.cvt;
 
-public class Constants {
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+public class Constants {
+    public static Logger LOGGER = LogManager.getLogger(Constants.class.getName());
     /**
      * Constants used in the reconstruction
      */
@@ -243,7 +246,7 @@ public class Constants {
         org.jlab.rec.cvt.bmt.Constants.Load();
 
         areConstantsLoaded = true;
-        System.out.println("CVT constants loaded ? " + areConstantsLoaded);
+        LOGGER.debug("CVT constants loaded ? " + areConstantsLoaded);
 
         if(Math.abs(SolenoidScale)<0.001)
             Constants.setCosmicsData(true);

@@ -41,7 +41,7 @@ public class FTCALDetector extends AbstractDetector<FTCALSector> {
     public List<DetectorComponentUI> getLayerUI(int sector, int superlayer, int layer){
         ArrayList<DetectorComponentUI> components = new ArrayList<DetectorComponentUI>();
         List<ScintillatorPaddle> paddles = this.getSector(sector).getSuperlayer(superlayer).getLayer(layer).getAllComponents();
-        System.out.println("FTCAL paddles # = " + paddles.size());
+        LOGGER.debug("FTCAL paddles # = " + paddles.size());
         int counter = 0;
         for(ScintillatorPaddle paddle : paddles){
             counter++;
@@ -50,7 +50,7 @@ public class FTCALDetector extends AbstractDetector<FTCALSector> {
             entry.LAYER  = superlayer;
             entry.COMPONENT = paddle.getComponentId();
             if(counter<10){
-            System.out.println("PADDLE ID = " + entry.COMPONENT);
+            LOGGER.debug("PADDLE ID = " + entry.COMPONENT);
             paddle.show();
             //paddle.getVolumeShape().show();
            

@@ -5,6 +5,9 @@
  */
 package org.jlab.utils.groups;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.util.ArrayList;
@@ -24,7 +27,7 @@ import javax.swing.table.DefaultTableModel;
  * @author gavalian
  */
 public class IndexedTable extends DefaultTableModel {
-    
+    public static Logger LOGGER = LogManager.getLogger(IndexedTable.class.getName());
     private String tableName        = "IndexedTable";
     private String tableDescription = "Table of indexed values";
     private IndexedList<IndexedEntry> entries    = null;
@@ -87,7 +90,7 @@ public class IndexedTable extends DefaultTableModel {
     }
     
     public  void addEntry(int... index){
-        //System.out.println("adding entry with size = " + entryMap.size());
+        //LOGGER.debug("adding entry with size = " + entryMap.size());
         this.entries.add(new IndexedEntry(entryMap.size()), index);       
     }
     
@@ -111,10 +114,10 @@ public class IndexedTable extends DefaultTableModel {
      
     public  void setIntValue(Integer value, String item, int... index){
         if(this.entries.hasItem(index)==false){
-            if(DEBUG_MODE>0) System.out.println( "[IndexedTable] ---> error.. entry does not exist");
+            if(DEBUG_MODE>0) LOGGER.debug( "[IndexedTable] ---> error.. entry does not exist");
         } else {
             if(this.entryMap.containsKey(item)==false){
-              if(DEBUG_MODE>0) System.out.println( "[IndexedTable] ---> error.. entry does not have item = " + item);
+              if(DEBUG_MODE>0) LOGGER.debug( "[IndexedTable] ---> error.. entry does not have item = " + item);
             } else {
                 Integer mapIndex = this.entryMap.get(item);
                 this.entries.getItem(index).setValue(mapIndex, value);
@@ -124,10 +127,10 @@ public class IndexedTable extends DefaultTableModel {
     
     public  void setDoubleValue(Double value, String item, int... index){
         if(this.entries.hasItem(index)==false){
-            if(DEBUG_MODE>0) System.out.println( "[IndexedTable] ---> error.. entry does not exist");
+            if(DEBUG_MODE>0) LOGGER.debug( "[IndexedTable] ---> error.. entry does not exist");
         } else {
             if(this.entryMap.containsKey(item)==false){
-               if(DEBUG_MODE>0) System.out.println( "[IndexedTable] ---> error.. entry does not have item = " + item);
+               if(DEBUG_MODE>0) LOGGER.debug( "[IndexedTable] ---> error.. entry does not have item = " + item);
             } else {
                 Integer mapIndex = this.entryMap.get(item);
                 this.entries.getItem(index).setValue(mapIndex, value);
@@ -137,10 +140,10 @@ public class IndexedTable extends DefaultTableModel {
     
     public int  getIntValue(String item, int... index){
         if(this.entries.hasItem(index)==false){
-            if(DEBUG_MODE>0) System.out.println( "[IndexedTable] ---> error.. entry does not exist");
+            if(DEBUG_MODE>0) LOGGER.debug( "[IndexedTable] ---> error.. entry does not exist");
         } else {
             if(this.entryMap.containsKey(item)==false){
-               if(DEBUG_MODE>0) System.out.println( "[IndexedTable] ---> error.. entry does not have item = " + item);
+               if(DEBUG_MODE>0) LOGGER.debug( "[IndexedTable] ---> error.. entry does not have item = " + item);
             } else {
                 Integer mapIndex = this.entryMap.get(item);
                 return this.entries.getItem(index).getValue(mapIndex).intValue();
@@ -151,10 +154,10 @@ public class IndexedTable extends DefaultTableModel {
     
     public double  getDoubleValue(String item, int... index){
         if(this.entries.hasItem(index)==false){
-            if(DEBUG_MODE>0) System.out.println( "[IndexedTable] ---> error.. entry does not exist");
+            if(DEBUG_MODE>0) LOGGER.debug( "[IndexedTable] ---> error.. entry does not exist");
         } else {
             if(this.entryMap.containsKey(item)==false){
-                if(DEBUG_MODE>0) System.out.println( "[IndexedTable] ---> error.. entry does not have item = " + item);
+                if(DEBUG_MODE>0) LOGGER.debug( "[IndexedTable] ---> error.. entry does not have item = " + item);
             } else {
                 Integer mapIndex = this.entryMap.get(item);
                 return this.entries.getItem(index).getValue(mapIndex).doubleValue();
@@ -188,7 +191,7 @@ public class IndexedTable extends DefaultTableModel {
     public void addEntryFromString(String[] values){
         int entrySize = entryNames.size() + entries.getIndexSize();
         if(values.length!=entrySize){
-            System.out.println("[addEntryFromString] error ---> sizes do not match " 
+            LOGGER.debug("[addEntryFromString] error ---> sizes do not match " 
                     + " ( entry Size = " + entrySize + " ,  array size = " +
                     values.length + " )");
             return;            
@@ -210,7 +213,7 @@ public class IndexedTable extends DefaultTableModel {
     }
     
     public void show(){        
-        System.out.println(toString());
+        LOGGER.debug(toString());
     }
     
     @Override
@@ -285,7 +288,7 @@ public class IndexedTable extends DefaultTableModel {
     
     @Override
     public int getRowCount(){
-        //System.out.println("RAW COUNT is " + this.arrayEntries.size());
+        //LOGGER.debug("RAW COUNT is " + this.arrayEntries.size());
         //return this.arrayEntries.size();
         //return 2;
         int nrows = 0;
@@ -307,14 +310,14 @@ public class IndexedTable extends DefaultTableModel {
         for(int i = 0; i < row; i++){
             value = (Long) iter.next();
         }
-        //System.out.println();
+        //LOGGER.debug();
         if(column<entries.getIndexSize()){
             Integer index = IndexedList.IndexGenerator.getIndex(value, column);
             return index.toString();
         }
         
         IndexedEntry  trow = entries.getMap().get(value);
-        //System.out.println(" number of rows = " + trow.getSize() + "  " + (column-ic));
+        //LOGGER.debug(" number of rows = " + trow.getSize() + "  " + (column-ic));
         /*if((column-ic)>=trow.getSize()){
             return "0";
         }*/

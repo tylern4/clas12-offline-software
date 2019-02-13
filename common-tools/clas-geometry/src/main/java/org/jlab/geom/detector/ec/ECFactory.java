@@ -150,7 +150,7 @@ public class ECFactory implements Factory<ECDetector, ECSector, ECSuperlayer, EC
         if (superlayerId==2 && !(0<=layerId && layerId<24)) // Outer EC
             throw new IllegalArgumentException("Error: invalid invalid superlayer="+superlayerId+" layer="+layerId);
         
-//        System.out.println(sectorId+" "+superlayerId+" "+layerId);
+//        LOGGER.debug(sectorId+" "+superlayerId+" "+layerId);
         switch (superlayerId) {
             case 0: switch(layerId%3) {
                 case 0: return createPCALU(cp, sectorId, layerId);
@@ -671,7 +671,7 @@ public class ECFactory implements Factory<ECDetector, ECSector, ECSuperlayer, EC
 
     @Override
     public void show() {
-        System.out.println(this);
+        LOGGER.debug(this);
     }
     
     @Override

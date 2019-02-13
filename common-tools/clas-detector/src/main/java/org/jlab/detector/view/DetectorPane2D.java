@@ -5,6 +5,9 @@
  */
 package org.jlab.detector.view;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -26,7 +29,7 @@ import javax.swing.border.SoftBevelBorder;
  * @author gavalian
  */
 public class DetectorPane2D extends JPanel implements ActionListener {
-    
+    public static Logger LOGGER = LogManager.getLogger(DetectorPane2D.class.getName());
     JPanel          buttonsPane = null;
     JPanel          toolbarPane = null;
     DetectorView2D       view2D = new DetectorView2D();
@@ -69,7 +72,7 @@ public class DetectorPane2D extends JPanel implements ActionListener {
                 @Override
                 public void itemStateChanged(ItemEvent e) {
                     JCheckBox box = (JCheckBox) e.getItem();
-                    //System.out.println("changed " + box.getActionCommand());
+                    //LOGGER.debug("changed " + box.getActionCommand());
                     if(box.isSelected()==false){
                         view2D.setLayerActive(box.getActionCommand(), false);
                         view2D.repaint();
@@ -80,11 +83,11 @@ public class DetectorPane2D extends JPanel implements ActionListener {
                 }
             });
             
-            System.out.println(" adding check box " + name);
+            LOGGER.debug(" adding check box " + name);
             checkBoxPane.add(cb);
         }
         this.buttonsPane.add(checkBoxPane);
-        System.out.println(" check box created");
+        LOGGER.debug(" check box created");
         
         JCheckBox  hitMap = new JCheckBox("Hit Map");
         hitMap.addItemListener(new ItemListener(){
@@ -121,11 +124,11 @@ public class DetectorPane2D extends JPanel implements ActionListener {
         if(e.getActionCommand().compareTo("background")==0){
             Color c = JColorChooser.showDialog(this, "Choose a Color",Color.BLACK);
             if (c != null){
-                System.out.println("change background color");
+                LOGGER.debug("change background color");
                 //view2D.setBackground(c);
                 view2D.changeBackground(c);
             } else {
-                System.out.println(" color is NULL ");
+                LOGGER.debug(" color is NULL ");
             }
 
         }

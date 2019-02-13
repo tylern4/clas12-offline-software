@@ -1,4 +1,6 @@
 package org.jlab.rec.cvt.track;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.rec.cvt.cross.Cross;
 import org.jlab.geom.prim.Vector3D;
 //import org.jlab.geom.prim.Point3D;
@@ -16,6 +18,7 @@ import javax.vecmath.Vector2d;
  */
 
 public class Cell implements Comparable<Cell> {
+	public static Logger LOGGER = LogManager.getLogger(Cell.class.getName());
 	private Cross _c1;     // first terminal of the cell
 	private Cross _c2;     // last terminal of the cell
 	private Vector3D _dir; // direction of the cell
@@ -65,7 +68,7 @@ public class Cell implements Comparable<Cell> {
 	}
 	public Point2d get_Crs2D( int i, String vw ){
 		if( i < 1 || i > 2){
-			System.err.println("ERROR, please select 1 or 2 for the first or second cross");
+			LOGGER.warn("ERROR, please select 1 or 2 for the first or second cross");
 			return null;
 		}
 		Cross cross;

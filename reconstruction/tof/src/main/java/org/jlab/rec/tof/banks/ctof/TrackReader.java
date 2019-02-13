@@ -51,7 +51,7 @@ public class TrackReader {
     public void fetch_Trks(DataEvent event) {
 
         if (event.hasBank("CVTRec::Tracks") == false) {
-            // System.err.println("there is no CVT bank ");
+            // LOGGER.warn("there is no CVT bank ");
 
             _TrkLines = new ArrayList<Line3d>();
 

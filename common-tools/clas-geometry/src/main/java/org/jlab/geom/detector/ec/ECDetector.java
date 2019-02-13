@@ -91,7 +91,7 @@ public class ECDetector extends AbstractDetector<ECSector> {
             entry.shapePolygon.addPoint(paddle.getVolumePoint(3));
             entry.shapePolygon.addPoint(paddle.getVolumePoint(4));            
             */
-            //System.out.println(entry.shapePolygon);
+            //LOGGER.debug(entry.shapePolygon);
             components.add(entry);
         }
         return components;

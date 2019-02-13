@@ -43,7 +43,7 @@ public class EvioDataEvent implements DataEvent {
 		eventHandler = new EvioDataEventHandler(evioBuffer);
 		/*
 		 * try { structure = new EvioCompactStructureHandler(evioBuffer,DataType.BANK); eventNodes = structure.getChildNodes(); } catch (EvioException ex) {
-		 * Logger.getLogger(EvioDataEvent.class.getName()).log(Level.SEVERE, null, ex); }
+		 * LOGGER.error(ex);
 		 */
 
 	}
@@ -53,7 +53,7 @@ public class EvioDataEvent implements DataEvent {
 		eventHandler = new EvioDataEventHandler(evioBuffer);
 		/*
 		 * try { structure = new EvioCompactStructureHandler(evioBuffer,DataType.BANK); eventNodes = structure.getChildNodes(); } catch (EvioException ex) {
-		 * Logger.getLogger(EvioDataEvent.class.getName()).log(Level.SEVERE, null, ex); }
+		 * LOGGER.error(ex);
 		 */
 	}
 
@@ -63,7 +63,7 @@ public class EvioDataEvent implements DataEvent {
 		eventHandler = new EvioDataEventHandler(evioBuffer);
 		/*
 		 * try { structure = new EvioCompactStructureHandler(evioBuffer,DataType.BANK); eventNodes = structure.getChildNodes(); } catch (EvioException ex) {
-		 * Logger.getLogger(EvioDataEvent.class.getName()).log(Level.SEVERE, null, ex); }
+		 * LOGGER.error(ex);
 		 */
 	}
 
@@ -77,7 +77,7 @@ public class EvioDataEvent implements DataEvent {
 		this.eventHandler = new EvioDataEventHandler(buffer, b_order);
 		/*
 		 * try { structure = new EvioCompactStructureHandler(evioBuffer,DataType.BANK); eventNodes = structure.getChildNodes(); } catch (EvioException ex) {
-		 * Logger.getLogger(EvioDataEvent.class.getName()).log(Level.SEVERE, null, ex); }
+		 * LOGGER.error(ex);
 		 */
 		dictionary = dict;
 		this.setProperty("banks", "*");
@@ -91,7 +91,7 @@ public class EvioDataEvent implements DataEvent {
 			ArrayList<String> list = new ArrayList<String>();
 			String[] descList = dictionary.getDescriptorList();
 			for (EvioNode item : nodes) {
-				// System.out.println(" TAG-NUM = " + item.getTag() + " " + item.getNum()
+				// LOGGER.debug(" TAG-NUM = " + item.getTag() + " " + item.getNum()
 				// + " " + item.getDataTypeObj());
 				if (item.getDataTypeObj() == DataType.ALSOBANK && item.getNum() == 0) {
 					for (String di : descList) {
@@ -108,7 +108,7 @@ public class EvioDataEvent implements DataEvent {
 				banks[loop] = list.get(loop);
 			return banks;
 		} catch (EvioException ex) {
-			Logger.getLogger(EvioDataEvent.class.getName()).log(Level.SEVERE, null, ex);
+			LOGGER.error(ex);
 		}
 		return null;
 	}
@@ -167,7 +167,7 @@ public class EvioDataEvent implements DataEvent {
 				float[] nodedata = ByteDataTransformer.toFloatArray(buffer);
 				return nodedata;
 			} catch (EvioException ex) {
-				Logger.getLogger(EvioDataEvent.class.getName()).log(Level.SEVERE, null, ex);
+				LOGGER.error(ex);
 			}
 		}
 		return null;
@@ -201,7 +201,7 @@ public class EvioDataEvent implements DataEvent {
 				String[] nodedata = ByteDataTransformer.toStringArray(buffer);
 				return nodedata;
 			} catch (EvioException ex) {
-				Logger.getLogger(EvioDataEvent.class.getName()).log(Level.SEVERE, null, ex);
+				LOGGER.error(ex);
 			}
 		}
 		return null;
@@ -215,7 +215,7 @@ public class EvioDataEvent implements DataEvent {
 				int[] nodedata = ByteDataTransformer.toIntArray(buffer);
 				return nodedata;
 			} catch (EvioException ex) {
-				Logger.getLogger(EvioDataEvent.class.getName()).log(Level.SEVERE, null, ex);
+				LOGGER.error(ex);
 			}
 		}
 		return null;
@@ -229,12 +229,12 @@ public class EvioDataEvent implements DataEvent {
 				long[] nodedata = ByteDataTransformer.toLongArray(buffer);
 				return nodedata;
 			} catch (EvioException ex) {
-				Logger.getLogger(EvioDataEvent.class.getName()).log(Level.SEVERE, null, ex);
+				LOGGER.error(ex);
 			}
 		}
 		return null;
 	}
-        
+
 	public void setInt(String path, int[] arr) {
 		// TODO Auto-generated method stub
 
@@ -272,7 +272,7 @@ public class EvioDataEvent implements DataEvent {
 				byte[] nodedata = ByteDataTransformer.toByteArray(buffer);
 				return nodedata;
 			} catch (EvioException ex) {
-				Logger.getLogger(EvioDataEvent.class.getName()).log(Level.SEVERE, null, ex);
+				LOGGER.error(ex);
 			}
 		}
 		return null;
@@ -288,11 +288,11 @@ public class EvioDataEvent implements DataEvent {
 	public boolean hasBank(String bank_name) {
 
 		if (this.dictionary.getDescriptor(bank_name) == null) {
-			System.err.println("[EvioDataEvent::hasBank] ( ERROR ) ---> " + " there is no descriptor with name " + bank_name);
+			LOGGER.warn("[EvioDataEvent::hasBank] ( ERROR ) ---> " + " there is no descriptor with name " + bank_name);
 			return false;
 		}
 		if (this.eventHandler == null) {
-			System.out.println("SEVERE ERROR Event handler is NULL");
+			LOGGER.debug("SEVERE ERROR Event handler is NULL");
 			return false;
 		}
 
@@ -302,13 +302,13 @@ public class EvioDataEvent implements DataEvent {
 		}
 		int parenttag = Integer.parseInt(desc.getPropertyString("parent_tag"));
 		int nodetag = Integer.parseInt(desc.getPropertyString("container_tag"));
-		// System.out.println("Looking for bank " + bank_name + " TAGS = " +
+		// LOGGER.debug("Looking for bank " + bank_name + " TAGS = " +
 		// parenttag + " / " + nodetag);
 
 		EvioNode parentNode = this.eventHandler.getRootNode(parenttag, 0, DataType.ALSOBANK);
-		// System.out.println("Looking for bank " + bank_name + " TAGS = " +
+		// LOGGER.debug("Looking for bank " + bank_name + " TAGS = " +
 		// parenttag + " / " + nodetag + " " + parentNode);
-		// System.out.println("looking for parent tag = " + parenttag);
+		// LOGGER.debug("looking for parent tag = " + parenttag);
 		if (bank_name.compareTo("GenPart::header") == 0 && parentNode != null)
 			return true;
 		if (bank_name.compareTo("GenPart::true") == 0 && parentNode != null)
@@ -319,11 +319,11 @@ public class EvioDataEvent implements DataEvent {
 			return true;
 		if (parentNode == null)
 			return false;
-		// System.out.println("ROOT NODE IS FOUND");
+		// LOGGER.debug("ROOT NODE IS FOUND");
 		EvioNode leafNode = this.eventHandler.getChildNode(parentNode, nodetag, 0, DataType.ALSOBANK);
 		if (leafNode == null)
 			return false;
-		// System.out.println("CHILD NODE IS FOUND");
+		// LOGGER.debug("CHILD NODE IS FOUND");
 		// EvioNode banknode = this.getNodeFromTree(nodetag, 0, DataType.ALSOBANK);
 		// if(banknode==null) return false;
 		return true;
@@ -342,7 +342,7 @@ public class EvioDataEvent implements DataEvent {
 			return null;
 
 		EvioNode leafNode = this.eventHandler.getChildNode(parentNode, nodetag, 0, DataType.ALSOBANK);
-		if (leafNode == null && bank_name.compareTo("GenPart::header") != 0 && bank_name.compareTo("GenPart::true") != 0 
+		if (leafNode == null && bank_name.compareTo("GenPart::header") != 0 && bank_name.compareTo("GenPart::true") != 0
                                      && bank_name.compareTo("Lund::header") != 0 && bank_name.compareTo("Lund::true") != 0)
 			return null;
 
@@ -363,7 +363,7 @@ public class EvioDataEvent implements DataEvent {
 		String[] entries = desc.getEntryList();
 
 //                if(bank_name.compareTo("Lund::particles") == 0 || bank_name.compareTo("GenPart::true") == 0) {
-//                    System.out.println("beginning " + bank.rows()+" "+bank.columns());
+//                    LOGGER.debug("beginning " + bank.rows()+" "+bank.columns());
 //                    bank.show();
 //                }
 		for (String item : entries) {
@@ -371,8 +371,8 @@ public class EvioDataEvent implements DataEvent {
 			int type = desc.getProperty("type", item);
 			int num = desc.getProperty("num", item);
 //			if(bank_name.compareTo("Lund::particles") == 0 || bank_name.compareTo("GenPart::true") == 0) {
-//                            System.out.println("entry = " + item);
-//                            System.out.println(type + " " + num);
+//                            LOGGER.debug("entry = " + item);
+//                            LOGGER.debug(type + " " + num);
 //                        }
 
 			if (DataEntryType.getType(type) == DataEntryType.INTEGER) {
@@ -385,7 +385,7 @@ public class EvioDataEvent implements DataEvent {
 
 			if (DataEntryType.getType(type) == DataEntryType.FLOAT) {
 				bank.setFloat(item, (float[]) dataTree.get(num));
-				// System.out.println("ADDING FLOAT VALUE : " + bank_name + " " + item);
+				// LOGGER.debug("ADDING FLOAT VALUE : " + bank_name + " " + item);
 			}
 			if (DataEntryType.getType(type) == DataEntryType.SHORT) {
 				bank.setShort(item, (short[]) dataTree.get(num));
@@ -393,20 +393,20 @@ public class EvioDataEvent implements DataEvent {
 
 			if (DataEntryType.getType(type) == DataEntryType.BYTE) {
 				bank.setByte(item, (byte[]) dataTree.get(num));
-				// System.out.println("ADDING BYTE VALUE : " + bank_name + " " + item);
+				// LOGGER.debug("ADDING BYTE VALUE : " + bank_name + " " + item);
 			}
 			// } else {
 
 			// }
-			// System.out.println(item.getKey() + " " + item.getValue()
+			// LOGGER.debug(item.getKey() + " " + item.getValue()
 			// + " " + desc.types.get(item.getKey()));
 //                    if(bank_name.compareTo("Lund::particles") == 0 || bank_name.compareTo("GenPart::true") == 0) {
-//                        System.out.println(bank.rows()+" "+bank.columns());
+//                        LOGGER.debug(bank.rows()+" "+bank.columns());
 //                        bank.show();
 //                    }
 		}
 //                if(bank_name.compareTo("Lund::particles") == 0 || bank_name.compareTo("GenPart::true") == 0) {
-//                    System.out.println("end " + bank.rows()+" "+bank.columns());
+//                    LOGGER.debug("end " + bank.rows()+" "+bank.columns());
 //                    bank.show();
 //                }
 		return bank;
@@ -418,7 +418,7 @@ public class EvioDataEvent implements DataEvent {
 
 	public void show() {
 
-		// System.out.println("-----> event show");
+		// LOGGER.debug("-----> event show");
 		// dictionary.show();
 		String[] bankList = this.getBankList();
 		/*
@@ -441,11 +441,11 @@ public class EvioDataEvent implements DataEvent {
 				try {
 					dbank = this.getBank(bank);
 				} catch (Exception e) {
-					System.out.println(" ERROR : getbank failed for bank name " + bank);
+					LOGGER.debug(" ERROR : getbank failed for bank name " + bank);
 					e.printStackTrace();
 				}
 				if (dbank == null) {
-					System.err.println("[EvioDataEvent::show] ERROR : bank " + bank + " does not exist");
+					LOGGER.warn("[EvioDataEvent::show] ERROR : bank " + bank + " does not exist");
 					continue;
 				}
 				Integer ncols = dbank.columns();
@@ -453,7 +453,7 @@ public class EvioDataEvent implements DataEvent {
 				tokens[1] = nrows.toString();
 				tokens[2] = ncols.toString();
 				table.addData(tokens);
-				// System.out.println("BANK [] ---> " + bank);
+				// LOGGER.debug("BANK [] ---> " + bank);
 			}
 		}
 		table.show();
@@ -461,7 +461,7 @@ public class EvioDataEvent implements DataEvent {
 
 	public EvioNode getNodeFromTree(int parent_tag, int tag, int num, DataType type) {
 		/*
-		 * try { List<EvioNode> nodes = structure.getChildNodes(); } catch (EvioException ex) { Logger.getLogger(EvioDataEvent.class.getName()).log(Level.SEVERE,
+		 * try { List<EvioNode> nodes = structure.getChildNodes(); } catch (EvioException ex) { LOGGER.error(ex);EvioDataEvent.class.getName()).log(Level.SEVERE,
 		 * null, ex); }
 		 */
 		return null;
@@ -469,7 +469,7 @@ public class EvioDataEvent implements DataEvent {
 
 	/*
 	 * public EvioNode getChildNode(EvioNode node, int tag, int num, DataType type){
-	 * 
+	 *
 	 * }
 	 */
 
@@ -479,20 +479,20 @@ public class EvioDataEvent implements DataEvent {
 			List<EvioNode> nodes = this.eventHandler.getStructure().getNodes();
 
 			if (nodes == null) {
-				System.out.println("EVENT NODES = NULL");
+				LOGGER.debug("EVENT NODES = NULL");
 				return null;
 			}
 
 			for (EvioNode item : nodes) {
 				if (item.getDataTypeObj() == type) {
-					// System.out.println("parsin node " + item.getTag() + " looking for " + tag );
+					// LOGGER.debug("parsin node " + item.getTag() + " looking for " + tag );
 				}
 				if (type == DataType.INT32) {
 					if (item.getTag() == tag && item.getNum() == num
 					        && (item.getDataTypeObj() == DataType.INT32 || item.getDataTypeObj() == DataType.UINT32))
 						return item;
-				} 					
-                                
+				}
+
                                 if(type == DataType.LONG64){
                                     if (item.getTag() == tag && item.getNum() == num
 					        && (item.getDataTypeObj() == DataType.LONG64 || item.getDataTypeObj() == DataType.ULONG64))
@@ -506,7 +506,7 @@ public class EvioDataEvent implements DataEvent {
 			}
 
 		} catch (EvioException ex) {
-			Logger.getLogger(EvioDataEvent.class.getName()).log(Level.SEVERE, null, ex);
+			LOGGER.error(ex);
 		}
 		return null;
 	}
@@ -519,7 +519,7 @@ public class EvioDataEvent implements DataEvent {
 				double[] nodedata = ByteDataTransformer.toDoubleArray(buffer);
 				return nodedata;
 			} catch (EvioException ex) {
-				Logger.getLogger(EvioDataEvent.class.getName()).log(Level.SEVERE, null, ex);
+				LOGGER.error(ex);
 			}
 		}
 		// double[] ret = {0.0};
@@ -545,14 +545,14 @@ public class EvioDataEvent implements DataEvent {
 	}
 
 	public void appendGeneratedBank(DataBank bank) {
-		// System.err.println("---------> 1");
+		// LOGGER.warn("---------> 1");
 		String parent_tag = bank.getDescriptor().getPropertyString("parent_tag");
 		String container_tag = bank.getDescriptor().getPropertyString("container_tag");
-		// System.err.println("---------> 2");
+		// LOGGER.warn("---------> 2");
 		EvioEvent baseBank = new EvioEvent(Integer.parseInt(parent_tag), DataType.ALSOBANK, 0);
-		// System.err.println("---------> 3");
+		// LOGGER.warn("---------> 3");
 		EvioBank sectionBank = new EvioBank(Integer.parseInt(container_tag), DataType.ALSOBANK, 0);
-		// System.err.println("---------> 4");
+		// LOGGER.warn("---------> 4");
 
 		EventBuilder builder = new EventBuilder(baseBank);
 
@@ -561,12 +561,12 @@ public class EvioDataEvent implements DataEvent {
 		baseBank.setByteOrder(byteOrder);
 		sectionBank.setByteOrder(byteOrder);
 		// doubleBank.setByteOrder(byteOrder);
-		// System.err.println("------------ adding bank ");
-		// System.err.println("------------ adding bank " + bank.getDescriptor().getName());
+		// LOGGER.warn("------------ adding bank ");
+		// LOGGER.warn("------------ adding bank " + bank.getDescriptor().getName());
 		try {
 			String[] entries = bank.getDescriptor().getEntryList();
 			for (String entry : entries) {
-				// System.out.println("----> adding entry " + entry);
+				// LOGGER.debug("----> adding entry " + entry);
 				int e_tag = bank.getDescriptor().getProperty("tag", entry);
 				int e_num = bank.getDescriptor().getProperty("num", entry);
 				int e_typ = bank.getDescriptor().getProperty("type", entry);
@@ -610,14 +610,14 @@ public class EvioDataEvent implements DataEvent {
 
 			int byteSize = baseBank.getTotalBytes();
 			ByteBuffer bb = ByteBuffer.allocate(byteSize);
-			// System.out.println("-------> adding bank " + bank.getDescriptor().getName()
+			// LOGGER.debug("-------> adding bank " + bank.getDescriptor().getName()
 			// + " size = " + byteSize);
 			bb.order(byteOrder);
 			baseBank.write(bb);
 			bb.flip();
-			// System.out.println("-----> prior size = " + structure.getByteBuffer().limit());
+			// LOGGER.debug("-----> prior size = " + structure.getByteBuffer().limit());
 			ByteBuffer newBuffer = this.eventHandler.getStructure().addStructure(bb);
-			// System.out.println("---> new byte buffer has size " + newBuffer.limit()
+			// LOGGER.debug("---> new byte buffer has size " + newBuffer.limit()
 			// + " changed from " + structure.getByteBuffer().limit());
 			// structure.
 			EvioCompactStructureHandler handler =
@@ -626,7 +626,7 @@ public class EvioDataEvent implements DataEvent {
 			/*
 			 * for (Map.Entry<String, int[]> bank : integerContainer.entrySet()) { EvioBank dataBank = new EvioBank(tag, DataType.INT32, bank.getKey());
 			 * dataBank.setByteOrder(byteOrder); dataBank.appendIntData(bank.getValue()); builder.addChild(intBank, dataBank); }
-			 * 
+			 *
 			 * for (Entry<Integer, double[]> bank : doubleBanks.entrySet()) { EvioBank dataBank = new EvioBank(tag, DataType.DOUBLE64, bank.getKey());
 			 * dataBank.setByteOrder(byteOrder); dataBank.appendDoubleData(bank.getValue()); builder.addChild(doubleBank, dataBank); }
 			 */
@@ -636,14 +636,14 @@ public class EvioDataEvent implements DataEvent {
 	}
 
 	public void appendBank(DataBank bank) {
-		// System.err.println("---------> 1");
+		// LOGGER.warn("---------> 1");
 		String parent_tag = bank.getDescriptor().getPropertyString("parent_tag");
 		String container_tag = bank.getDescriptor().getPropertyString("container_tag");
-		// System.err.println("---------> 2");
+		// LOGGER.warn("---------> 2");
 		EvioEvent baseBank = new EvioEvent(Integer.parseInt(parent_tag), DataType.ALSOBANK, 0);
-		// System.err.println("---------> 3");
+		// LOGGER.warn("---------> 3");
 		EvioBank sectionBank = new EvioBank(Integer.parseInt(container_tag), DataType.ALSOBANK, 0);
-		// System.err.println("---------> 4");
+		// LOGGER.warn("---------> 4");
 
 		EventBuilder builder = new EventBuilder(baseBank);
 
@@ -652,12 +652,12 @@ public class EvioDataEvent implements DataEvent {
 		baseBank.setByteOrder(byteOrder);
 		sectionBank.setByteOrder(byteOrder);
 		// doubleBank.setByteOrder(byteOrder);
-		// System.err.println("------------ adding bank ");
-		// System.err.println("------------ adding bank " + bank.getDescriptor().getName());
+		// LOGGER.warn("------------ adding bank ");
+		// LOGGER.warn("------------ adding bank " + bank.getDescriptor().getName());
 		try {
 			String[] entries = bank.getDescriptor().getEntryList();
 			for (String entry : entries) {
-				// System.out.println("----> adding entry " + entry);
+				// LOGGER.debug("----> adding entry " + entry);
 				int e_tag = bank.getDescriptor().getProperty("tag", entry);
 				int e_num = bank.getDescriptor().getProperty("num", entry);
 				int e_typ = bank.getDescriptor().getProperty("type", entry);
@@ -701,14 +701,14 @@ public class EvioDataEvent implements DataEvent {
 
 			int byteSize = baseBank.getTotalBytes();
 			ByteBuffer bb = ByteBuffer.allocate(byteSize);
-			// System.out.println("-------> adding bank " + bank.getDescriptor().getName()
+			// LOGGER.debug("-------> adding bank " + bank.getDescriptor().getName()
 			// + " size = " + byteSize);
 			bb.order(byteOrder);
 			baseBank.write(bb);
 			bb.flip();
-			// System.out.println("-----> prior size = " + structure.getByteBuffer().limit());
+			// LOGGER.debug("-----> prior size = " + structure.getByteBuffer().limit());
 			ByteBuffer newBuffer = this.eventHandler.getStructure().addStructure(bb);
-			// System.out.println("---> new byte buffer has size " + newBuffer.limit()
+			// LOGGER.debug("---> new byte buffer has size " + newBuffer.limit()
 			// + " changed from " + structure.getByteBuffer().limit());
 			// structure.
 			EvioCompactStructureHandler handler =
@@ -717,7 +717,7 @@ public class EvioDataEvent implements DataEvent {
 			/*
 			 * for (Map.Entry<String, int[]> bank : integerContainer.entrySet()) { EvioBank dataBank = new EvioBank(tag, DataType.INT32, bank.getKey());
 			 * dataBank.setByteOrder(byteOrder); dataBank.appendIntData(bank.getValue()); builder.addChild(intBank, dataBank); }
-			 * 
+			 *
 			 * for (Entry<Integer, double[]> bank : doubleBanks.entrySet()) { EvioBank dataBank = new EvioBank(tag, DataType.DOUBLE64, bank.getKey());
 			 * dataBank.setByteOrder(byteOrder); dataBank.appendDoubleData(bank.getValue()); builder.addChild(doubleBank, dataBank); }
 			 */
@@ -750,7 +750,7 @@ public class EvioDataEvent implements DataEvent {
 				byte[] nodedata = ByteDataTransformer.toByteArray(buffer);
 				return nodedata;
 			} catch (EvioException ex) {
-				Logger.getLogger(EvioDataEvent.class.getName()).log(Level.SEVERE, null, ex);
+				LOGGER.error(ex);
 			}
 		}
 		// byte[] ret = {0};
@@ -791,7 +791,7 @@ public class EvioDataEvent implements DataEvent {
 				check = false;
 		}
 
-		// System.out.println("Bank consistency check = " + check);
+		// LOGGER.debug("Bank consistency check = " + check);
 
 		String parent_tag = common_tag;
 
@@ -804,20 +804,20 @@ public class EvioDataEvent implements DataEvent {
 
 			for (DataBank bank : banklist) {
 				String container_tag = bank.getDescriptor().getPropertyString("container_tag");
-				// System.err.println("---------> 2");
+				// LOGGER.warn("---------> 2");
 
-				// System.err.println("---------> 3");
+				// LOGGER.warn("---------> 3");
 				EvioBank sectionBank = new EvioBank(Integer.parseInt(container_tag), DataType.ALSOBANK, 0);
-				// System.err.println("---------> 4");
+				// LOGGER.warn("---------> 4");
 
 				sectionBank.setByteOrder(byteOrder);
 				// doubleBank.setByteOrder(byteOrder);
-				// System.err.println("------------ adding bank ");
-				// System.err.println("------------ adding bank " + bank.getDescriptor().getName());
+				// LOGGER.warn("------------ adding bank ");
+				// LOGGER.warn("------------ adding bank " + bank.getDescriptor().getName());
 
 				String[] entries = bank.getDescriptor().getEntryList();
 				for (String entry : entries) {
-					// System.out.println("----> adding entry " + entry);
+					// LOGGER.debug("----> adding entry " + entry);
 					int e_tag = bank.getDescriptor().getProperty("tag", entry);
 					int e_num = bank.getDescriptor().getProperty("num", entry);
 					int e_typ = bank.getDescriptor().getProperty("type", entry);
@@ -862,14 +862,14 @@ public class EvioDataEvent implements DataEvent {
 
 			int byteSize = baseBank.getTotalBytes();
 			ByteBuffer bb = ByteBuffer.allocate(byteSize);
-			// System.out.println("-------> adding bank " + bank.getDescriptor().getName()
+			// LOGGER.debug("-------> adding bank " + bank.getDescriptor().getName()
 			// + " size = " + byteSize);
 			bb.order(byteOrder);
 			baseBank.write(bb);
 			bb.flip();
-			// System.out.println("-----> prior size = " + structure.getByteBuffer().limit());
+			// LOGGER.debug("-----> prior size = " + structure.getByteBuffer().limit());
 			ByteBuffer newBuffer = this.eventHandler.getStructure().addStructure(bb);
-			// System.out.println("---> new byte buffer has size " + newBuffer.limit()
+			// LOGGER.debug("---> new byte buffer has size " + newBuffer.limit()
 			// + " changed from " + structure.getByteBuffer().limit());
 			// structure.
 			EvioCompactStructureHandler handler =
@@ -878,7 +878,7 @@ public class EvioDataEvent implements DataEvent {
 			/*
 			 * for (Map.Entry<String, int[]> bank : integerContainer.entrySet()) { EvioBank dataBank = new EvioBank(tag, DataType.INT32, bank.getKey());
 			 * dataBank.setByteOrder(byteOrder); dataBank.appendIntData(bank.getValue()); builder.addChild(intBank, dataBank); }
-			 * 
+			 *
 			 * for (Entry<Integer, double[]> bank : doubleBanks.entrySet()) { EvioBank dataBank = new EvioBank(tag, DataType.DOUBLE64, bank.getKey());
 			 * dataBank.setByteOrder(byteOrder); dataBank.appendDoubleData(bank.getValue()); builder.addChild(doubleBank, dataBank); }
 			 */
@@ -930,5 +930,5 @@ public class EvioDataEvent implements DataEvent {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    
+
 }

@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.clas.pdg.PDGDatabase;
 import org.jlab.clas.pdg.PDGParticle;
 import org.jlab.physics.base.EventSelector;
@@ -17,7 +19,7 @@ import org.jlab.physics.base.EventSelector;
  * @author gavalian
  */
 public class PhysicsEvent {
-
+	public static Logger LOGGER = LogManager.getLogger(PhysicsEvent.class.getName());
 	Particle eventBeam;
 	Particle eventTarget;
 	private EventSelector eventSelector = new EventSelector();
@@ -76,17 +78,17 @@ public class PhysicsEvent {
 		Particle result = new Particle();
 		double bestCos = 0.5;
 		double bestRes = 0.5;
-		// System.out.println(" LOOKING FOR MATCH WITH = " + p.toLundString());
+		// LOGGER.debug(" LOOKING FOR MATCH WITH = " + p.toLundString());
 		for (int i = 0; i < this.eventParticles.size(); i++) {
 			if (p.charge() == this.eventParticles.get(i).charge()) {
 				double cosTheta = p.cosTheta(eventParticles.get(i));
 				double resolution = Math.abs((p.p() - eventParticles.get(i).p()) / p.p());
-				// System.out.println(i + " " + " cos = " + cosTheta + " res = " + resolution);
+				// LOGGER.debug(i + " " + " cos = " + cosTheta + " res = " + resolution);
 				if (cosTheta > bestCos && resolution < bestRes) {
 					if (cosTheta >= this.matchThresholdAngle && resolution < this.matchThresholdResolution) {
 						bestCos = cosTheta;
 						bestRes = resolution;
-						// System.out.println(" THIS IS A GOOD PARTICLE = " + eventParticles.get(i).toLundString());
+						// LOGGER.debug(" THIS IS A GOOD PARTICLE = " + eventParticles.get(i).toLundString());
 						result.copy(eventParticles.get(i));
 					}
 				}
@@ -115,14 +117,14 @@ public class PhysicsEvent {
 
 	public int countByCharge(int charge) {
 		int icount = 0;
-		// System.out.println("countainer size = " + eventParticles.size());
+		// LOGGER.debug("countainer size = " + eventParticles.size());
 		for (int loop = 0; loop < eventParticles.size(); loop++) {
-			// System.out.println("Particle pid = " + eventParticles.get(loop).pid()
+			// LOGGER.debug("Particle pid = " + eventParticles.get(loop).pid()
 			// + " charge = " + eventParticles.get(loop).charge());
 			if (eventParticles.get(loop).charge() == charge)
 				icount++;
 		}
-		// System.out.println("particles with charge " + charge + " = " + icount);
+		// LOGGER.debug("particles with charge " + charge + " = " + icount);
 		return icount;
 	}
 
@@ -197,7 +199,7 @@ public class PhysicsEvent {
 	public int getParticleIndex(int pid, int skip) {
 		int skiped = 0;
 		for (int loop = 0; loop < eventParticles.size(); loop++) {
-			// System.err.println("searching ----> " + CLASParticles.get(loop).getPid()
+			// LOGGER.warn("searching ----> " + CLASParticles.get(loop).getPid()
 			// + " " + skip + " " + skiped);
 			if (eventParticles.get(loop).pid() == pid) {
 				if (skip == skiped)
@@ -212,7 +214,7 @@ public class PhysicsEvent {
 	public void removeParticleByPid(int pid, int skip) {
 		int index = getParticleIndex(pid, skip);
 		if (index < 0 || index >= this.count()) {
-			System.out.println("----> error. paritcle does not exist pid=" + pid + " skip=" + skip);
+			LOGGER.debug("----> error. paritcle does not exist pid=" + pid + " skip=" + skip);
 		} else {
 			this.removeParticle(index);
 		}
@@ -225,7 +227,7 @@ public class PhysicsEvent {
 	public Particle getParticleByCharge(int charge, int skip) {
 		int skiped = 0;
 		for (int loop = 0; loop < eventParticles.size(); loop++) {
-			// System.err.println("searching ----> " + CLASParticles.get(loop).getPid()
+			// LOGGER.warn("searching ----> " + CLASParticles.get(loop).getPid()
 			// + " " + skip + " " + skiped);
 			if (eventParticles.get(loop).charge() == charge) {
 				if (skip == skiped)
@@ -240,7 +242,7 @@ public class PhysicsEvent {
 	public Particle getParticleByCharge(int charge, int skip, int pid) {
 		int skiped = 0;
 		for (int loop = 0; loop < eventParticles.size(); loop++) {
-			// System.err.println("searching ----> " + CLASParticles.get(loop).getPid()
+			// LOGGER.warn("searching ----> " + CLASParticles.get(loop).getPid()
 			// + " " + skip + " " + skiped);
 			if (eventParticles.get(loop).charge() == charge) {
 				if (skip == skiped) {

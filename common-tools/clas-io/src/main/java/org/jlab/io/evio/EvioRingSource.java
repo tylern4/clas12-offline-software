@@ -37,8 +37,8 @@ public class EvioRingSource implements DataSource {
     private List<EvioDataEvent>  eventStore = new ArrayList<EvioDataEvent>();
     private int       eventStoreMaxCapacity = 500;
     private xMsg                 xmsgServer = null;
-    
-    
+
+
     private boolean createConnection(String host){
 
         boolean result = true;
@@ -48,20 +48,20 @@ public class EvioRingSource implements DataSource {
                 2);
         try {
             if(this.xmsgServer.getConnection()!=null){
-                System.out.println("   >>> connection to server " + host + " : success");
-            } 
+                LOGGER.debug("   >>> connection to server " + host + " : success");
+            }
 
         } catch (xMsgException ex) {
-            //Logger.getLogger(HipoRingSource.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println("   >>> connection to server " + host + " : failed");
+            //LOGGER.error(ex);
+            LOGGER.debug("   >>> connection to server " + host + " : failed");
             this.xmsgServer.destroy();
             this.xmsgServer = null;
             result = false;
         }
-        //System.out.println("-----> connection estabilished...");
+        //LOGGER.debug("-----> connection estabilished...");
         return result;
     }
-    
+
     @Override
     public boolean hasEvent() {
         return eventStore.size()>0;
@@ -75,18 +75,18 @@ public class EvioRingSource implements DataSource {
     @Override
     public void open(String filename) {
         String[] hostList = filename.split(":");
-        
+
         for(String host : hostList){
             boolean result = this.createConnection(host);
             if(result==true) break;
         }
-        
+
         if(this.xmsgServer==null){
-            System.out.println("----> error finding server.");
+            LOGGER.debug("----> error finding server.");
             return;
         }
-        System.out.println("   >>> subscribing  to topic : data-evio");
-        
+        LOGGER.debug("   >>> subscribing  to topic : data-evio");
+
         final String subject = "clas12data";
         final String type    = "data-evio";
         final String description = "clas12 data distribution ring";
@@ -96,17 +96,17 @@ public class EvioRingSource implements DataSource {
             // Register this subscriber
             this.xmsgServer.register(xMsgRegInfo.subscriber(topic, description));
         } catch (xMsgException ex) {
-            Logger.getLogger(EvioRingSource.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex);
         }
 
         try {
             // Subscribe to default proxy
             this.xmsgServer.subscribe(topic, new EvioRingSource.MyCallBack());
         } catch (xMsgException ex) {
-            Logger.getLogger(EvioRingSource.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex);
         }
-        System.out.println("   >>> subscription to topic : success\n\n");
-        
+        LOGGER.debug("   >>> subscription to topic : success\n\n");
+
     }
 
     @Override
@@ -140,11 +140,11 @@ public class EvioRingSource implements DataSource {
             return null;
         }
         EvioDataEvent event = this.eventStore.get(0);
-        //System.out.println("   >>> success getting event : size = " + eventStore.size());
+        //LOGGER.debug("   >>> success getting event : size = " + eventStore.size());
         //event.show();
         this.eventStore.remove(0);
-        //System.out.println("   >>>   FILO cleanup : size = " + eventStore.size());
-        //System.out.println("\n\n");
+        //LOGGER.debug("   >>>   FILO cleanup : size = " + eventStore.size());
+        //LOGGER.debug("\n\n");
         return event;
     }
 
@@ -176,20 +176,20 @@ public class EvioRingSource implements DataSource {
 
     @Override
     public void waitForEvents() {
-        // For the Ring source, waiting for the events        
+        // For the Ring source, waiting for the events
     }
-    
-    
+
+
     private class MyCallBack implements xMsgCallBack {
 
         @Override
         public void callback(xMsgMessage mm) {
-            
-            byte[] data = mm.getData();            
+
+            byte[] data = mm.getData();
             String type = mm.getMimeType();
-            
-            System.out.println("\n\n     >>>>>> received data : mime " + type);
-            System.out.println("     >>>>>> received data : size " + data.length);
+
+            LOGGER.debug("\n\n     >>>>>> received data : mime " + type);
+            LOGGER.debug("     >>>>>> received data : size " + data.length);
             if(eventStore.size()<eventStoreMaxCapacity){
                 EvioDataEvent event = new EvioDataEvent(data,ByteOrder.BIG_ENDIAN);
                 eventStore.add(event);
@@ -199,32 +199,32 @@ public class EvioRingSource implements DataSource {
             }
         }
     }
-    
+
     public static void main(String[] args){
-        
+
         OptionParser parser = new OptionParser();
         parser.addOption("-s", "localhost");
         parser.parse(args);
-        
+
         EvioRingSource reader = new EvioRingSource();
         reader.open(parser.getOption("-s").stringValue());
         //reader.open("128.82.188.90:129.57.76.220:129.57.76.215:129.57.76.230");
-        
+
         while(true){
             if(reader.hasEvent()==true){
-                //System.out.println("has event");
+                //LOGGER.debug("has event");
                 DataEvent event = reader.getNextEvent();
                 try {
                     event.show();
                 } catch (Exception e) {
-                    System.out.println("something went wrong");
+                    LOGGER.debug("something went wrong");
                 }
             } else {
-                //System.out.println("no event");
+                //LOGGER.debug("no event");
                 try {
                     Thread.sleep(20);
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(HipoRingSource.class.getName()).log(Level.SEVERE, null, ex);
+                    LOGGER.error(ex);
                 }
             }
         }

@@ -27,7 +27,7 @@ public class HipoDataSync implements DataSync {
         this.writer = new HipoWriter();
         this.writer.setCompressionType(2);
         writer.appendSchemaFactoryFromDirectory("CLAS12DIR", "etc/bankdefs/hipo");
-        System.out.println("[HipoDataSync] ---> dictionary size = " + writer.getSchemaFactory().getSchemaList().size());
+        LOGGER.debug("[HipoDataSync] ---> dictionary size = " + writer.getSchemaFactory().getSchemaList().size());
         //this.writer.getSchemaFactory().initFromDirectory("CLAS12DIR", "etc/bankdefs/hipo");
         //this.writer.getSchemaFactory().show();
     }
@@ -73,12 +73,12 @@ public class HipoDataSync implements DataSync {
     }
     
     public static void printUsage(){
-        System.out.println("\tUsage: convert -[option] output.hipo input.evio [input2.evio] [input3.evio]");
-            System.out.println("\n\t Options :");
-            System.out.println("\t\t -u    : uncompressed");
-            System.out.println("\t\t -gzip : gzip compression");
-            System.out.println("\t\t -lz4  : lz4 compression");
-            System.out.println("\n");
+        LOGGER.debug("\tUsage: convert -[option] output.hipo input.evio [input2.evio] [input3.evio]");
+            LOGGER.debug("\n\t Options :");
+            LOGGER.debug("\t\t -u    : uncompressed");
+            LOGGER.debug("\t\t -gzip : gzip compression");
+            LOGGER.debug("\t\t -lz4  : lz4 compression");
+            LOGGER.debug("\n");
     }
     
     public static void main(String[] args){
@@ -110,7 +110,7 @@ public class HipoDataSync implements DataSync {
         }
         
         if(args[0].startsWith("-")==false){
-            System.out.println("\n\n--> please provide compression type");
+            LOGGER.debug("\n\n--> please provide compression type");
             HipoDataSync.printUsage();
             System.exit(0);
         }
@@ -131,7 +131,7 @@ public class HipoDataSync implements DataSync {
         
         if(compressionType<0){
             HipoDataSync.printUsage();
-            System.out.println("[error] ---> compression type string is invalid.");
+            LOGGER.debug("[error] ---> compression type string is invalid.");
             System.exit(0);
         }
         
@@ -145,7 +145,7 @@ public class HipoDataSync implements DataSync {
         File outFile = new File(outputFile);
         
         if(outFile.exists()==true){
-            System.out.println("\n[error] ---> can not overwrite existing file.\n\n");
+            LOGGER.debug("\n[error] ---> can not overwrite existing file.\n\n");
             System.exit(0);
         }
         

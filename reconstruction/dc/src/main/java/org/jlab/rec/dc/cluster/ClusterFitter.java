@@ -113,7 +113,7 @@ public class ClusterFitter {
             clus.set_Chisq(FitPars.chisq());
 
         } else {
-            //System.err.println("Cluster Fit Params not set!!!");
+            //LOGGER.warn("Cluster Fit Params not set!!!");
         }
     }
 
@@ -141,7 +141,7 @@ public class ClusterFitter {
             clus.set_clusterLineFitInterceptErrMP(FitPars.interceptErr());
 
         } else {
-            //System.err.println("Cluster Fit Params not set!!!");
+            //LOGGER.warn("Cluster Fit Params not set!!!");
 
         }
     }

@@ -3,6 +3,9 @@ package org.jlab.rec.cvt.services;
 //import cnuphys.magfield.MagneticFields;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.clas.swimtools.Swim;
 
 import org.jlab.detector.calib.utils.DatabaseConstantProvider;
@@ -39,7 +42,7 @@ import org.jlab.rec.cvt.trajectory.TrajectoryFinder;
  */
 
 public class CVTRecHandler {
-
+    public static Logger LOGGER = LogManager.getLogger(CVTRecHandler.class.getName());
     RecoBankWriter rbc = new RecoBankWriter();
     org.jlab.rec.cvt.svt.Geometry SVTGeom;
     org.jlab.rec.cvt.bmt.Geometry BMTGeom;
@@ -61,7 +64,7 @@ public class CVTRecHandler {
   
     public void setRunConditionsParameters(DataEvent event, String Fields, int iRun, boolean addMisAlignmts, String misAlgnFile) {
         if (event.hasBank("RUN::config") == false) {
-            System.err.println("RUN CONDITIONS NOT READ!");
+            LOGGER.warn("RUN CONDITIONS NOT READ!");
             return;
         }
 
@@ -69,7 +72,7 @@ public class CVTRecHandler {
 
         boolean isCosmics = false;
         DataBank bank = event.getBank("RUN::config");
-        //System.out.println(bank.getInt("Event")[0]);
+        //LOGGER.debug(bank.getInt("Event")[0]);
         if (bank.getByte("type", 0) == 0) {
         }
         if (bank.getByte("mode", 0) == 1) {
@@ -85,10 +88,10 @@ public class CVTRecHandler {
         if (Fields.equals(newConfig) == false) {
             // Load the Constants
             
-            System.out.println("  CHECK CONFIGS..............................." + FieldsConfig + " = ? " + newConfig);
+            LOGGER.debug("  CHECK CONFIGS..............................." + FieldsConfig + " = ? " + newConfig);
             Constants.Load(isCosmics, isSVTonly, (double) bank.getFloat("solenoid", 0));
             // Load the Fields
-            //System.out.println("************************************************************SETTING FIELD SCALE *****************************************************");
+            //LOGGER.debug("************************************************************SETTING FIELD SCALE *****************************************************");
             //TrkSwimmer.setMagneticFieldScale(bank.getFloat("solenoid", 0)); // something changed in the configuration
             //double shift =0;
             //if(bank.getInt("run", 0)>1840)
@@ -326,7 +329,7 @@ public class CVTRecHandler {
             
             kf = new KFitter(seed, SVTGeom, swimmer );
             kf.runFitter(SVTGeom, BMTGeom, swimmer);
-            //System.out.println(" OUTPUT SEED......................");
+            //LOGGER.debug(" OUTPUT SEED......................");
             trkcands.add(kf.OutputTrack(seed, SVTGeom, swimmer));
             if (kf.setFitFailed == false) {
                 trkcands.get(trkcands.size() - 1).set_TrackingStatus(2);
@@ -346,7 +349,7 @@ public class CVTRecHandler {
         trks = trkFinder.getTracks(trkcands, SVTGeom, BMTGeom, swimmer);
         for( int i=0;i<trks.size();i++) { trks.get(i).set_Id(i+1);}
         
-//        System.out.println( " *** *** trkcands " + trkcands.size() + " * trks " + trks.size());
+//        LOGGER.debug( " *** *** trkcands " + trkcands.size() + " * trks " + trks.size());
         trkFinder.removeOverlappingTracks(trks); //turn off until debugged
 
         
@@ -427,9 +430,9 @@ public class CVTRecHandler {
         		c.set_Dir( new Vector3D(0,0,0));
         		c.set_DirErr( new Vector3D(0,0,0));
         		if( c.get_DetectorType().equalsIgnoreCase("C")) {
-//        			System.out.println(c + " " + c.get_AssociatedTrackID());
+//        			LOGGER.debug(c + " " + c.get_AssociatedTrackID());
         			c.set_Point(new Point3D(Double.NaN,Double.NaN,c.get_Point().z()));
-//        			System.out.println(c.get_Point());
+//        			LOGGER.debug(c.get_Point());
         		}
         		else {
         			c.set_Point(new Point3D(c.get_Point().x(),c.get_Point().y(),Double.NaN));
@@ -488,7 +491,7 @@ public class CVTRecHandler {
     }
 
     public boolean init() {
-        System.out.println(" ........................................ trying to connect to db ");
+        LOGGER.debug(" ........................................ trying to connect to db ");
 //        CCDBConstantsLoader.Load(new DatabaseConstantProvider( "sqlite:///clas12.sqlite", "default"));
         CCDBConstantsLoader.Load(new DatabaseConstantProvider(10, "default"));
                

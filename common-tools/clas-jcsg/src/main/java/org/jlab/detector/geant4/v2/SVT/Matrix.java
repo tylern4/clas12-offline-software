@@ -1,5 +1,8 @@
 package org.jlab.detector.geant4.v2.SVT;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * <h1> Geometry Base </h1>
  * 
@@ -10,6 +13,7 @@ package org.jlab.detector.geant4.v2.SVT;
  */
 public class Matrix
 {
+	public static Logger LOGGER = LogManager.getLogger(Matrix.class.getName());
 	double[] data = null;
 	int nRows = 0, nCols = 0;
 	
@@ -95,7 +99,7 @@ public class Matrix
 	 */
 	public void show( String s )
 	{
-		System.out.println(s);
+		LOGGER.debug(s);
 		show();
 	}
 	
@@ -109,11 +113,11 @@ public class Matrix
 		if( data == null ) throw new NullPointerException("nothing to show");
 		for( int i = 0; i < data.length; i++ )
 		{
-			System.out.printf("% 8.3f", this.getData()[i] );
+			LOGGER.debug("% 8.3f", this.getData()[i] );
 			if( (i+1) % nCols == 0 )
-				System.out.println();
+				LOGGER.debug("");
 			else
-				System.out.printf(" ");
+				LOGGER.debug(" ");
 		}
 	}
 	
@@ -188,7 +192,7 @@ public class Matrix
 												  u*v*(1-c) + w*s, v*v*(1-c) +   c, v*w*(1-c) - u*s,
 												  u*w*(1-c) - v*s, v*w*(1-c) + u*s, w*w*(1-c) +   c } );
 		
-		//System.out.println("axis angle matrix");
+		//LOGGER.debug("axis angle matrix");
 		//m3.show();
 		
 		//m3 = Matrix.transpose(m3);
@@ -311,14 +315,14 @@ public class Matrix
 		
 		if( Math.abs(cy) < 1e-3 ) // cos(y) == 0 ?
 		{
-			//System.out.println("gimbal lock");
+			//LOGGER.debug("gimbal lock");
 			// Gimbal Lock
 			xyz[0] = 0.0;
 			xyz[2] = Math.atan2( m3[3] , m3[4] );
 		}
 		else
 		{
-			//System.out.println("good euler");
+			//LOGGER.debug("good euler");
 			xyz[0] = Math.atan2( -m3[5]/cy,  m3[8]/cy );
 			xyz[2] = Math.atan2( -m3[1]/cy,  m3[0]/cy );
 		}

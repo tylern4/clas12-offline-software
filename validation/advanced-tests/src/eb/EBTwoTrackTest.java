@@ -82,7 +82,7 @@ public class EBTwoTrackTest {
         String fileName=System.getProperty("INPUTFILE");
         File file = new File(fileName);
         if (!file.exists() || file.isDirectory()) {
-            System.err.println("Cannot find input file.");
+            LOGGER.warn("Cannot find input file.");
             assertEquals(false, true);
         }
 
@@ -174,12 +174,12 @@ public class EBTwoTrackTest {
         reader.close();
 
         if (udfFileType) {
-            System.out.println("");
-            System.out.println("***********************************************************");
-            System.out.println("EBTwoTrackTest does not know about this file.");
-            System.out.println("  So we only did some bank index referencing tests.");
-            System.out.println("***********************************************************");
-            System.out.println("");
+            LOGGER.debug("");
+            LOGGER.debug("***********************************************************");
+            LOGGER.debug("EBTwoTrackTest does not know about this file.");
+            LOGGER.debug("  So we only did some bank index referencing tests.");
+            LOGGER.debug("***********************************************************");
+            LOGGER.debug("");
         }
         else {
             if (isForwardTagger) checkResultsFT();
@@ -304,7 +304,7 @@ public class EBTwoTrackTest {
         for (int ii=0; ii<bankFrom.rows(); ii++) {
             int ref=bankFrom.getInt(idxVarName,ii);
             if (ref>=bankTo.rows() || ref<0) {
-                System.err.println(String.format(
+                LOGGER.warn(String.format(
                         "\bnhasValidRefs: failed on (%s0>%s) %d->%d\n",
                         bankFrom.getDescriptor().getName(),
                         bankTo.getDescriptor().getName(),ii,ref));
@@ -336,7 +336,7 @@ public class EBTwoTrackTest {
             int det=bankFrom.getInt("detector",ii);
             DataBank bankTo = getDetectorBank(det);
             if (ref>=bankTo.rows() || ref<0) {
-                System.err.println(String.format(
+                LOGGER.warn(String.format(
                         "\bnhasValidRefs: failed on det=%d/%s (%s0>%s) %d->%d\n",
                         det,DetectorType.getType(det).getName(),
                         bankFrom.getDescriptor().getName(),
@@ -422,26 +422,26 @@ public class EBTwoTrackTest {
         final double epiEff = (double)epiCount / nTwoTrackEvents;
         final double ekEff = (double)ekCount / nTwoTrackEvents;
 
-        System.out.println("\n#############################################################");
-        System.out.println(String.format("\n# Events = %d",nEvents));
+        LOGGER.debug("\n#############################################################");
+        LOGGER.debug(String.format("\n# Events = %d",nEvents));
         System.out.print("\nElectrons Sectors: ");
         for (int k=0; k<6; k++) System.out.print(String.format(" %4d",nElectronsSector[k]));
         System.out.print("\nHadrons   Sectors: ");
         for (int k=0; k<6; k++) System.out.print(String.format(" %4d",nHadronsSector[k]));
-        System.out.println("\n");
-        System.out.println(String.format("2-Track Frac = %.3f\n",twoTrackFrac));
-        System.out.println(String.format("eEff         = %.3f",eEff));
-        System.out.println(String.format("pEff         = %.3f",pEff));
-        System.out.println(String.format("piEff        = %.3f",piEff));
-        System.out.println(String.format("kEff         = %.3f\n",kEff));
-        System.out.println(String.format("gEff         = %.3f",gEff));
-        System.out.println(String.format("nEff         = %.3f\n",nEff));
-        System.out.println(String.format("epEff        = %.3f",epEff));
-        System.out.println(String.format("epiEff       = %.3f",epiEff));
-        System.out.println(String.format("ekEff        = %.3f\n",ekEff));
-        System.out.println(String.format("misid        = %.3f",(float)nMisid/eposCount));
-        System.out.println(String.format("missing      = %.3f",(float)nMissing/eposCount));
-        System.out.println("\n#############################################################");
+        LOGGER.debug("\n");
+        LOGGER.debug(String.format("2-Track Frac = %.3f\n",twoTrackFrac));
+        LOGGER.debug(String.format("eEff         = %.3f",eEff));
+        LOGGER.debug(String.format("pEff         = %.3f",pEff));
+        LOGGER.debug(String.format("piEff        = %.3f",piEff));
+        LOGGER.debug(String.format("kEff         = %.3f\n",kEff));
+        LOGGER.debug(String.format("gEff         = %.3f",gEff));
+        LOGGER.debug(String.format("nEff         = %.3f\n",nEff));
+        LOGGER.debug(String.format("epEff        = %.3f",epEff));
+        LOGGER.debug(String.format("epiEff       = %.3f",epiEff));
+        LOGGER.debug(String.format("ekEff        = %.3f\n",ekEff));
+        LOGGER.debug(String.format("misid        = %.3f",(float)nMisid/eposCount));
+        LOGGER.debug(String.format("missing      = %.3f",(float)nMissing/eposCount));
+        LOGGER.debug("\n#############################################################");
 
         // some global efficiency tests:
         assertEquals(eEff>0.88,true);
@@ -476,11 +476,11 @@ public class EBTwoTrackTest {
         final double eEff = (double)nFtElectrons / nEvents;
         final double gEff = (double)nFtPhotons / nEvents;
         final double hEff = (double)nFtFd / nEvents;
-        System.out.println("\n#############################################################");
-        System.out.println(String.format("FT eEff = %.3f",eEff));
-        System.out.println(String.format("FT gEff = %.3f",gEff));
-        System.out.println(String.format("FD hEff = %.3f",hEff));
-        System.out.println("#############################################################");
+        LOGGER.debug("\n#############################################################");
+        LOGGER.debug(String.format("FT eEff = %.3f",eEff));
+        LOGGER.debug(String.format("FT gEff = %.3f",gEff));
+        LOGGER.debug(String.format("FD hEff = %.3f",hEff));
+        LOGGER.debug("#############################################################");
         if      (ftPDG==11) assertEquals(eEff>0.90,true);
         else if (ftPDG==22) assertEquals(gEff>0.88,true);
         assertEquals(hEff>0.50,true);
@@ -496,7 +496,7 @@ public class EBTwoTrackTest {
             if (recBank!=null && recPartBank!=null && recFtBank!=null) {
 
                 if (debug) {
-                    System.out.println("\n\n#############################################################\n");
+                    LOGGER.debug("\n\n#############################################################\n");
                     if (ftpartBank!=null) ftpartBank.show();
                     recFtBank.show();
                     recPartBank.show();
@@ -554,7 +554,7 @@ public class EBTwoTrackTest {
         if (isCentral) {
             if (ctrkBank!=null && ctrkBank.rows()!=0) {
                 if (debug) {
-                    System.out.println("\n\n#############################################################\n");
+                    LOGGER.debug("\n\n#############################################################\n");
                     if (recBank!=null) recBank.show();
                     if (ctofBank!=null) ctofBank.show();
                     if (ctrkBank!=null) ctrkBank.show();
@@ -664,7 +664,7 @@ public class EBTwoTrackTest {
 
         // CVT tracks could make this happen:
         //if (foundProton && nPosTracks==0) {
-        //    System.err.println("WHAT");
+        //    LOGGER.warn("WHAT");
         //}
     }
 

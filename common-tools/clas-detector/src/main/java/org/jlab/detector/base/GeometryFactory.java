@@ -5,6 +5,8 @@
  */
 package org.jlab.detector.base;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.detector.calib.utils.DatabaseConstantProvider;
 import org.jlab.geom.base.ConstantProvider;
 import org.jlab.geom.base.Detector;
@@ -17,7 +19,7 @@ import org.jlab.geom.detector.ftof.FTOFFactory;
  * @author gavalian
  */
 public class GeometryFactory {
-    
+    public static Logger LOGGER = LogManager.getLogger(GeometryFactory.class.getName());
     public static int SYSTEM_LOCAL  = 1;
     public static int SYSTEM_TILTED = 2;
     public static int SYSTEM_CLAS   = 3;
@@ -144,7 +146,7 @@ public class GeometryFactory {
             return   ftof;
         }
         
-        System.out.println("[GeometryFactory] --->  detector construction for " 
+        LOGGER.debug("[GeometryFactory] --->  detector construction for " 
                 + type.getName() + "  is not implemented");
         return null;
     }        

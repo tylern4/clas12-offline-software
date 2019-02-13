@@ -24,9 +24,9 @@ public class BosDataDictionary implements DataDictionary {
 	}
 
 	public void init(String format) {
-		System.err.println("[Dictionary] ---> Loading xml dictionary...");
+		LOGGER.warn("[Dictionary] ---> Loading xml dictionary...");
 		BankDictionaryXML xmlDict = new BankDictionaryXML().loadResource("CLAS6_BOS_Dictionary.xml");
-		System.err.println("[Dictionary] ---> XML dictionary size = " + xmlDict.getDescriptors().size());
+		LOGGER.warn("[Dictionary] ---> XML dictionary size = " + xmlDict.getDescriptors().size());
 		for (BankDescriptorXML desc : xmlDict.getDescriptors()) {
 			StringBuilder str = new StringBuilder();
 			for (BankEntryXML entry : desc.getEntries()) {
@@ -36,7 +36,7 @@ public class BosDataDictionary implements DataDictionary {
 				str.append(":");
 			}
 			str.deleteCharAt(str.length() - 1);
-			// System.out.println("DESC : [" + desc.getBankName() + "] --> "
+			// LOGGER.debug("DESC : [" + desc.getBankName() + "] --> "
 			// + str.capacity() + " " + str.length() + " "
 			// + str.toString());
 			BosDataDescriptor descBOS = new BosDataDescriptor(desc.getBankName());

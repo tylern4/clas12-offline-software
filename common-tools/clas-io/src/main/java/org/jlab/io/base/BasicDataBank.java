@@ -40,20 +40,20 @@ public class BasicDataBank implements DataBank {
     }
     
     private void printWarningColumnExists(String routine,String column_name){
-        System.err.println("[BasicDataBank::"+ routine + ": " + 
+        LOGGER.warn("[BasicDataBank::"+ routine + ": " + 
                 this.getDescriptor().getName() +
                 "]---> warning :: the variable with name "
                 + column_name + " already exists.");
     }
     
     private void printWarningColumnDoesNotExist(String routine,String column_name){
-        System.err.println("[BasicDataBank::"+ routine + ": " + 
+        LOGGER.warn("[BasicDataBank::"+ routine + ": " + 
                 this.getDescriptor().getName() + "]---> warning :: the variable with name "
                 + column_name + " does not exist exists.");
     }
     
     private void printOutOfBoundsWarning(String routine, String column_name, int index, int length){
-        System.err.println("[BasicDataBank::"+ routine +"]---> warning :: requested row "
+        LOGGER.warn("[BasicDataBank::"+ routine +"]---> warning :: requested row "
                 + index + " of column "
         + column_name + " with length = " + length);
     
@@ -371,7 +371,7 @@ public class BasicDataBank implements DataBank {
         if(this.bankDescriptor!=null){
             bankname = this.bankDescriptor.getName();
         }
-        System.out.println("*****>>>>> BANK " + bankname 
+        LOGGER.debug("*****>>>>> BANK " + bankname 
                 + "  >>>> SIZE = " + size);
         
         for(Map.Entry<String,byte[]> item : byteContainer.entrySet()){
@@ -381,44 +381,38 @@ public class BasicDataBank implements DataBank {
                 for(int loop = 0; loop < itemdata.length;loop++) 
                     System.out.print(String.format(" %12d  ", itemdata[loop]));             
             }
-            System.out.println();
         }
         
         for(Map.Entry<String,short[]> item : shortContainer.entrySet()){
             System.out.print(String.format("%14s (short) : ",item.getKey()));
             short[] itemdata = item.getValue();
             for(int loop = 0; loop < itemdata.length;loop++) 
-                System.out.print(String.format(" %12d  ", itemdata[loop]));
-            System.out.println();
+                LOGGER.debug(String.format(" %12d  ", itemdata[loop]));
         }
        
         for(Map.Entry<String,int[]> item : intContainer.entrySet()){
-            System.out.print(String.format("%14s  (int)  : ",item.getKey()));
+            LOGGER.debug(String.format("%14s  (int)  : ",item.getKey()));
             int[] itemdata = item.getValue();
             for(int loop = 0; loop < itemdata.length;loop++) 
-                System.out.print(String.format(" %12d  ", itemdata[loop]));
-            System.out.println();
+                LOGGER.debug(String.format(" %12d  ", itemdata[loop]));
         }
         for(Map.Entry<String,float[]> item : floatContainer.entrySet()){
-            System.out.print(String.format("%14s  (float) : ",item.getKey()));
+            LOGGER.debug(String.format("%14s  (float) : ",item.getKey()));
             float[] itemdata = item.getValue();
             for(int loop = 0; loop < itemdata.length;loop++) 
-                System.out.print(String.format(" %12.5f  ", itemdata[loop]));
-            System.out.println();
+                LOGGER.debug(String.format(" %12.5f  ", itemdata[loop]));
         }
         for(Map.Entry<String,double[]> item : doubleContainer.entrySet()){
-            System.out.print(String.format("%14s (double) : ",item.getKey()));
+            LOGGER.debug(String.format("%14s (double) : ",item.getKey()));
             double[] itemdata = item.getValue();
             for(int loop = 0; loop < itemdata.length;loop++) 
-                System.out.print(String.format(" %12.5f  ", itemdata[loop]));
-            System.out.println();
+                LOGGER.debug(String.format(" %12.5f  ", itemdata[loop]));
         }
         for(Map.Entry<String,long[]> item : longContainer.entrySet()){
-            System.out.print(String.format("%14s (long) : ",item.getKey()));
+            LOGGER.debug(String.format("%14s (long) : ",item.getKey()));
             long[] itemdata = item.getValue();
             for(int loop = 0; loop < itemdata.length;loop++) 
-                System.out.print(String.format(" %12.5f  ", itemdata[loop]));
-            System.out.println();
+                LOGGER.debug(String.format(" %12.5f  ", itemdata[loop]));
         }
     }
 
@@ -434,14 +428,14 @@ public class BasicDataBank implements DataBank {
 
     
     public void allocate(int rows) {
-        System.err.println("[BasicDataBank]---> allocate is not implemented..");
+        LOGGER.warn("[BasicDataBank]---> allocate is not implemented..");
     }
 
     
     public double getDouble(String path, int index) {
         if(doubleContainer.containsKey(path)==true){
             if(doubleContainer.get(path).length<=index){
-                System.err.println("[BasicDataBank::getDouble] ERROR : variable " +
+                LOGGER.warn("[BasicDataBank::getDouble] ERROR : variable " +
                         this.getDescriptor().getName() + "." + path + 
                         " array length is " + doubleContainer.get(path).length
                 + " requested index="+index);
@@ -457,7 +451,7 @@ public class BasicDataBank implements DataBank {
     public float getFloat(String path, int index) {
         if(floatContainer.containsKey(path)==true){
             if(floatContainer.get(path).length<=index){
-                System.err.println("[BasicDataBank::getFloat] ERROR : variable " +
+                LOGGER.warn("[BasicDataBank::getFloat] ERROR : variable " +
                         this.getDescriptor().getName() + "." + path + 
                         " array length is " + floatContainer.get(path).length
                 + " requested index="+index);
@@ -473,7 +467,7 @@ public class BasicDataBank implements DataBank {
     public int getInt(String path, int index) {
         if(intContainer.containsKey(path)==true){
             if(intContainer.get(path).length<=index){
-                System.err.println("[BasicDataBank::getInt] ERROR : variable " +
+                LOGGER.warn("[BasicDataBank::getInt] ERROR : variable " +
                         this.getDescriptor().getName() + "." + path + 
                         " array length is " + intContainer.get(path).length
                 + " requested index="+index);
@@ -489,7 +483,7 @@ public class BasicDataBank implements DataBank {
     public long getLong(String path, int index) {
         if(longContainer.containsKey(path)==true){
             if(longContainer.get(path).length<=index){
-                System.err.println("[BasicDataBank::getLong] ERROR : variable " +
+                LOGGER.warn("[BasicDataBank::getLong] ERROR : variable " +
                         this.getDescriptor().getName() + "." + path + 
                         " array length is " + longContainer.get(path).length
                 + " requested index="+index);
@@ -504,7 +498,7 @@ public class BasicDataBank implements DataBank {
     public short getShort(String path, int index) {
         if(shortContainer.containsKey(path)==true){
             if(shortContainer.get(path).length<=index){
-                System.err.println("[BasicDataBank::getShort] ERROR : variable " +
+                LOGGER.warn("[BasicDataBank::getShort] ERROR : variable " +
                         this.getDescriptor().getName() + "." + path + 
                         " array length is " + shortContainer.get(path).length
                 + " requested index="+index);
@@ -520,7 +514,7 @@ public class BasicDataBank implements DataBank {
     public byte getByte(String path, int index) {
          if(byteContainer.containsKey(path)==true){
             if(byteContainer.get(path).length<=index){
-                System.err.println("[BasicDataBank::getByte] ERROR : variable " +
+                LOGGER.warn("[BasicDataBank::getByte] ERROR : variable " +
                         this.getDescriptor().getName() + "." + path + 
                         " array length is " + byteContainer.get(path).length
                 + " requested index="+index);

@@ -41,7 +41,7 @@ public class LTCCEngine extends ReconstructionEngine {
     @Override
         public boolean init() {
             this.requireConstants(CC_TABLES);
-            System.out.println("[LTCC] --> initialization successful...");
+            LOGGER.debug("[LTCC] --> initialization successful...");
             return true;
         }
        

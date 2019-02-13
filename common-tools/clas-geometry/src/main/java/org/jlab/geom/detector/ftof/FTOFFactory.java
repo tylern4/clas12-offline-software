@@ -206,7 +206,7 @@ public class FTOFFactory implements Factory <FTOFDetector, FTOFSector, FTOFSuper
 
     @Override
     public void show() {
-        System.out.println(this);
+        LOGGER.debug(this);
     }
     
     @Override
@@ -244,8 +244,8 @@ public class FTOFFactory implements Factory <FTOFDetector, FTOFSector, FTOFSuper
                 //rotationMother.copy(sLayer.rotation());
                 //rotationMother.inverse();
                 Transformation3D  translationMother = sLayer.translation();
-                //System.out.println(" SECTOR = " + sector + "  LAYER = " + layer);
-                //System.out.println(sLayer.toString());
+                //LOGGER.debug(" SECTOR = " + sector + "  LAYER = " + layer);
+                //LOGGER.debug(sLayer.toString());
                 //rotationMother.show();
                 //translationMother.show();
                 
@@ -256,7 +256,7 @@ public class FTOFFactory implements Factory <FTOFDetector, FTOFSector, FTOFSuper
                     int[]    ids    = paddle.getId();
                     Transformation3D  rotChild = paddle.rotation();
                     Transformation3D  trChild  = paddle.translation();
-                    //System.out.println("PADDLE " + counter);
+                    //LOGGER.debug("PADDLE " + counter);
                     //trChild.show();
                     //rotChild.show();
                     //rotationMother.show();
@@ -276,7 +276,7 @@ public class FTOFFactory implements Factory <FTOFDetector, FTOFSector, FTOFSuper
                     for(int id : ids){
                         System.out.print(" " + id);
                     }
-                    System.out.println();*/
+                    LOGGER.debug();*/
                 }
                 ftofSuperlayer.addLayer(ftofLayer);
                 ftofSector.addSuperlayer(ftofSuperlayer);

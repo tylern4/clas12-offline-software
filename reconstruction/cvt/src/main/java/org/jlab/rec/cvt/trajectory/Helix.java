@@ -1,5 +1,7 @@
 package org.jlab.rec.cvt.trajectory;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.geom.prim.Point3D;
 import org.jlab.geom.prim.Vector3D;
 
@@ -19,7 +21,7 @@ import Jama.Matrix;
  *
  */
 public class Helix {
-
+    public static Logger LOGGER = LogManager.getLogger(Helix.class.getName());
     private double _dca;          // distance of closest approach to the z-axis in the lab frame
     private double _phi_at_dca;   // azimuth at the DOCA
     private double _curvature;    // track curvature = 1/R, where R is the radius of the circle 
@@ -116,7 +118,7 @@ public class Helix {
     public double radius() {
         double C = Math.abs(_curvature);
         if (C == 0) {
-            System.err.println("Helix Curvature should not be zero");
+            LOGGER.warn("Helix Curvature should not be zero");
             return 0;
         }
         return 1. / C;

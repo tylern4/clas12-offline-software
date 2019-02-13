@@ -96,7 +96,7 @@ public abstract class AbstractSector<SuperlayerType extends Superlayer> implemen
     public final SuperlayerType getSuperlayer(int superlayerId) {
         SuperlayerType superlayer = superlayerMap.get(superlayerId);
         if (superlayer == null)
-            System.err.println("AbstractSector: getSuperlayer(int superlayerId): no such superlayer: superlayerId="+superlayerId);
+            LOGGER.warn("AbstractSector: getSuperlayer(int superlayerId): no such superlayer: superlayerId="+superlayerId);
         return superlayer;
     }
     

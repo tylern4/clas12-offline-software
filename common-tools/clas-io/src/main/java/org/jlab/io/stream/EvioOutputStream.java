@@ -14,7 +14,9 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.coda.jevio.DataType;
 import org.jlab.coda.jevio.EventBuilder;
 import org.jlab.coda.jevio.EventWriter;
@@ -31,22 +33,23 @@ import org.jlab.io.evio.EvioDataSync;
  * @author gavalian
  */
 public class EvioOutputStream {
+    public static Logger LOGGER = LogManager.getLogger(EvioOutputStream.class.getName());
     private ByteBuffer evioBuffer;
     private EvioCompactStructureHandler structure = null;
     private final ByteOrder writerByteOrder  = ByteOrder.LITTLE_ENDIAN;
     private final Integer   histogramBankTag = 200;
     private final EvioDataSync    writer = new EvioDataSync();
-    
+
     public EvioOutputStream(String filename){
         writer.open(filename);
     }
-    
+
     public EvioOutputStream(){
         this.createEvent();
     }
     /**
      * Writes Array of objects into the file.
-     * @param objArray 
+     * @param objArray
      */
     public void write(ArrayList<EvioStreamObject> objArray){
         for(EvioStreamObject obj : objArray){
@@ -55,24 +58,24 @@ public class EvioOutputStream {
     }
     /**
      * writes one object with the interface EvioTreeStream into the file.
-     * @param obj 
+     * @param obj
      */
     public void writeObject(EvioStreamObject obj){
         this.writeTree(obj.getStreamData());
     }
-    
+
     public void writeTree(TreeMap<Integer,Object> tree){
         /*
         EventBuilder builder = new EventBuilder(1,DataType.BANK,0);
             EvioEvent event = builder.getEvent();
             EvioBank baseBank = new EvioBank(histogramBankTag, DataType.ALSOBANK, 0);
             baseBank.setByteOrder(writerByteOrder);
-          */  
-            
+          */
+
         EvioEvent baseBank = new EvioEvent(histogramBankTag, DataType.ALSOBANK, 0);
         baseBank.setByteOrder(writerByteOrder);
         EventBuilder builder = new EventBuilder(baseBank);
-        
+
         for(Map.Entry<Integer,Object> entry : tree.entrySet()){
             Object obj = entry.getValue();
             Integer num = entry.getKey();
@@ -84,20 +87,20 @@ public class EvioOutputStream {
                     EvioBank treeData = new EvioBank(histogramBankTag, DataType.DOUBLE64, num);
                     treeData.setByteOrder(writerByteOrder);
                     treeData.appendDoubleData( (double[])  obj);
-                    builder.addChild(baseBank, treeData);                        
+                    builder.addChild(baseBank, treeData);
                 } catch (EvioException ex) {
-                    Logger.getLogger(EvioOutputStream.class.getName()).log(Level.SEVERE, null, ex);
+                    LOGGER.error(ex);
                 }
             }
-            
+
             if(obj instanceof float[]){
                 try {
                     EvioBank treeData = new EvioBank(histogramBankTag, DataType.FLOAT32, num);
                     treeData.setByteOrder(writerByteOrder);
                     treeData.appendFloatData((float[])  obj);
-                    builder.addChild(baseBank, treeData);                        
+                    builder.addChild(baseBank, treeData);
                 } catch (EvioException ex) {
-                    Logger.getLogger(EvioOutputStream.class.getName()).log(Level.SEVERE, null, ex);
+                    LOGGER.error(ex);
                 }
             }
             /**
@@ -108,12 +111,12 @@ public class EvioOutputStream {
                     EvioBank treeData = new EvioBank(histogramBankTag, DataType.INT32, num);
                     treeData.setByteOrder(writerByteOrder);
                     treeData.appendIntData( (int[])  obj);
-                    builder.addChild(baseBank, treeData);                        
+                    builder.addChild(baseBank, treeData);
                 } catch (EvioException ex) {
-                    Logger.getLogger(EvioOutputStream.class.getName()).log(Level.SEVERE, null, ex);
+                    LOGGER.error(ex);
                 }
             }
-            
+
             /**
              * Writing integer values to the bank structure.
              */
@@ -122,30 +125,30 @@ public class EvioOutputStream {
                     EvioBank treeData = new EvioBank(histogramBankTag, DataType.CHAR8, num);
                     treeData.setByteOrder(writerByteOrder);
                     treeData.appendByteData((byte[])  obj);
-                    builder.addChild(baseBank, treeData);                        
+                    builder.addChild(baseBank, treeData);
                 } catch (EvioException ex) {
-                    Logger.getLogger(EvioOutputStream.class.getName()).log(Level.SEVERE, null, ex);
+                    LOGGER.error(ex);
                 }
             }
-            
+
         }
-        
+
         EvioEvent event = builder.getEvent();
         int byteSize = event.getTotalBytes();
-        //System.out.println("base bank size = " + byteSize);
+        //LOGGER.debug("base bank size = " + byteSize);
         ByteBuffer bb = ByteBuffer.allocate(byteSize);
         bb.order(writerByteOrder);
         event.write(bb);
         bb.flip();
-        
+
         EvioDataEvent dataEvent = new EvioDataEvent(bb);
-        writer.writeEvent(dataEvent);            
+        writer.writeEvent(dataEvent);
     }
-    
+
     public void close(){
         writer.close();
     }
-           
+
     /**
      * Creates the event structure
      */
@@ -155,23 +158,23 @@ public class EvioOutputStream {
             EventBuilder builder = new EventBuilder(1,DataType.BANK,0);
             EvioEvent event = builder.getEvent();
             EvioBank baseBank = new EvioBank(10, DataType.ALSOBANK, 0);
-            
+
             builder.addChild(event, baseBank);
-            
+
             ByteOrder byteOrder = writerByteOrder;
-            
+
             int byteSize = event.getTotalBytes();
-            //System.out.println("base bank size = " + byteSize);
+            //LOGGER.debug("base bank size = " + byteSize);
             ByteBuffer bb = ByteBuffer.allocate(byteSize);
             bb.order(byteOrder);
             event.write(bb);
             bb.flip();
             structure = new EvioCompactStructureHandler(bb,DataType.BANK);
         } catch (EvioException ex) {
-            Logger.getLogger(EvioDataSync.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex);
         }
     }
-    
+
     public void writeToFile(String filename){
         File file = new File(filename);
         try {
@@ -183,17 +186,17 @@ public class EvioOutputStream {
             clone.put(original);
             original.rewind();
             clone.flip();
-            evioWriter.writeEvent(clone); 
+            evioWriter.writeEvent(clone);
             evioWriter.close();
 //new EventWriter(file, 1000000, 2,
             //ByteOrder.BIG_ENDIAN, null, null);
         } catch (EvioException ex) {
-            Logger.getLogger(EvioDataSync.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex);
         } catch (IOException ex) {
-            Logger.getLogger(EvioOutputStream.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex);
         }
     }
-    
+
     public static void main(String[] args){
         EvioOutputStream writer = new EvioOutputStream("/Users/gavalian/Work/outputhistogram.evio");
         TreeMap<Integer,Object>  histos = new TreeMap<Integer,Object>();
@@ -202,7 +205,7 @@ public class EvioOutputStream {
         histos.put(9, namedata);
         histos.put(10, new int[]{3,4} );
         histos.put(11, new double[]{4.5,6.7} );
-        histos.put(12, new double[]{0.5,1.5,2.5,3.5});        
+        histos.put(12, new double[]{0.5,1.5,2.5,3.5});
         writer.writeTree(histos);
         writer.close();
     }

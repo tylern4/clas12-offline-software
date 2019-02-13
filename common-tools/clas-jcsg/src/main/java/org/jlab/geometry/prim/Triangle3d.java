@@ -7,6 +7,9 @@ package org.jlab.geometry.prim;
 
 import eu.mihosoft.vrl.v3d.Intersection;
 import eu.mihosoft.vrl.v3d.Vector3d;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +19,7 @@ import java.util.Optional;
  * @author kenjo
  */
 public class Triangle3d {
-
+    public static Logger LOGGER = LogManager.getLogger(Triangle3d.class.getName());
     private final Vector3d[] vertices = new Vector3d[3];
     private final Vector3d side1, side2;
 
@@ -83,7 +86,7 @@ public class Triangle3d {
             line = Optional.of(new Line3d(interpoints.get(0), interpoints.get(1)));
         }
         else if(!interpoints.isEmpty()) {
-            System.err.println("Intersection of planes produced "+interpoints.size()+"points!!!!");
+            LOGGER.warn("Intersection of planes produced "+interpoints.size()+"points!!!!");
             System.exit(1111);
         }
 
@@ -112,7 +115,7 @@ public class Triangle3d {
 	public Vector3d point(int index) {
 		if( index < 0 || index > 2 )
 		{
-			System.err.println("Warning: Triangle3d point(int index): invalid index=" + index );
+			LOGGER.warn("Warning: Triangle3d point(int index): invalid index=" + index );
 			return null;
 		}
 		return vertices[index];

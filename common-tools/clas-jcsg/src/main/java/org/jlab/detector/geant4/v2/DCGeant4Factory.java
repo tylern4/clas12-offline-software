@@ -478,7 +478,7 @@ public final class DCGeant4Factory extends Geant4Factory {
                         wires[isec][isuper][ilayer][iwire].rotateX(Math.toRadians(dbref.getAlignmentThetaX(isec, isuper/2)));
                         wires[isec][isuper][ilayer][iwire].rotateY(Math.toRadians(dbref.getAlignmentThetaY(isec, isuper/2)));
                         wires[isec][isuper][ilayer][iwire].translate(regionMids[isec][isuper/2]);
-    //                    System.out.println((isuper+1) + " " + (ilayer+1) + " " + (iwire+1) + " " + wireLefts[isuper][ilayer][iwire] + " " + wireMids[isuper][ilayer][iwire] + " " + wireRights[isuper][ilayer][iwire]);
+    //                    LOGGER.debug((isuper+1) + " " + (ilayer+1) + " " + (iwire+1) + " " + wireLefts[isuper][ilayer][iwire] + " " + wireMids[isuper][ilayer][iwire] + " " + wireRights[isuper][ilayer][iwire]);
                    }
                 }
 
@@ -611,12 +611,12 @@ public final class DCGeant4Factory extends Geant4Factory {
 
     /*
     public void printWires(){
-        System.out.println("hello");
+        LOGGER.debug("hello");
         for(int isup=0;isup<2;isup++)
         for(int il=0;il<8;il+=7)
             for(int iwire=0;iwire<nsgwires+1;iwire+=nsgwires/30){
         Wire regw = new Wire(isup,il,iwire);
-        System.out.println("line("+regw.left()+", "+regw.right()+");");
+        LOGGER.debug("line("+regw.left()+", "+regw.right()+");");
             }
     }
     */

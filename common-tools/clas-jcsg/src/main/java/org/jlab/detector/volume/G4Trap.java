@@ -39,16 +39,16 @@ public class G4Trap extends Geant4Basic {
                 volCSG.toStlFile("1.stl");
             }
         } catch (IOException ex) {
-            Logger.getLogger(G4Trap.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex);
         }
-        System.out.println("helloworld1");
-        System.out.println(name+points);
-        System.out.println("helloworld2");
+        LOGGER.debug("helloworld1");
+        LOGGER.debug(name+points);
+        LOGGER.debug("helloworld2");
 
         List<Vector3d> points = volCSG.getIntersections(new Line3d(new Vector3d(0, 0, 0), new Vector3d(1, 0, 0)));
         if(points.size()!=2) throw new Error("WTF!!!");
 */
-        
+
         localAxisX = new Line3d(volCSG.getIntersections(new Ray3d(new Vector3d(0, 0, 0), new Vector3d(1, 0, 0))).get(0),
                 volCSG.getIntersections(new Ray3d(new Vector3d(0, 0, 0), new Vector3d(-1, 0, 0))).get(0));
         localAxisY = new Line3d(volCSG.getIntersections(new Ray3d(new Vector3d(0, 0, 0), new Vector3d(0, 1, 0))).get(0),

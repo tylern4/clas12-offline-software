@@ -130,7 +130,7 @@ public class FTOFMatch implements IMatchedHit {
                         hit.ADCTime2 = t_2;
 
                         matchLists.add(hit);
-                        System.out.println(i + ")  s " + h.get_Sector() + " l "
+                        LOGGER.debug(i + ")  s " + h.get_Sector() + " l "
                                 + h.get_Layer() + " c " + h.get_Component()
                                 + " adcL " + h.get_ADC1() + " adcR "
                                 + h.get_ADC2() + " tdcL " + h.get_TDC1()

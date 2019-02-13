@@ -59,10 +59,10 @@ public class BosDataEvent implements DataEvent {
 		for (int loop = 0; loop < bufferBytes.length; loop++) {
 			if (bufferBytes[loop] == nameBytes[0]) {
 				String header = new String(bufferBytes, loop, 8);
-				// System.out.println("[StrcutureFinder] ----> Found R at pos = "
+				// LOGGER.debug("[StrcutureFinder] ----> Found R at pos = "
 				// + loop + " header = " + header);
 				if (header.compareTo(name) == 0) {
-					System.out.println("[StrcutureFinder] ----> Found events at pos = " + loop);
+					LOGGER.debug("[StrcutureFinder] ----> Found events at pos = " + loop);
 				}
 			}
 		}
@@ -76,10 +76,10 @@ public class BosDataEvent implements DataEvent {
 			int nrows = this.unsignedIntFromBuffer(bosBCS, header.NROWS_WORD_INDEX);
 			int nword = this.unsignedIntFromBuffer(bosBCS, header.NWORDS_WORD_INDEX);
 			int ndata = this.unsignedIntFromBuffer(bosBCS, header.NDATA_START_INDEX);
-			System.out.println(String.format("BANK [%6s] i=%8d c=%8d r=%8d w=%8d d=%8d l=%8d", bank, index, ncols, nrows, nword, ndata,
+			LOGGER.debug(String.format("BANK [%6s] i=%8d c=%8d r=%8d w=%8d d=%8d l=%8d", bank, index, ncols, nrows, nword, ndata,
 			        bosBCS.array().length));
 		} else {
-			System.out.println("[showBankInfo]----> marker for bank " + bank + " not found ");
+			LOGGER.debug("[showBankInfo]----> marker for bank " + bank + " not found ");
 		}
 
 	}
@@ -103,7 +103,7 @@ public class BosDataEvent implements DataEvent {
 			if ((realoffset) % 4 != 0)
 				wordoffset += 1;
 			int dataposition = wordoffset * 4;
-			// System.out.println("getBankStructure::: BANK [" + name + "] " + index.get(loop) + " " + offset +
+			// LOGGER.debug("getBankStructure::: BANK [" + name + "] " + index.get(loop) + " " + offset +
 			// " RO " + realoffset + " WO " + wordoffset);
 			BosBankStructure struct = new BosBankStructure();
 
@@ -117,7 +117,7 @@ public class BosDataEvent implements DataEvent {
 			struct.BANKNUMBER = number;
 			structures.add(struct);
 			/*
-			 * if(index.size()>1){ System.out.println(loop + " : OFFSET " + realoffset + " / " + wordoffset + " FPACK " + fpackoffset + "  " + struct); }
+			 * if(index.size()>1){ LOGGER.debug(loop + " : OFFSET " + realoffset + " / " + wordoffset + " FPACK " + fpackoffset + "  " + struct); }
 			 */
 			// BosBankStructure stuct = new BosBankStructure();
 		}
@@ -145,7 +145,7 @@ public class BosDataEvent implements DataEvent {
 		byte b3 = b.get(offset + 2);
 		byte b4 = b.get(offset + 3);
 		/*
-		 * System.err.println("b = " + Integer.toHexString(b1) + "-" + Integer.toHexString(b2) + "-" + Integer.toHexString(b3) + "-" + Integer.toHexString(b4) + "-"
+		 * LOGGER.warn("b = " + Integer.toHexString(b1) + "-" + Integer.toHexString(b2) + "-" + Integer.toHexString(b3) + "-" + Integer.toHexString(b4) + "-"
 		 * );
 		 */
 		int s = 0;
@@ -194,7 +194,7 @@ public class BosDataEvent implements DataEvent {
 		Integer nwords_i = nwords;
 		int nwords_correct = nwords & 0x000000FF;
 
-		System.out.println(String.format("[ %6d : %6d ] [ %6s ] %5d %5d %5d %5d %5d [%5d %5d] ", runno, runev, name, index, ncols, nrows,
+		LOGGER.debug(String.format("[ %6d : %6d ] [ %6s ] %5d %5d %5d %5d %5d [%5d %5d] ", runno, runev, name, index, ncols, nrows,
 		        nwords, nwords_correct, nrows * banksize, nbytes));
 	}
 
@@ -219,7 +219,7 @@ public class BosDataEvent implements DataEvent {
 
 		if (nrows * banksize > nbytes) {
 			/*
-			 * System.out.println("[check-bank]---> ERROR : consistency check " + "failed run # " + RunNumber + " event # " + EventNumber + " for bank " + bankname +
+			 * LOGGER.debug("[check-bank]---> ERROR : consistency check " + "failed run # " + RunNumber + " event # " + EventNumber + " for bank " + bankname +
 			 * " ncols = " + nrows + " nrows = " + nrows + " banksize = " + banksize + " bytes = " + nrows*banksize + " entry bytes = " + nbytes + " bin = " +
 			 * Integer.toBinaryString(nwords) + " hex = " + Integer.toHexString(nwords) );
 			 */
@@ -229,7 +229,7 @@ public class BosDataEvent implements DataEvent {
 	}
 
 	public void dumpBufferToFile() {
-		// System.out.println("DUMPING EVENT # " + this.currentEventInBuffer + " BUFF " + this.currentBufferPosition);
+		// LOGGER.debug("DUMPING EVENT # " + this.currentEventInBuffer + " BUFF " + this.currentBufferPosition);
 		int nrun = 0;
 		int nevt = 0;
 		if (this.hasBank("HEAD") == true) {
@@ -239,16 +239,16 @@ public class BosDataEvent implements DataEvent {
 		}
 
 		String filename = "bosEventBuffer_" + nrun + "_" + nevt + ".buff";
-		System.out.println("[BosDataEvent] ----> Producing EVENT DUMP : " + filename);
+		LOGGER.debug("[BosDataEvent] ----> Producing EVENT DUMP : " + filename);
 		try {
 			boolean append = false;
 			FileChannel wChannel = new FileOutputStream(new File(filename), append).getChannel();
 			wChannel.write(this.bosBCS);
 			wChannel.close();
 		} catch (FileNotFoundException ex) {
-			Logger.getLogger(BosDataSource.class.getName()).log(Level.SEVERE, null, ex);
+			LOGGER.error(ex);
 		} catch (IOException ex) {
-			Logger.getLogger(BosDataSource.class.getName()).log(Level.SEVERE, null, ex);
+			LOGGER.error(ex);
 		}
 	}
 
@@ -260,13 +260,13 @@ public class BosDataEvent implements DataEvent {
 			if (bufferBytes[loop] == nameBytes[0]) {
 				String bankHeader = new String(bufferBytes, loop, 4);
 				if (bankHeader.compareTo(name) == 0) {
-					System.out.println("----> found bank " + name + " in position " + loop);
+					LOGGER.debug("----> found bank " + name + " in position " + loop);
 					int startIndex = loop + 4;
 					int number = bosBCS.getInt(startIndex + 4);
 					int ncols = bosBCS.getInt(startIndex + 8);
 					int nrows = bosBCS.getInt(startIndex + 12);
 					int nwords = bosBCS.getInt(startIndex + 24);
-					System.out.println("----> found bank " + name + " in position " + loop + " rows = " + nrows + " cols = " + ncols
+					LOGGER.debug("----> found bank " + name + " in position " + loop + " rows = " + nrows + " cols = " + ncols
 					        + "  number = " + number + " words = " + nwords);
 				}
 			}
@@ -362,8 +362,8 @@ public class BosDataEvent implements DataEvent {
 				ByteBuffer buffer = ByteBuffer.wrap(struct.DATA);
 				buffer.order(ByteOrder.LITTLE_ENDIAN);
 				/*
-				 * if(structures.get(0).isComplete()==true||structures.get(1).isComplete()){ System.out.println("---------> FOUND STRUCTURE TWO PIECES  ");
-				 * System.out.println(structures.get(0)); System.out.println(structures.get(1)); this.dumpBufferToFile(); }
+				 * if(structures.get(0).isComplete()==true||structures.get(1).isComplete()){ LOGGER.debug("---------> FOUND STRUCTURE TWO PIECES  ");
+				 * LOGGER.debug(structures.get(0)); LOGGER.debug(structures.get(1)); this.dumpBufferToFile(); }
 				 */
 				return buffer;
 			}
@@ -374,28 +374,28 @@ public class BosDataEvent implements DataEvent {
 
 	/*
 	 * public ByteBuffer getBankData(String bankname, int banknum){
-	 * 
+	 *
 	 * ArrayList<Integer> index = this.getBankMultiIndex(bankname, banknum);
-	 * 
+	 *
 	 * ArrayList<Integer> dataP = new ArrayList<Integer>(); ArrayList<Integer> dataL = new ArrayList<Integer>();
-	 * 
+	 *
 	 * int totalLength = 0;
-	 * 
+	 *
 	 * for(int loop = 0; loop < index.size(); loop++){ BosBankHeader header = new BosBankHeader(index.get(loop)); int ncols = bosBCS.get(header.NCOLS_WORD_INDEX);
 	 * int nrows = bosBCS.get(header.NROWS_WORD_INDEX); //int nwords = bosBCS.get(header.NWORDS_WORD_INDEX); int nwords = this.unsignedIntFromBuffer(bosBCS,
 	 * header.NWORDS_WORD_INDEX); int banksize = this.bankDictionary.getDescriptor(bankname).getProperty("banksize"); int nbytes = nwords*4; Integer nwords_i =
 	 * nwords; int nwords_correct = nwords & 0x000000FF; //totalLength += nbytes; //int dataoffset = int dataindex = (bosBCS.getInt(header.NDATA_START_INDEX)-1)*4 +
-	 * index.get(loop); int datalen = nbytes; totalLength += datalen; dataP.add(dataindex); dataL.add(datalen); //System.out.println("[GET BANK DATA] " + bankname +
+	 * index.get(loop); int datalen = nbytes; totalLength += datalen; dataP.add(dataindex); dataL.add(datalen); //LOGGER.debug("[GET BANK DATA] " + bankname +
 	 * " " + index.get(loop) // + "  " + dataindex +"  " + datalen); } try { if(totalLength>0){ byte[] buffer = new byte[totalLength]; int start = 0; for(int loop =
 	 * 0; loop < dataP.size(); loop++){ System.arraycopy(bosBCS.array(), dataP.get(loop), buffer, start, dataL.get(loop)); start += dataL.get(loop); } ByteBuffer
 	 * ioBuffer = ByteBuffer.wrap(buffer); ioBuffer.order(ByteOrder.LITTLE_ENDIAN);
-	 * 
+	 *
 	 * return ioBuffer; //return buffer; } } catch (Exception e) { System.out.print(" WELL Something went wrong with [" + bankname + "]  " );
 	 * this.showBankInfo(bankname); this.dumpBufferToFile(); this.showBank(bankname, banknum); int index1 = this.getBankIndex(bankname, banknum, 0); int index2 =
-	 * this.getBankIndex(bankname, banknum, index1+4); System.out.println("INDEX 1 = " + index1 + "  INDEX2 = " + index2); if(this.hasBank("HEAD")==true){
+	 * this.getBankIndex(bankname, banknum, index1+4); LOGGER.debug("INDEX 1 = " + index1 + "  INDEX2 = " + index2); if(this.hasBank("HEAD")==true){
 	 * BosDataBank bank = (BosDataBank) this.getBank("HEAD"); bank.show(); } for(int loop = 0; loop < dataP.size();loop++){ System.out.print( dataP.get(loop) + "   "
-	 * + dataL.get(loop) + " " + "  INDEX = " + index.get(loop) + "   "); } System.out.println(); }
-	 * 
+	 * + dataL.get(loop) + " " + "  INDEX = " + index.get(loop) + "   "); } LOGGER.debug(); }
+	 *
 	 * byte[] b = new byte[0]; ByteBuffer ioBuffer = ByteBuffer.wrap(b); ioBuffer.order(ByteOrder.LITTLE_ENDIAN); return ioBuffer; }
 	 */
 	public ArrayList<Integer> getBankMultiIndex(String bankname, int banknum) {
@@ -409,13 +409,13 @@ public class BosDataEvent implements DataEvent {
 					index.add(initial_pos);
 			}
 		}
-		// System.out.println(" FOUND BANK [" + bankname +"] with positions = " + index.size());
+		// LOGGER.debug(" FOUND BANK [" + bankname +"] with positions = " + index.size());
 		return index;
 	}
 
 	public DataBank getBank(String bank_name) {
 
-		// System.out.println("---> Looking for " + bank_name +
+		// LOGGER.debug("---> Looking for " + bank_name +
 		// " total size = " + bosBCS.array().length);
 		String __bankname = bank_name;
 		int __banknumber = 0;
@@ -437,7 +437,7 @@ public class BosDataEvent implements DataEvent {
 		int dataFirstByte = 0;
 		int nrows = bcsBank.capacity() / banksize;
 		/*
-		 * System.out.println("[GETBANK:DEBUG] ----> " + bank_name + " index  = " + index + " offset = " + dataoffset + " rows = " + nrows + " cosl = " + ncols +
+		 * LOGGER.debug("[GETBANK:DEBUG] ----> " + bank_name + " index  = " + index + " offset = " + dataoffset + " rows = " + nrows + " cosl = " + ncols +
 		 * " blen = " + bosBCS.array().length + " nwords = " + nwords + " bsize = " + banksize + " firstbyte = " + dataFirstByte);
 		 */
 		String[] entryNames = desc.getEntryList();
@@ -457,16 +457,16 @@ public class BosDataEvent implements DataEvent {
 				int entry_offset = desc.getProperty("offset", entry);
 				int[] int_data = new int[nrows];
 				// short[] short_data = new short[nrows];
-				// System.out.println("----> Filling entry " + entry + " size = "
+				// LOGGER.debug("----> Filling entry " + entry + " size = "
 				// + nrows + " index " + index + " first byte = " +
 				// dataFirstByte + " offset = " + entry_offset);
 				for (int loop = 0; loop < nrows; loop++) {
 
 					int entry_index = entry_offset + loop * banksize + dataFirstByte;
-					// System.out.println("[]--> filling entry int " + entry +
+					// LOGGER.debug("[]--> filling entry int " + entry +
 					// " offset = " + entry_offset +
 					// " position " + entry_index + " loop = " + loop);
-					// System.out.println("-------------> loop " + loop
+					// LOGGER.debug("-------------> loop " + loop
 					// + " banksize = " + banksize + " index = " + entry_index);
 					int_data[loop] = bcsBank.getInt(entry_index);
 				}
@@ -477,13 +477,13 @@ public class BosDataEvent implements DataEvent {
 				int entry_offset = desc.getProperty("offset", entry);
 				float[] float_data = new float[nrows];
 				// short[] short_data = new short[nrows];
-				// System.out.println("----> Filling entry " + entry + " size = "
+				// LOGGER.debug("----> Filling entry " + entry + " size = "
 				// + nrows + " index " + index + " first byte = " +
 				// dataFirstByte + " offset = " + entry_offset);
 				for (int loop = 0; loop < nrows; loop++) {
 					int entry_index = entry_offset + loop * banksize + dataFirstByte;
 					/*
-					 * System.out.println("[]--> filling entry float " + entry + " position " + entry_index + " loop = " + loop);
+					 * LOGGER.debug("[]--> filling entry float " + entry + " position " + entry_index + " loop = " + loop);
 					 */
 					float_data[loop] = bcsBank.getFloat(entry_index);
 				}
@@ -500,7 +500,7 @@ public class BosDataEvent implements DataEvent {
 
 	public DataBank getBankOldVersion(String bank_name) {
 
-		// System.out.println("---> Looking for " + bank_name +
+		// LOGGER.debug("---> Looking for " + bank_name +
 		// " total size = " + bosBCS.array().length);
 		String __bankname = bank_name;
 		int __banknumber = 0;
@@ -520,14 +520,14 @@ public class BosDataEvent implements DataEvent {
 			int nrows = bosBCS.getInt(header.NROWS_WORD_INDEX);
 			int ncols = bosBCS.getInt(header.NCOLS_WORD_INDEX);
 
-			// System.out.println("-----> found bank [] = " + bank_name
+			// LOGGER.debug("-----> found bank [] = " + bank_name
 			// + " position = " + index + " words = " + nwords +
 			// " nrows = " + nrows + " total size = " + bosBCS.array().length);
 			int dataoffset = (bosBCS.getInt(header.NDATA_START_INDEX) - 1) * 4;
 			int banksize = desc.getProperty("banksize");
 			int dataFirstByte = index + dataoffset;
 			/*
-			 * System.out.println("[GETBANK:DEBUG] ----> " + bank_name + " index  = " + index + " offset = " + dataoffset + " rows = " + nrows + " cosl = " + ncols +
+			 * LOGGER.debug("[GETBANK:DEBUG] ----> " + bank_name + " index  = " + index + " offset = " + dataoffset + " rows = " + nrows + " cosl = " + ncols +
 			 * " blen = " + bosBCS.array().length + " nwords = " + nwords + " bsize = " + banksize + " firstbyte = " + dataFirstByte);
 			 */
 			String[] entryNames = desc.getEntryList();
@@ -536,16 +536,16 @@ public class BosDataEvent implements DataEvent {
 					int entry_offset = desc.getProperty("offset", entry);
 					int[] int_data = new int[nrows];
 					// short[] short_data = new short[nrows];
-					// System.out.println("----> Filling entry " + entry + " size = "
+					// LOGGER.debug("----> Filling entry " + entry + " size = "
 					// + nrows + " index " + index + " first byte = " +
 					// dataFirstByte + " offset = " + entry_offset);
 					for (int loop = 0; loop < nrows; loop++) {
 
 						int entry_index = entry_offset + loop * banksize + dataFirstByte;
-						// System.out.println("[]--> filling entry int " + entry +
+						// LOGGER.debug("[]--> filling entry int " + entry +
 						// " offset = " + entry_offset +
 						// " position " + entry_index + " loop = " + loop);
-						// System.out.println("-------------> loop " + loop
+						// LOGGER.debug("-------------> loop " + loop
 						// + " banksize = " + banksize + " index = " + entry_index);
 						int_data[loop] = bosBCS.getInt(entry_index);
 					}
@@ -556,13 +556,13 @@ public class BosDataEvent implements DataEvent {
 					int entry_offset = desc.getProperty("offset", entry);
 					float[] float_data = new float[nrows];
 					// short[] short_data = new short[nrows];
-					// System.out.println("----> Filling entry " + entry + " size = "
+					// LOGGER.debug("----> Filling entry " + entry + " size = "
 					// + nrows + " index " + index + " first byte = " +
 					// dataFirstByte + " offset = " + entry_offset);
 					for (int loop = 0; loop < nrows; loop++) {
 						int entry_index = entry_offset + loop * banksize + dataFirstByte;
 						/*
-						 * System.out.println("[]--> filling entry float " + entry + " position " + entry_index + " loop = " + loop);
+						 * LOGGER.debug("[]--> filling entry float " + entry + " position " + entry_index + " loop = " + loop);
 						 */
 						float_data[loop] = bosBCS.getFloat(entry_index);
 					}
@@ -670,7 +670,7 @@ public class BosDataEvent implements DataEvent {
     }
 
     public void show() {
-        System.out.println("[BosDataEvent]  show is not implemented");
+        LOGGER.debug("[BosDataEvent]  show is not implemented");
     }
 
     @Override
@@ -698,6 +698,6 @@ public class BosDataEvent implements DataEvent {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    
+
 
 }

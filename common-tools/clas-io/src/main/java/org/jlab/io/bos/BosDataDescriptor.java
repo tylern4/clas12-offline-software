@@ -76,9 +76,9 @@ public class BosDataDescriptor implements DataDescriptor {
 	}
 
 	public void show() {
-		System.out.println(">>>>>>>>>>>>>>> BANK " + this.getName() + "  ***** SIZE = " + this.getProperty("banksize"));
+		LOGGER.debug(">>>>>>>>>>>>>>> BANK " + this.getName() + "  ***** SIZE = " + this.getProperty("banksize"));
 		for (Map.Entry<String, Integer> entry : entryOffsets.entrySet()) {
-			System.out.println(String.format("%12s : %6d %6d ", entry.getKey(), entry.getValue(), entryTypes.get(entry.getKey()).id()));
+			LOGGER.debug(String.format("%12s : %6d %6d ", entry.getKey(), entry.getValue(), entryTypes.get(entry.getKey()).id()));
 		}
 	}
 

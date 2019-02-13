@@ -49,7 +49,7 @@ public class RungeKutta {
         double delty_delty0_0 =1;
         double deltx_delq0_0 =0;
         double delty_delq0_0 =0;
-        //System.out.println("RK0 "+x0+","+y0+","+z0+";"+tx0+","+ty0+","+" z0 "+z0+" h "+h);
+        //LOGGER.debug("RK0 "+x0+","+y0+","+z0+";"+tx0+","+ty0+","+" z0 "+z0+" h "+h);
         //State
         swimmer.Bfield(sector, x0, y0, z0, _b);
         double x1 = tx0;
@@ -175,7 +175,7 @@ public class RungeKutta {
         double tx = tx0 + this.RK4(tx1, tx2, tx3, tx4, h);
         double ty = ty0 + this.RK4(ty1, ty2, ty3, ty4, h);
         double z = z0+h;
-        //System.out.println("RK "+x+","+y+","+z+";"+tx+","+ty+","+" z0 "+z0);
+        //LOGGER.debug("RK "+x+","+y+","+z+";"+tx+","+ty+","+" z0 "+z0);
         // Jacobian:
         double delx_deltx0  = this.RK4(delx_deltx0_1, delx_deltx0_2, delx_deltx0_3, delx_deltx0_4, h);
         double deltx_deltx0 = 1 + this.RK4(deltx_deltx0_1, deltx_deltx0_2, deltx_deltx0_3, deltx_deltx0_4, h);
@@ -267,7 +267,7 @@ public class RungeKutta {
         double delty_delty0_0 =1;
         double deltx_delq0_0 =0;
         double delty_delq0_0 =0;
-        //System.out.println("RK0 "+x0+","+y0+","+z0+";"+tx0+","+ty0+","+" z0 "+z0+" h "+h);
+        //LOGGER.debug("RK0 "+x0+","+y0+","+z0+";"+tx0+","+ty0+","+" z0 "+z0+" h "+h);
         //State
         swimmer.Bfield(sector, x0, y0, z0, _b);
         double x1 = tx0;
@@ -345,7 +345,7 @@ public class RungeKutta {
         double tx = tx0 + this.RK4(this.k1.get(2), this.k2.get(2), this.k3.get(2), this.k4.get(2), h);
         double ty = ty0 + this.RK4(this.k1.get(3), this.k2.get(3), this.k3.get(3), this.k4.get(3), h);
         double z = z0+h;
-        //System.out.println("RK "+x+","+y+","+z+";"+tx+","+ty+","+" z0 "+z0);
+        //LOGGER.debug("RK "+x+","+y+","+z+";"+tx+","+ty+","+" z0 "+z0);
         // Jacobian:
         double delx_deltx0  =       this.RK4(this.jk1.get(0), this.jk2.get(0), this.jk3.get(0), this.jk4.get(0), h);
         double dely_deltx0  =       this.RK4(this.jk1.get(1), this.jk2.get(1), this.jk3.get(1), this.jk4.get(1), h);

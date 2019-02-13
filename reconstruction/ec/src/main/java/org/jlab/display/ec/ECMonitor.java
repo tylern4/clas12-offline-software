@@ -119,7 +119,7 @@ public class ECMonitor implements IDataEventListener {
                 }
             }
         } catch (Exception e) {
-            System.out.println("-----> error with the event.....");
+            LOGGER.debug("-----> error with the event.....");
             e.printStackTrace();
         }
     }
@@ -131,7 +131,7 @@ public class ECMonitor implements IDataEventListener {
 
     @Override
     public void resetEventListener() {
-        System.out.println("\n    >>>> reset ec monitor");
+        LOGGER.debug("\n    >>>> reset ec monitor");
         this.H100_PION_MASS.reset();
         for(H2F h : this.histOccupancy){
             h.reset();

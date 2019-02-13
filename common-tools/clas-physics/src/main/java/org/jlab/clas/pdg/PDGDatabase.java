@@ -4,6 +4,9 @@
  */
 package org.jlab.clas.pdg;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,7 +16,7 @@ import java.util.Map;
  * @author gavalian
  */
 public class PDGDatabase {
-
+    public static Logger LOGGER = LogManager.getLogger(PDGDatabase.class.getName());
 	static final HashMap<Integer, PDGParticle> particleDatabase = initDatabase();
 
 	public PDGDatabase() {
@@ -32,13 +35,13 @@ public class PDGDatabase {
 		if (particleDatabase.containsKey(pid) == true) {
 			return particleDatabase.get(pid);
 		}
-		System.err.println("PDGDatabase::Error -> there is no particle with pid " + pid);
+		LOGGER.warn("PDGDatabase::Error -> there is no particle with pid " + pid);
 		return null;
 	}
 
 	public static void addParticle(PDGParticle part) {
 		if (particleDatabase.containsKey(part.pid()) == true) {
-			System.out.println("PDGDatabase::Error -> Particle with PID " + part.pid() + " already exists in the database.");
+			LOGGER.debug("PDGDatabase::Error -> Particle with PID " + part.pid() + " already exists in the database.");
 			return;
 		}
 
@@ -47,7 +50,7 @@ public class PDGDatabase {
 
 	public static void addParticle(String name, int pid, double mass, int charge) {
 		if (particleDatabase.containsKey(pid) == true) {
-			System.out.println("PDGDatabase::Error -> Particle with PID " + pid + " already exists in the database.");
+			LOGGER.debug("PDGDatabase::Error -> Particle with PID " + pid + " already exists in the database.");
 			return;
 		}
 		particleDatabase.put(pid, new PDGParticle(name, pid, mass, charge));
@@ -114,7 +117,7 @@ public class PDGDatabase {
 
 	public static void show() {
 		for (Map.Entry<Integer, PDGParticle> items : particleDatabase.entrySet()) {
-			System.out.println(items.getValue().toString());
+			LOGGER.debug(items.getValue().toString());
 		}
 	}
 

@@ -76,7 +76,7 @@ public class CTOFEngine extends ReconstructionEngine {
     public boolean processDataEvent(DataEvent event) {
         //setRunConditionsParameters( event) ;
         if(event.hasBank("RUN::config")==false ) {
-            System.err.println("RUN CONDITIONS NOT READ!");
+            LOGGER.warn("RUN CONDITIONS NOT READ!");
             return true;
         }
 
@@ -87,16 +87,16 @@ public class CTOFEngine extends ReconstructionEngine {
         final int newRun = bank.getInt("run", 0);
         long timeStamp = bank.getLong("timestamp", 0);
         if (newRun<=0) {
-            System.err.println("CTOFEngine:  got run <= 0 in RUN::config, skipping event.");
+            LOGGER.warn("CTOFEngine:  got run <= 0 in RUN::config, skipping event.");
             return false;
         }
         if (timeStamp==-1) {
-            System.err.println("FTOFEngine:  got 0 timestamp, skipping event");
+            LOGGER.warn("FTOFEngine:  got 0 timestamp, skipping event");
             return false;
         }
 
         if (geometry == null) {
-            System.err.println(" CTOF Geometry not loaded !!!");
+            LOGGER.warn(" CTOF Geometry not loaded !!!");
             return false;
         }
         // Get the list of track lines which will be used for matching the CTOF
@@ -129,7 +129,7 @@ public class CTOFEngine extends ReconstructionEngine {
         }
 
         if (hits.size() == 0) {
-            // System.err.println(" no hits ....");
+            // LOGGER.warn(" no hits ....");
             return true;
         }
 
@@ -160,7 +160,7 @@ public class CTOFEngine extends ReconstructionEngine {
         if (Constants.DEBUGMODE) { // if running in DEBUG MODE print out the
             // reconstructed info about the hits and the
             // clusters
-            System.out.println("=============== All Hits ===============");
+            LOGGER.debug("=============== All Hits ===============");
             for (Hit hit : hits) {
                 hit.printInfo();
             }
@@ -168,7 +168,7 @@ public class CTOFEngine extends ReconstructionEngine {
                     .println("==================================================");
             for (Cluster cls : clusters) {
                 cls.printInfo();
-                System.out.println("contains:");
+                LOGGER.debug("contains:");
                 for (AHit hit : cls) {
                     hit.printInfo();
                 }
@@ -197,7 +197,7 @@ public class CTOFEngine extends ReconstructionEngine {
         // String inputFile = args[0];
         // String outputFile = args[1];
 
-        System.err.println(" \n[PROCESSING FILE] : " + inputFile);
+        LOGGER.warn(" \n[PROCESSING FILE] : " + inputFile);
         
         CTOFEngine en = new CTOFEngine();
         en.init();
@@ -220,11 +220,11 @@ public class CTOFEngine extends ReconstructionEngine {
                 break;
             }
             // if(counter%100==0)
-            System.out.println("run " + counter + " events");
+            LOGGER.debug("run " + counter + " events");
 
         }
         double t = System.currentTimeMillis() - t1;
-        System.out.println("TOTAL  PROCESSING TIME = " + t);
+        LOGGER.debug("TOTAL  PROCESSING TIME = " + t);
         writer.close();
     }
 

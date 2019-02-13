@@ -285,14 +285,14 @@ public class CrossMaker {
 
         for (int i = 0; i < nlayr; i++) {
             for (int j = 0; j < Constants.NSECT[i]; j++) {
-                //System.out.println(" number of crosses in sector "+(j+1)+" = "+secList.get(i).get(j).size());
+                //LOGGER.debug(" number of crosses in sector "+(j+1)+" = "+secList.get(i).get(j).size());
                 if (secList.get(i).get(j).size() > Constants.MAXNUMCROSSESINMODULE) {
                     listOfCrossesToRm.addAll(secList.get(i).get(j));
                 }
             }
 
         }
-        //System.out.println(" number of crosses to remove "+listOfCrossesToRm.size());
+        //LOGGER.debug(" number of crosses to remove "+listOfCrossesToRm.size());
         return listOfCrossesToRm;
 
     }

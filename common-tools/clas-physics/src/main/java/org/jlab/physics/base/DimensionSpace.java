@@ -5,6 +5,9 @@
  */
 package org.jlab.physics.base;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.awt.FlowLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -15,8 +18,8 @@ import javax.swing.JSlider;
  * @author gavalian
  */
 public class DimensionSpace {
-    
-    
+
+    public static Logger LOGGER = LogManager.getLogger(DimensionSpace.class.getName());
     String dimName  = "unknown";
     double dimValue = 0.5;
     double dimMinimum = 0.0;
@@ -84,7 +87,7 @@ public class DimensionSpace {
     
     public void setValueNormalized(double value){
         if(value<0.0||value>1.0){
-            System.out.println("error: normalized value has to be 0.0-1.0");
+            LOGGER.debug("error: normalized value has to be 0.0-1.0");
         } else {
             this.dimValue = this.dimMinimum + value*(this.dimMaximum-this.dimMinimum);
         }

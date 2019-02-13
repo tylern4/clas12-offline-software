@@ -93,17 +93,17 @@ public class KFitter {
                 if (sv.trackCov.get(k) == null || mv.measurements.get(k + 1) == null) {
                     return;
                 }
-                //System.out.println(" transporting state ");
+                //LOGGER.debug(" transporting state ");
                 sv.transport(k, k + 1, sv.trackTraj.get(k), sv.trackCov.get(k), sgeo, bgeo, mv.measurements.get(k + 1).type, swimmer);
-                //System.out.println((k)+"] trans "+sv.trackTraj.get(k).x+","+sv.trackTraj.get(k).y+","+
+                //LOGGER.debug((k)+"] trans "+sv.trackTraj.get(k).x+","+sv.trackTraj.get(k).y+","+
                 //		sv.trackTraj.get(k).z+" p "+1./sv.trackTraj.get(k).kappa+" measuremt "+mv.measurements.get(k+1).type); 
-                //System.out.println("To "+(k+1)+"] trans "+sv.trackTraj.get(k+1).x+","+sv.trackTraj.get(k+1).y+","+
+                //LOGGER.debug("To "+(k+1)+"] trans "+sv.trackTraj.get(k+1).x+","+sv.trackTraj.get(k+1).y+","+
                 //		sv.trackTraj.get(k+1).z+" p "+1./sv.trackTraj.get(k).kappa); 
-                //System.out.println(" Filtering state ...........................................");
+                //LOGGER.debug(" Filtering state ...........................................");
                 this.filter(k + 1, sgeo, bgeo, swimmer);
-                //System.out.println((k+1)+"] filt "+sv.trackTraj.get(k+1).x+","+sv.trackTraj.get(k+1).y+","+
+                //LOGGER.debug((k+1)+"] filt "+sv.trackTraj.get(k+1).x+","+sv.trackTraj.get(k+1).y+","+
                 //		sv.trackTraj.get(k+1).z+" p "+1./sv.trackTraj.get(k).kappa); 
-                //System.out.println(" Energy loss \n pion "+ (float) sv.trackTraj.get(k+1).get_ELoss()[0]+"\n kaon "+ (float) sv.trackTraj.get(k+1).get_ELoss()[1]+"\n proton "+ (float) sv.trackTraj.get(k+1).get_ELoss()[2]);
+                //LOGGER.debug(" Energy loss \n pion "+ (float) sv.trackTraj.get(k+1).get_ELoss()[0]+"\n kaon "+ (float) sv.trackTraj.get(k+1).get_ELoss()[1]+"\n proton "+ (float) sv.trackTraj.get(k+1).get_ELoss()[2]);
             }
             
             if (it < totNumIter - 1) {
@@ -133,14 +133,14 @@ public class KFitter {
             double y = sv.trackTraj.get(k).y;
             double z = sv.trackTraj.get(k).z;
             double azi = sv.trackTraj.get(k).phi0 + sv.trackTraj.get(k).phi;
-            //System.out.println("Trj "+x+","+y+","+z);
+            //LOGGER.debug("Trj "+x+","+y+","+z);
             double invKappa = 1. / Math.abs(sv.trackTraj.get(k).kappa);
             double px = -invKappa * Math.sin(azi);
             double py = invKappa * Math.cos(azi);
             double pz = invKappa * sv.trackTraj.get(k).tanL;
             TrjPoints.add(new HitOnTrack(layer, x, y, z, px, py, pz));
 
-//            System.out.println(" Traj layer "+layer+" x "+x+" y "+y+" z "+z);
+//            LOGGER.debug(" Traj layer "+layer+" x "+x+" y "+y+" z "+z);
         }
     }
 
@@ -181,14 +181,14 @@ public class KFitter {
             if (c.get_Detector().equalsIgnoreCase("SVT")) {
                 continue;
             }
-           // System.out.println("output  track trajectory   "+this.TrjPoints.size());
+           // LOGGER.debug("output  track trajectory   "+this.TrjPoints.size());
             for (HitOnTrack h : this.TrjPoints) {
-                //System.out.println(" hot : layer "+h.layer+" x "+h.x+" y "+h.y+" z "+h.z);
+                //LOGGER.debug(" hot : layer "+h.layer+" x "+h.x+" y "+h.y+" z "+h.z);
                 if (c.get_Cluster1().get_Layer() == h.layer - 6) {
                     if (Math.sqrt(h.x * h.x + h.y * h.y) < 100) {
                         this.setFitFailed = true;
                     }
-                    //System.err.println(c.get_Cluster1().get_Layer()+") error in traj "+this.TrjPoints.size());
+                    //LOGGER.warn(c.get_Cluster1().get_Layer()+") error in traj "+this.TrjPoints.size());
 //                    if (Double.isNaN(c.get_Point().x())) {
 //                        c.set_Point(new Point3D(h.x, h.y, c.get_Point().z()));
 //                    }
@@ -275,9 +275,9 @@ public class KFitter {
             };
 
             Matrix Ci = null;
-            //this.printMatrix(new Matrix(HTGH));System.err.println("-------------------------------\n");
+            //this.printMatrix(new Matrix(HTGH));LOGGER.warn("-------------------------------\n");
             if (this.isNonsingular(sv.trackCov.get(k).covMat) == false) {
-                //System.err.println("Covariance Matrix is non-invertible - quit filter!");
+                //LOGGER.warn("Covariance Matrix is non-invertible - quit filter!");
                 //this.printMatrix(sv.trackCov.get(k).covMat);
                 return;
             }
@@ -294,14 +294,14 @@ public class KFitter {
                 return;
             }
             if (Ca != null && this.isNonsingular(Ca) == false) {
-                //System.err.println("Covariance Matrix is non-invertible - quit filter!");
+                //LOGGER.warn("Covariance Matrix is non-invertible - quit filter!");
                 return;
             }
             if (Ca != null && this.isNonsingular(Ca) == true) {
                 if (Ca.inverse() != null) {
                     Matrix CaInv = Ca.inverse();
                     sv.trackCov.get(k).covMat = CaInv;
-                    //System.err.println("Error: e");
+                    //LOGGER.warn("Error: e");
                 } else {
                     return;
                 }
@@ -393,7 +393,7 @@ public class KFitter {
      */
     public void printMatrix(Matrix C) {
         for (int k = 0; k < 5; k++) {
-            //System.out.println(C.get(k, 0)+"	"+C.get(k, 1)+"	"+C.get(k, 2)+"	"+C.get(k, 3)+"	"+C.get(k, 4));
+            //LOGGER.debug(C.get(k, 0)+"	"+C.get(k, 1)+"	"+C.get(k, 2)+"	"+C.get(k, 3)+"	"+C.get(k, 4));
         }
     }
 

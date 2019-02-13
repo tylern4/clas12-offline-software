@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.geom.prim.Point3D;
 import org.jlab.geom.prim.Vector3D;
 import org.jlab.rec.cvt.track.Seed;
@@ -15,7 +17,7 @@ import org.jlab.clas.swimtools.Swim;
 import org.jlab.rec.cvt.svt.Constants;
 
 public class StateVecs {
-
+    public static Logger LOGGER = LogManager.getLogger(StateVec.class.getName());
     final static double speedLight = Constants.LIGHTVEL;
 
     public List<B> bfieldPoints = new ArrayList<B>();
@@ -72,7 +74,7 @@ public class StateVecs {
                 X = xp;
                 Y = yp;
             }
-            //System.out.println("R="+rm+" sector "+Sector.get(k)+" [xm, ym]= ["+xm+","+ym+"]; [xp,yp]= ["+xp+","+yp+"]; [x,y]= ["+X+","+Y+"]"+
+            //LOGGER.debug("R="+rm+" sector "+Sector.get(k)+" [xm, ym]= ["+xm+","+ym+"]; [xp,yp]= ["+xp+","+yp+"]; [x,y]= ["+X+","+Y+"]"+
             //"+sec "+bmt_geo.isInSector(Layer.get(k)-6, Math.atan2(yp, xp), Math.toRadians(org.jlab.rec.cvt.bmt.Constants.isInSectorJitter))+"-sec "+bmt_geo.isInSector(Layer.get(k)-6, Math.atan2(ym, xm), Math.toRadians(org.jlab.rec.cvt.bmt.Constants.isInSectorJitter)));
         } else {
 
@@ -163,7 +165,7 @@ public class StateVecs {
         if (pars == null) {
             return;
         }
-        //System.out.println(" k "+k+" "+pars[0]+", "+pars[1]);
+        //LOGGER.debug(" k "+k+" "+pars[0]+", "+pars[1]);
         newVec.x = pars[0];
         newVec.y = pars[1];
         newVec.z = pars[2];
@@ -237,7 +239,7 @@ public class StateVecs {
         //Bf = new B(f, X0.get(f), Y0.get(f), Z0.get(f));
         fVec.alpha = Bf.alpha;
 
-        ////System.out.println("... B "+Bf.Bz+"Z0.get(i)"+ Z0.get(i) +" Z0.get(f) "+Z0.get(f));
+        ////LOGGER.debug("... B "+Bf.Bz+"Z0.get(i)"+ Z0.get(i) +" Z0.get(f) "+Z0.get(f));
         this.getStateVecAtModule(f, fVec, sgeo, bgeo, type, swimmer);
 
         // now transport covMat...
@@ -336,7 +338,7 @@ public class StateVecs {
         Vector3D trkDir = this.P(iVec.k);
         trkDir.unit();
         double cosEntranceAngle = trkDir.z();
-       // System.out.println(" cosTrk "+Math.toDegrees(Math.acos(trkDir.z()))+" at state "+iVec.k+" dir "+dir);
+       // LOGGER.debug(" cosTrk "+Math.toDegrees(Math.acos(trkDir.z()))+" at state "+iVec.k+" dir "+dir);
         double pt = Math.abs(1. / iVec.kappa);
         double pz = pt * iVec.tanL;
         double p = Math.sqrt(pt * pt + pz * pz);
@@ -356,7 +358,7 @@ public class StateVecs {
 
             double delta = 0.;
             double dEdx = 0.00001535 * this.detMat_Z_ov_A_timesThickn(Math.sqrt(iVec.x*iVec.x+iVec.y*iVec.y)) * (Math.log(logterm) - 2 * beta * beta - delta) / (beta * beta); //in GeV/mm
-            //System.out.println(" mass hy "+hyp+" Mat at "+Math.sqrt(iVec.x*iVec.x+iVec.y*iVec.y)+"Z/A*t "+this.detMat_Z_ov_A_timesThickn(Math.sqrt(iVec.x*iVec.x+iVec.y*iVec.y))+" dEdx "+dEdx);
+            //LOGGER.debug(" mass hy "+hyp+" Mat at "+Math.sqrt(iVec.x*iVec.x+iVec.y*iVec.y)+"Z/A*t "+this.detMat_Z_ov_A_timesThickn(Math.sqrt(iVec.x*iVec.x+iVec.y*iVec.y))+" dEdx "+dEdx);
             Eloss[hyp - 2] = dir * Math.abs(dEdx / cosEntranceAngle);
         }
         return Eloss;
@@ -383,7 +385,7 @@ public class StateVecs {
             double p = Math.sqrt(pt * pt + pz * pz);
 
             //double t_ov_X0 = 2. * 0.32 / Constants.SILICONRADLEN; //path length in radiation length units = t/X0 [true path length/ X0] ; Si radiation length = 9.36 cm
-            double t_ov_X0 = this.get_t_ov_X0(Math.sqrt(iVec.x*iVec.x+iVec.y*iVec.y)); //System.out.println(Math.log(t_ov_X0)/9.+" rad "+Math.sqrt(iVec.x*iVec.x+iVec.y*iVec.y)+" t/x0 "+t_ov_X0);
+            double t_ov_X0 = this.get_t_ov_X0(Math.sqrt(iVec.x*iVec.x+iVec.y*iVec.y)); //LOGGER.debug(Math.log(t_ov_X0)/9.+" rad "+Math.sqrt(iVec.x*iVec.x+iVec.y*iVec.y)+" t/x0 "+t_ov_X0);
             double mass = MassHypothesis(2);   // assume given mass hypothesis (2=pion)
             double beta = p / Math.sqrt(p * p + mass * mass); // use particle momentum
             double pathLength = t_ov_X0 / cosEntranceAngle;
@@ -542,7 +544,7 @@ public class StateVecs {
         double h_tandip = pz / Math.sqrt(px * px + py * py);
         
         Helix trkHelix = new Helix(h_dca, h_phi0, h_omega, h_dz, h_tandip, this.trackCov.get(kf).covMat);
-       // System.out.println("x "+x+" y "+y+" z "+z+" p "+p_unc+" pt "+Math.sqrt(px*px+py*py) +" theta "+Math.toDegrees(Math.acos(pz/Math.sqrt(px*px+py*py+pz*pz)))+" phi "+Math.toDegrees(Math.atan2(py, px))+" q "+q);
+       // LOGGER.debug("x "+x+" y "+y+" z "+z+" p "+p_unc+" pt "+Math.sqrt(px*px+py*py) +" theta "+Math.toDegrees(Math.acos(pz/Math.sqrt(px*px+py*py+pz*pz)))+" phi "+Math.toDegrees(Math.atan2(py, px))+" q "+q);
 
         return trkHelix;
     }
@@ -613,11 +615,11 @@ public class StateVecs {
 
     public void printMatrix(Matrix C) {
         for (int k = 0; k < 5; k++) {
-            System.out.println(C.get(k, 0) + "	" + C.get(k, 1) + "	" + C.get(k, 2) + "	" + C.get(k, 3) + "	" + C.get(k, 4));
+            LOGGER.debug(C.get(k, 0) + "	" + C.get(k, 1) + "	" + C.get(k, 2) + "	" + C.get(k, 3) + "	" + C.get(k, 4));
         }
     }
 
     public void printlnStateVec(StateVec S) {
-        System.out.println(S.k + ") drho " + S.d_rho + " phi0 " + S.phi0 + " kappa " + S.kappa + " dz " + S.dz + " tanL " + S.tanL + " phi " + S.phi + " x " + S.x + " y " + S.y + " z " + S.z + " alpha " + S.alpha);
+        LOGGER.debug(S.k + ") drho " + S.d_rho + " phi0 " + S.phi0 + " kappa " + S.kappa + " dz " + S.dz + " tanL " + S.tanL + " phi " + S.phi + " x " + S.x + " y " + S.y + " z " + S.z + " alpha " + S.alpha);
     }
 }

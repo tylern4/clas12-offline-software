@@ -100,7 +100,7 @@ public class ParticleStringParser {
                     operands.add( operation.charAt(bracket_start-1) + operator);
                 }
             }
-            //System.out.println("bracket starts at : " + bracket_start + " end = " + bracket_end + "  TYPE = " + type);
+            //LOGGER.debug("bracket starts at : " + bracket_start + " end = " + bracket_end + "  TYPE = " + type);
             
             start_position = bracket_start+1;
         }

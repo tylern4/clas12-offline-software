@@ -5,11 +5,15 @@
  */
 package org.jlab.geom.geant;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  *
  * @author gavalian
  */
 public interface IGeant4Volume {
+    Logger LOGGER = LogManager.getLogger(IGeant4Volume.class.getName());
     String  getName();
     String  getType();
     void      setParameters(double... pars);

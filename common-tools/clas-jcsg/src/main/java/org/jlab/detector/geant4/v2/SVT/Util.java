@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.IntStream;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.detector.volume.G4Box;
 import org.jlab.detector.volume.G4Tubs;
 import org.jlab.detector.volume.G4World;
@@ -36,6 +38,7 @@ import eu.mihosoft.vrl.v3d.Vector3d;
  */
 public class Util
 {
+	public static Logger LOGGER = LogManager.getLogger(Util.class.getName());
 	public static boolean VERBOSE = false;
 	
 	/**
@@ -86,9 +89,9 @@ public class Util
 			
 			boolean verbose = false;
 			
-			if( verbose ) System.out.println("replaceChildrenMother");
-			if( verbose ) System.out.println("mother : "+ mother.gemcString() );
-			if( verbose ) System.out.println("volume : "+ aVol.gemcString() );
+			if( verbose ) LOGGER.debug("replaceChildrenMother");
+			if( verbose ) LOGGER.debug("mother : "+ mother.gemcString() );
+			if( verbose ) LOGGER.debug("volume : "+ aVol.gemcString() );
 			
 			for( int i = 0; i < aVol.getChildren().size(); i++ )
 			{
@@ -104,10 +107,10 @@ public class Util
 				vecChildInVol = Util.toVector3d(Matrix.matMul( rotVolInMother, Util.toMatrix(vecChildInVol) )); // convert to mother's frame
 				Vector3d vecChildInMother = vecChildInVol.clone().add( vecVolInMother ); // mother's frame
 				
-				if( verbose ) System.out.printf("vecChildInMother: % 8.3f % 8.3f % 8.3f\n", vecChildInMother.x, vecChildInMother.y, vecChildInMother.z );
-				if( verbose ) System.out.printf("vecChildInVol: % 8.3f % 8.3f % 8.3f\n", vecChildInVol.x, vecChildInVol.y, vecChildInVol.z );
+				if( verbose ) LOGGER.debug("vecChildInMother: % 8.3f % 8.3f % 8.3f\n", vecChildInMother.x, vecChildInMother.y, vecChildInMother.z );
+				if( verbose ) LOGGER.debug("vecChildInVol: % 8.3f % 8.3f % 8.3f\n", vecChildInVol.x, vecChildInVol.y, vecChildInVol.z );
 				
-				if( verbose ) System.out.printf("child %d: %s\n", i, child.gemcString() );
+				if( verbose ) LOGGER.debug("child %d: %s\n", i, child.gemcString() );
 	
 				child.rotate("xyz", -rotNew[0], -rotNew[1], -rotNew[2] ); // rotate first
 				child.setPosition( vecChildInMother ); // translate second
@@ -115,10 +118,10 @@ public class Util
 				child.setMother( mother );
 				//child.setName( child.getName()+"-" );
 				
-				if( verbose ) System.out.printf("child %d: %s\n", i, child.gemcString() );
+				if( verbose ) LOGGER.debug("child %d: %s\n", i, child.gemcString() );
 			}
 			mother.getChildren().remove( aVol );
-			if( verbose ) System.out.println();
+			if( verbose ) LOGGER.debug("");
 		}
 	}
 	
@@ -286,7 +289,7 @@ public class Util
 	
 	public static Geant4Basic createArrow( String aName, Vector3d aVec, double aCapRadius, double aPointerRadius, boolean aDisplayCapStart, boolean aDisplayPointer, boolean aDisplayCapEnd )
 	{
-		//System.out.printf("arrow vector x=% 8.3f y=% 8.3f z=% 8.3f mag=% 8.3f\n", aVec.x, aVec.y, aVec.z, aVec.magnitude() );
+		//LOGGER.debug("arrow vector x=% 8.3f y=% 8.3f z=% 8.3f mag=% 8.3f\n", aVec.x, aVec.y, aVec.z, aVec.magnitude() );
 		Geant4Basic arrowVol = createArrow( aName, aVec.magnitude(), aCapRadius, aPointerRadius, aDisplayCapStart, aDisplayPointer, aDisplayCapEnd );
 		double[] eulerAngles = Util.convertRotationVectorToGeant( aVec.theta(), aVec.phi() );
 		arrowVol.rotate("xyz", -eulerAngles[0], -eulerAngles[1], -eulerAngles[2] );
@@ -297,7 +300,7 @@ public class Util
 	public static Geant4Basic createArrow( String aName, Line3d aLine, double aCapRadius, double aPointerRadius, boolean aDisplayCapStart, boolean aDisplayPointer, boolean aDisplayCapEnd )
 	{
 		Vector3d pointer = aLine.end().minus(aLine.origin());
-		//System.out.printf("arrow vector x=% 8.3f y=% 8.3f z=% 8.3f mag=% 8.3f\n", pointer.x, pointer.y, pointer.z, pointer.magnitude() );
+		//LOGGER.debug("arrow vector x=% 8.3f y=% 8.3f z=% 8.3f mag=% 8.3f\n", pointer.x, pointer.y, pointer.z, pointer.magnitude() );
 		
 		Geant4Basic arrowVol = createArrow( aName, pointer.magnitude(), aCapRadius, aPointerRadius, aDisplayCapStart, aDisplayPointer, aDisplayCapEnd );
 		
@@ -306,9 +309,9 @@ public class Util
 		double[] eulerAngles = Util.convertRotationVectorToGeant( pointer.theta(), pointer.phi() );
 		arrowVol.rotate("xyz", -eulerAngles[0], -eulerAngles[1], -eulerAngles[2] );
 		
-		//System.out.println("theta="+Math.toDegrees(theta));
-		//System.out.println("phi="+Math.toDegrees(phi));
-		//System.out.printf("euler=%8.3f %8.3f %8.3f\n", Math.toDegrees(eulerAngles[0]), Math.toDegrees(eulerAngles[1]), Math.toDegrees(eulerAngles[2]) );
+		//LOGGER.debug("theta="+Math.toDegrees(theta));
+		//LOGGER.debug("phi="+Math.toDegrees(phi));
+		//LOGGER.debug("euler=%8.3f %8.3f %8.3f\n", Math.toDegrees(eulerAngles[0]), Math.toDegrees(eulerAngles[1]), Math.toDegrees(eulerAngles[2]) );
 
 		arrowVol.setPosition( aLine.origin().add( pointer.dividedBy(2) ).times( 0.1 ) ); // mm->cm
 		
@@ -502,14 +505,14 @@ public class Util
 		Vector3d p = aVol.getLocalPosition();
 		Vector3d s = new Vector3d( aShiftX, aShiftY, aShiftZ );
 		
-		//System.out.println("shiftPosition");
-		//System.out.println("p="+p.toString());
-		//System.out.println("s="+s.toString());
+		//LOGGER.debug("shiftPosition");
+		//LOGGER.debug("p="+p.toString());
+		//LOGGER.debug("s="+s.toString());
 		Vector3d v = p.clone().add(s);
-		//System.out.println("v="+v.toString());
+		//LOGGER.debug("v="+v.toString());
 		
 		aVol.translate( v.minus(p) );
-		//System.out.println("l="+aVol.getLocalPosition());
+		//LOGGER.debug("l="+aVol.getLocalPosition());
 	}
 	
 	
@@ -550,8 +553,8 @@ public class Util
 		if( aFilename.isEmpty() )
 			throw new IllegalArgumentException("empty aFilename");
 		
-		//System.out.println("_inputData()");
-		//System.out.println("aFilename=\""+ aFilename +"\"");
+		//LOGGER.debug("_inputData()");
+		//LOGGER.debug("aFilename=\""+ aFilename +"\"");
 		
 		double[][] dataResult = null;
 		boolean bVerbose = false;
@@ -565,7 +568,7 @@ public class Util
 			//ArrayList<String> tagList = new ArrayList<String>();
 			ArrayList<double[]> dataList = new ArrayList<double[]>();
 			
-			//System.out.println("dataList.size()="+ dataList.size() );
+			//LOGGER.debug("dataList.size()="+ dataList.size() );
 			
 			int i = 0;
 			while( scanner.hasNext() )
@@ -581,28 +584,28 @@ public class Util
 					try{ data[j] = scanner.nextDouble(); }
 					catch( Exception e )
 					{ 
-						//System.err.println("error reading \""+aFilename+"\" with recLen "+recLen+": line "+(i+1)+" data "+(j+1) ); 
+						//LOGGER.warn("error reading \""+aFilename+"\" with recLen "+recLen+": line "+(i+1)+" data "+(j+1) ); 
 						throw new IOException("error reading \""+aFilename+"\" with recLen "+recLen+": line "+(i+1)+" data "+(j+1) );
 						//System.exit(-1);
 					}
-					if( bVerbose ) System.out.printf(" % 8.3f", data[j] );
+					if( bVerbose ) LOGGER.debug(" % 8.3f", data[j] );
 				}
 				dataList.add( data );
-				if( bVerbose ) System.out.println();
-				//System.out.println("dataList.size()="+ dataList.size() );
+				if( bVerbose ) LOGGER.debug("");
+				//LOGGER.debug("dataList.size()="+ dataList.size() );
 				i++;
 			}
 			
 			//int tagLen = tagList.size();
 			int dataLen = dataList.size();
-			//System.out.println("tagLen="+ tagLen +" dataLen="+ dataLen );
+			//LOGGER.debug("tagLen="+ tagLen +" dataLen="+ dataLen );
 			
 			dataResult = new double[dataLen][3]; // like an RGB image
 			
 			for( int k = 0; k < dataLen; k++ )
 				dataResult[k] = dataList.get(k);
 			
-			if( VERBOSE ) System.out.println("read "+ dataLen +" lines from \""+ aFilename +"\"");
+			if( VERBOSE ) LOGGER.debug("read "+ dataLen +" lines from \""+ aFilename +"\"");
 			if( dataLen == 0 ){ throw new IllegalArgumentException("no data in file"); }
 			
 		}
@@ -630,7 +633,7 @@ public class Util
 		try
 		{
 			file = new BufferedWriter( new FileWriter( aName ) );
-			if( VERBOSE ) System.out.println("opened \""+ aName +"\"");
+			if( VERBOSE ) LOGGER.debug("opened \""+ aName +"\"");
 		}
 		catch( IOException e )
 		{
@@ -677,7 +680,7 @@ public class Util
 			try
 			{
 				aFile.close();
-				if( VERBOSE ) System.out.println("closed \""+ aName +"\"");
+				if( VERBOSE ) LOGGER.debug("closed \""+ aName +"\"");
 			}
 			catch( IOException e )
 			{
@@ -687,7 +690,7 @@ public class Util
 		}
 		else
 		{
-			System.err.println("error: Util: \""+ aName +"\" is already closed");
+			LOGGER.warn("error: Util: \""+ aName +"\" is already closed");
 		}
 	}	
 }

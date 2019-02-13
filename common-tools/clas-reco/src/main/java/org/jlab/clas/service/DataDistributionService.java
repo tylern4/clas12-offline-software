@@ -6,7 +6,10 @@
 package org.jlab.clas.service;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jlab.detector.calib.utils.DatabaseConstantProvider;
 import org.jlab.detector.decode.CLASDecoder;
 import org.jlab.io.base.DataEvent;
 import org.jlab.io.base.DataSource;
@@ -25,33 +28,33 @@ import org.jlab.utils.options.OptionParser;
  * @author gavalian
  */
 public class DataDistributionService {
-    
+    public static Logger LOGGER = LogManager.getLogger(DataDistributionService.class.getName());
     //private EvioETSource etSource = null;
     private DataDistributionRing ringProducer = null;
     private CLASDecoder decoder = null;
     private DataSource  dataSource  = null;
     private int decoderDelay        = 1;
-    
+
     public DataDistributionService(){
         decoder = new CLASDecoder();
     }
-    
+
     public void connect(String host,String file, boolean remote){
         dataSource = new EvioETSource(host);
         ( (EvioETSource) dataSource).setRemote(remote);
-        dataSource.open(file);        
+        dataSource.open(file);
     }
-    
+
     public void connect(String file){
         dataSource = new EvioSource();
         dataSource.open(file);
     }
-    
+
     public void connectHipo(String file){
         dataSource = new HipoDataSource();
         dataSource.open(file);
     }
-    
+
     public void setDelay(int delay){
         this.decoderDelay = delay;
     }
@@ -59,25 +62,25 @@ public class DataDistributionService {
      * service works off ET ring
      */
     public void startServiceEt(){
-        
+
         ProgressPrintout progress = new ProgressPrintout();
         ringProducer = new DataDistributionRing();
         ringProducer.initProxy();
         ringProducer.initRegistrar();
         ringProducer.initRing();
         ringProducer.setDelay(0);
-        
+
         EvioETSource etSource = (EvioETSource) this.dataSource;
-        
+
         while(true){
             while(etSource.hasEvent()==false){
                 this.waitFor(200);
-                etSource.loadEvents();                
+                etSource.loadEvents();
             }
-            
+
             while(etSource.hasEvent()==true){
                 DataEvent event = dataSource.getNextEvent();
-                
+
                 HipoDataEvent decodedEvent = (HipoDataEvent) decoder.getDataEvent(event);
                 ringProducer.addEvioEvent((EvioDataEvent) event);
                 ringProducer.addEvent(decodedEvent);
@@ -88,36 +91,36 @@ public class DataDistributionService {
             }
         }
     }
-    
+
     /**
      * Introduces delay
-     * @param ms 
+     * @param ms
      */
-    private void waitFor(int ms){ 
+    private void waitFor(int ms){
         try {
             Thread.sleep(ms);
         } catch (InterruptedException ex) {
-            Logger.getLogger(DataDistributionService.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex);
         }
-        
+
     }
-    
-    
+
+
     public void startService(){
-        
+
         ProgressPrintout progress = new ProgressPrintout();
         ringProducer = new DataDistributionRing();
         ringProducer.initProxy();
         ringProducer.initRegistrar();
         ringProducer.initRing();
         ringProducer.setDelay(decoderDelay);
-        
+
         int counter = 0;
-        
+
         while(true){
-            
+
             while(dataSource.hasEvent()==true){
-                DataEvent event = dataSource.getNextEvent();                        
+                DataEvent event = dataSource.getNextEvent();
                 if(event!=null){
                     HipoDataEvent decodedEvent = (HipoDataEvent) decoder.getDataEvent(event);
                     ringProducer.addEvent(decodedEvent);
@@ -126,20 +129,20 @@ public class DataDistributionService {
                         this.waitFor(this.decoderDelay);
                     }
                 } else {
-                    System.out.println(" error there are no events");
+                    LOGGER.debug(" error there are no events");
                 }
             }
             counter++;
-            /*System.out.println();
-            System.out.println(">>>>> source is being reset interations : " + counter);
-            System.out.println();*/
+            /*LOGGER.debug();
+            LOGGER.debug(">>>>> source is being reset interations : " + counter);
+            LOGGER.debug();*/
             dataSource.reset();
         }
     }
-    
-    
+
+
     public void startServiceHipo(){
-        
+
         ProgressPrintout progress = new ProgressPrintout();
         ringProducer = new DataDistributionRing();
         ringProducer.initProxy();
@@ -151,18 +154,18 @@ public class DataDistributionService {
                 @Override
                 public void run() {
                     ringProducer.shutdown();
-                    
+
                     System.exit(0);
                 }
         });
         while(true){
-            
+
             while(dataSource.hasEvent()==true){
-                HipoDataEvent event = (HipoDataEvent) dataSource.getNextEvent(); 
+                HipoDataEvent event = (HipoDataEvent) dataSource.getNextEvent();
                 try {
                     ringProducer.addEvent(event);
                 } catch (Exception e) {
-                    
+
                 }
                 progress.updateStatus();
                 if(this.decoderDelay>0){
@@ -170,63 +173,63 @@ public class DataDistributionService {
                 }
             }
             counter++;
-            /*System.out.println();
-            System.out.println(">>>>> source is being reset interations : " + counter);
-            System.out.println();*/
+            /*LOGGER.debug();
+            LOGGER.debug(">>>>> source is being reset interations : " + counter);
+            LOGGER.debug();*/
             dataSource.reset();
         }
     }
-        
+
     public static void main(String[] args){
-        
+
         OptionParser  parser = new OptionParser();
-        
+
         //parser.addOption("-et","");
         parser.addOption("-d","1");
         parser.addRequired("-type");
         parser.addRequired("-file");
         parser.addOption("-r","true");
         parser.addOption("-host", "localhost");
-        
+
         parser.parse(args);
-        
+
         if(parser.hasOption("-type")&&parser.hasOption("-file")){
-            
+
             String    type = parser.getOption("-type").stringValue();
             String    file = parser.getOption("-file").stringValue();
             String  etHost = parser.getOption("-host").stringValue();
-            
+
             int    delay = parser.getOption("-d").intValue();
-            
+
             if(type.compareTo("evio")!=0&&type.compareTo("et")!=0&&
                     type.compareTo("hipo")!=0){
-                System.out.println("\n\n TYPE parameter has to be evio or et or hipo");
+                LOGGER.debug("\n\n TYPE parameter has to be evio or et or hipo");
                 System.exit(0);
             }
-            
+
             if(type.contains("et")==true){
                 DataDistributionService service = new DataDistributionService();
                 service.setDelay(delay);
                 service.connect(etHost,file, true);
                 service.startServiceEt();
-            } 
+            }
             if(type.contains("evio")==true){
-                System.out.println("   >>>> starting hipo service");
+                LOGGER.debug("   >>>> starting hipo service");
                 DataDistributionService service = new DataDistributionService();
                 service.setDelay(delay);
                 service.connect(file);
                 service.startService();
             }
-            
+
             if(type.contains("hipo")==true){
-                System.out.println("   >>>> starting hipo service");
+                LOGGER.debug("   >>>> starting hipo service");
                 DataDistributionService service = new DataDistributionService();
                 service.setDelay(delay);
                 service.connectHipo(file);
                 service.startServiceHipo();
             }
         }
-        
+
         /*
         if(parser.hasOption("-et")==true){
             DataDistributionService service = new DataDistributionService();
@@ -238,6 +241,6 @@ public class DataDistributionService {
             }
             service.connect(parser.getOption("-et").stringValue(),remote);
             service.startService();
-        }*/               
+        }*/
     }
 }

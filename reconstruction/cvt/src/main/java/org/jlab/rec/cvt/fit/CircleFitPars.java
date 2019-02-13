@@ -85,11 +85,11 @@ public class CircleFitPars {
     //{
     //double[] cov = {1.,0.,1.,0.,1.,0.};
     //CirclePars cirf = new CirclePars(0.,0.,0.01,0.3,0.1, 15., cov);
-    //System.out.println(cirf);
+    //LOGGER.debug(cirf);
     //double[] covmat = cirf.cov();
     //for(int i=0; i<covmat.length; i++)
     //	{
-//			System.out.println(covmat[i]);
+//			LOGGER.debug(covmat[i]);
 //		}
 //	}
 }

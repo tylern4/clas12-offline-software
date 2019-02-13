@@ -5,6 +5,9 @@
  */
 package org.jlab.utils.data;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -13,7 +16,7 @@ import java.util.TreeMap;
  * @author gavalian
  */
 public class DataUtils {
-    
+    public static Logger LOGGER = LogManager.getLogger(DataUtils.class.getName());
     public static TreeMap<Integer,Integer> bitMap = DataUtils.createBitMap();
     
     public static TreeMap<Integer,Integer>  createBitMap(){
@@ -30,7 +33,7 @@ public class DataUtils {
     
     public static void printBitMap(){
         for(Map.Entry<Integer,Integer> entry : bitMap.entrySet()){
-            System.out.println(String.format("%4d : ", entry.getKey()) 
+            LOGGER.debug(String.format("%4d : ", entry.getKey()) 
                     + String.format("%32s", Integer.toBinaryString(entry.getValue())).replace(' ', '0'));
         }
     }
@@ -41,7 +44,7 @@ public class DataUtils {
             int value = ((data>>bitstart)&DataUtils.bitMap.get(length));
             return value;
         } else {
-            System.out.println("[DataUtilities] : ERROR length = " + length);
+            LOGGER.debug("[DataUtilities] : ERROR length = " + length);
         }
         return 0;
     }

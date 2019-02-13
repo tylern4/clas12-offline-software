@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.geom.prim.Arc3D;
 import org.jlab.geom.prim.Cylindrical3D;
 import org.jlab.geom.prim.Line3D;
@@ -15,7 +17,7 @@ import org.jlab.rec.cnd.constants.Parameters;
 import org.jlab.rec.cnd.hit.CvtGetHTrack.CVTTrack;
 
 public class CndHitFinder {
-
+	public static Logger LOGGER = LogManager.getLogger(CndHitFinder.class.getName());
 	public CndHitFinder(){
 		// empty constructor
 	}
@@ -105,7 +107,7 @@ public class CndHitFinder {
 					if(hit1.Component()==1) deltaR = hit1.Tprop()-hit2.Tprop();
 					else deltaR = hit2.Tprop()-hit1.Tprop();
 
-					//System.out.println("sector "+block+" layer "+lay+" v L "+CalibrationConstantsLoader.EFFVEL[block-1][lay-1][0]+ " v R "+CalibrationConstantsLoader.EFFVEL[block-1][lay-1][1]+ " delta "+delta + " deltaR "+deltaR );
+					//LOGGER.debug("sector "+block+" layer "+lay+" v L "+CalibrationConstantsLoader.EFFVEL[block-1][lay-1][0]+ " v R "+CalibrationConstantsLoader.EFFVEL[block-1][lay-1][1]+ " delta "+delta + " deltaR "+deltaR );
 
 					if (deltaR<delta) 
 					{
@@ -147,7 +149,7 @@ public class CndHitFinder {
 					T_hit = (Tup + Tdown - (CalibrationConstantsLoader.LENGTH[lay-1] / (10.*CalibrationConstantsLoader.EFFVEL[block-1][lay-1][hit_d.Component()-1]))) / 2.;  // time of hit in the paddle
 
 					//test (check time of hit)
-					//System.out.println(T_hit);
+					//LOGGER.debug(T_hit);
 
 					//First cut : the time of hit has to be in a physical time window 
 					// window set to 0-250ns for calibration	
@@ -161,8 +163,8 @@ public class CndHitFinder {
 					//test (check if the two component of the energy are roughtly the same)
 					E1=(Eup / Math.exp(-1.*(CalibrationConstantsLoader.LENGTH[lay-1]/2. + Z_av) / (10.*CalibrationConstantsLoader.ATNLEN[block-1][lay-1][hit_d.Component()-1])));
 					E2=(Edown / Math.exp(-1.*(CalibrationConstantsLoader.LENGTH[lay-1]/2. - Z_av) / (10.*CalibrationConstantsLoader.ATNLEN[block-1][lay-1][hit_d.Component()-1])));
-					//					System.out.println(E1);
-					//					System.out.println(E2);
+					//					LOGGER.debug(E1);
+					//					LOGGER.debug(E2);
 
 					//second cut : the energy of the hit have to be higher than the threshold
 					// the threshold is currently 0.1Mev for calibration
@@ -412,10 +414,10 @@ public class CndHitFinder {
 			cyl2.intersectionRay(line, exitpoints);
 			if(entrypoints.size()==1 && exitpoints.size()==1){
 				length=entrypoints.get(0).distance(exitpoints.get(0));
-				System.err.println("length neutral " + length);
+				LOGGER.warn("length neutral " + length);
 			}
 			else {
-				System.err.println("probleme intersection"+" entrypoints nb "+entrypoints.size()+" exitpoints nb "+exitpoints.size());}
+				LOGGER.warn("probleme intersection"+" entrypoints nb "+entrypoints.size()+" exitpoints nb "+exitpoints.size());}
 
 			hit.set_Edep(energyNCorr*(Math.max(length, CalibrationConstantsLoader.THICKNESS[0])/CalibrationConstantsLoader.THICKNESS[0]));
 			return length;

@@ -28,31 +28,31 @@ import org.jlab.io.evio.EvioFactory;
  */
 public class EvioFileRecover {
     public EvioFileRecover(){
-        
+
     }
     public static void test(){
         String outputfile = "/Users/gavalian/Work/Software/Release-8.0/COATJAVA/coatjava/../svt257er_000015_recovered.evio";
-        
+
         try {
             EventWriter writer = new EventWriter(outputfile);
             EventBuilder eventBuilder = new EventBuilder(1, DataType.BANK, 1);
             //byte[] byteData1 = new byte[499990];
-            
+
             EvioEvent ev = eventBuilder.getEvent();
-            
+
             //ev.appendByteData(byteData1);
             writer.writeEvent(ev);
             writer.close();
         } catch (EvioException ex) {
-            Logger.getLogger(EvioFileRecover.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println(ex);
         } catch (IOException ex) {
-            Logger.getLogger(EvioFileRecover.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println(ex);
         }
     }
-    
-    
+
+
     public static void recoverFile(String inputfile, String outputfile)  {
-        
+
         File outFile = new File(outputfile);
         if(outFile.exists()==true){
             System.out.println();
@@ -64,13 +64,13 @@ public class EvioFileRecover {
             System.out.println("----> exiting\n\n");
             return;
         }
-        
+
         EvioReader reader = null;
-        
+
         EventWriter writer = null;
-        
+
         try {
-            
+
             reader = new EvioReader(inputfile,true,true);
             writer = new EventWriter(outputfile);
             int counter = 0;
@@ -80,18 +80,18 @@ public class EvioFileRecover {
                     counter++;
                     writer.writeEvent(event);
                 } catch (Exception e){
-                    System.out.println("****** REACHED END OF FILE ****  EVENT # " 
+                    System.out.println("****** REACHED END OF FILE ****  EVENT # "
                             + counter + "   *******" );
                     break;
                 }
             }
             writer.close();
         } catch (EvioException ex) {
-            Logger.getLogger(EvioFileRecover.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println(ex);
         } catch (IOException ex) {
-            Logger.getLogger(EvioFileRecover.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println(ex);
         }
-       
+
     }
     public static void main(String[] args){
         /*
@@ -104,10 +104,10 @@ public class EvioFileRecover {
         /*
         try {
             EvioReader reader = new EvioReader(inputfile);
-            
+
             int evcount = reader.getEventCount();
             System.out.println("Number of events = " + evcount);
-            
+
             EvioEvent event = reader.parseEvent(4);
             byte[] array = event.getByteData();
             if(array!=null){
@@ -118,19 +118,19 @@ public class EvioFileRecover {
             //EvioEvent event = reader.getEvent(4);
             System.out.println(event);
             //List<EvioNode>  nodes =
-            
+
             //EvioFileRecover.test();
             /*
             //String inputfile = args[0];
-            
-            
+
+
             EvioReader reader;
             EventWriter writer;
-            
+
             try {
             reader = new EvioReader(inputfile);
             //writer = new EventWriter(outputfile);
-            
+
             EvioCompactEventWriter evioWriter = new EvioCompactEventWriter(outputfile, null,
             0, 0,
             15*300,
@@ -141,14 +141,14 @@ public class EvioFileRecover {
             //        ByteOrder.LITTLE_ENDIAN, null, null);
             int counter = 0;
             while(true&counter<100){
-            
+
             EvioEvent  event = reader.nextEvent();
-            
+
             if(event==null) break;
             System.out.println(" event # ---> " + counter);
             System.out.println(event);
             byte[]  array = event.getByteData();
-            
+
             if(array!=null){
             ByteBuffer  byteArray = ByteBuffer.wrap(array);
             byteArray.order(event.getByteOrder());
@@ -161,15 +161,15 @@ public class EvioFileRecover {
             if(counter%1000==0)
             System.out.println("EVENT # " + counter + " is properly read");
             }
-            
+
             System.out.println(" LAST EVENT READ = " + counter);
             evioWriter.close();
             //writer.close();
             } catch (EvioException ex) {
-            Logger.getLogger(EvioFileRecover.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println(ex);
             } catch (IOException ex) {
-            Logger.getLogger(EvioFileRecover.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println(ex);
             }*/
-        
+
     }
 }

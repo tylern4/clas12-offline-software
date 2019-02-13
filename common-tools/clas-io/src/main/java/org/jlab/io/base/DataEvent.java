@@ -1,9 +1,12 @@
 package org.jlab.io.base;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.nio.ByteBuffer;
 
 public interface DataEvent {
-    
+    Logger LOGGER = LogManager.getLogger(DataBank.class.getName());
     String[] getBankList();
     String[] getColumnList(String bank_name);
     DataDictionary getDictionary();

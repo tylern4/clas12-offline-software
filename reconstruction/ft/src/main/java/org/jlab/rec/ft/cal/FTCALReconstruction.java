@@ -3,6 +3,9 @@ package org.jlab.rec.ft.cal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.detector.calib.utils.ConstantsManager;
 import org.jlab.io.base.DataBank;
 import org.jlab.io.base.DataEvent;
@@ -13,7 +16,7 @@ import org.jlab.utils.groups.IndexedTable;
 
 
 public class FTCALReconstruction {
-
+    public static Logger LOGGER = LogManager.getLogger(FTCALReconstruction.class.getName());
 	
     public int debugMode = 0;
 
@@ -26,7 +29,7 @@ public class FTCALReconstruction {
         IndexedTable timeOffsets   = manager.getConstants(run, "/calibration/ft/ftcal/time_offsets");
         IndexedTable cluster       = manager.getConstants(run, "/calibration/ft/ftcal/cluster");
 
-        if(this.debugMode>=1) System.out.println("\nAnalyzing new event");
+        if(this.debugMode>=1) LOGGER.debug("\nAnalyzing new event");
         List<FTCALHit> allhits = null;
         
         if(event instanceof EvioDataEvent) {
@@ -37,7 +40,7 @@ public class FTCALReconstruction {
             allhits = this.readRawHitsHipo(event,charge2Energy,timeOffsets,cluster);
         }
         if(debugMode>=1) {
-            System.out.println("Found " + allhits.size() + " hits");
+            LOGGER.debug("Found " + allhits.size() + " hits");
             for(int i = 0; i < allhits.size(); i++) {
                 System.out.print(i + "\t");
                 allhits.get(i).showHit();
@@ -48,7 +51,7 @@ public class FTCALReconstruction {
     
     public List<FTCALHit> selectHits(List<FTCALHit> allhits) {
 
-        if(debugMode>=1) System.out.println("\nSelecting hits");
+        if(debugMode>=1) LOGGER.debug("\nSelecting hits");
         ArrayList<FTCALHit> hits = new ArrayList<FTCALHit>();
         
         for(int i = 0; i < allhits.size(); i++) 
@@ -59,7 +62,7 @@ public class FTCALReconstruction {
         }	
         Collections.sort(hits);
         if(debugMode>=1) {
-            System.out.println("List of selected hits");
+            LOGGER.debug("List of selected hits");
             for(int i = 0; i < hits.size(); i++) 
             {	
                 System.out.print(i + "\t");
@@ -75,7 +78,7 @@ public class FTCALReconstruction {
         
         IndexedTable   clusterTable = manager.getConstants(run, "/calibration/ft/ftcal/cluster");
         
-        if(debugMode>=1) System.out.println("\nBuilding clusters");
+        if(debugMode>=1) LOGGER.debug("\nBuilding clusters");
         for(int ihit=0; ihit<hits.size(); ihit++) {
             FTCALHit hit = hits.get(ihit);
             if(hit.get_ClusIndex()==0)  {                       // this hit is not yet associated with a cluster
@@ -84,7 +87,7 @@ public class FTCALReconstruction {
                     if(cluster.containsHit(hit, clusterTable)) {
                         hit.set_ClusIndex(cluster.getID());     // attaching hit to previous cluster 
                         cluster.add(hit);
-                        if(debugMode>=1) System.out.println("Attaching hit " + ihit + " to cluster " + cluster.getID());
+                        if(debugMode>=1) LOGGER.debug("Attaching hit " + ihit + " to cluster " + cluster.getID());
                     }
                 }
             }
@@ -93,7 +96,7 @@ public class FTCALReconstruction {
                 hit.set_ClusIndex(cluster.getID());
                 cluster.add(hit);
                 clusters.add(cluster);
-                if(debugMode>=1) System.out.println("Creating new cluster with ID " + cluster.getID());
+                if(debugMode>=1) LOGGER.debug("Creating new cluster with ID " + cluster.getID());
             }
         }
         return clusters;
@@ -129,7 +132,7 @@ public class FTCALReconstruction {
         if(hits.size()!=0) {
             DataBank bankHits = event.createBank("FTCAL::hits", hits.size());    
             if(bankHits==null){
-                System.out.println("ERROR CREATING BANK : FTCAL::hits");
+                LOGGER.debug("ERROR CREATING BANK : FTCAL::hits");
                 return;
             }
             for(int i = 0; i < hits.size(); i++){
@@ -149,7 +152,7 @@ public class FTCALReconstruction {
         if(clusters.size()!=0) {
             DataBank bankCluster = event.createBank("FTCAL::clusters", clusters.size());    
             if(bankCluster==null){
-                System.out.println("ERROR CREATING BANK : FTCAL::clusters");
+                LOGGER.debug("ERROR CREATING BANK : FTCAL::clusters");
                 return;
             }
             for(int i = 0; i < clusters.size(); i++){
@@ -225,7 +228,7 @@ public class FTCALReconstruction {
 
     public List<FTCALHit> readRawHits(DataEvent event, IndexedTable charge2Energy, IndexedTable timeOffsets, IndexedTable cluster) {
         // getting raw data bank
-	if(debugMode>=1) System.out.println("Getting raw hits from FTCAL:dgtz bank");
+	if(debugMode>=1) LOGGER.debug("Getting raw hits from FTCAL:dgtz bank");
 
         List<FTCALHit>  hits = new ArrayList<FTCALHit>();
 	if(event.hasBank("FTCAL::dgtz")==true) {
@@ -248,7 +251,7 @@ public class FTCALReconstruction {
     
     public List<FTCALHit> readRawHitsHipo(DataEvent event, IndexedTable charge2Energy, IndexedTable timeOffsets, IndexedTable cluster) {
         // getting raw data bank
-	if(debugMode>=1) System.out.println("Getting raw hits from FTCAL:adc bank");
+	if(debugMode>=1) LOGGER.debug("Getting raw hits from FTCAL:adc bank");
 
         List<FTCALHit>  hits = new ArrayList<FTCALHit>();
 	if(event.hasBank("FTCAL::adc")==true) {

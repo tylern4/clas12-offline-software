@@ -375,7 +375,7 @@ public class RecoBankWriter {
                 if(j<9) {
                 String hitStrg = "Cross";
                 hitStrg += (j + 1);
-                hitStrg += "_ID";  //System.out.println(" j "+j+" matched id "+trkcands.get(i).get(j).get_Id());
+                hitStrg += "_ID";  //LOGGER.debug(" j "+j+" matched id "+trkcands.get(i).get(j).get_Id());
                 bank.setShort(hitStrg, i, (short) trkcands.get(i).get(j).get_Id());
                 }
             }

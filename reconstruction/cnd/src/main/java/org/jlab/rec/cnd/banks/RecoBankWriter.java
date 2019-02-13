@@ -1,13 +1,16 @@
 package org.jlab.rec.cnd.banks;
 
 import java.util.ArrayList;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.io.base.DataBank;
 import org.jlab.io.base.DataEvent;
 import org.jlab.rec.cnd.hit.CndHit;
 
 
 public class RecoBankWriter {
-
+	public static Logger LOGGER = LogManager.getLogger(RecoBankWriter.class.getName());
 
 	// write useful information in the bank
 	public static DataBank fillCndHitBanks(DataEvent event, ArrayList<CndHit> hitlist) {
@@ -15,7 +18,7 @@ public class RecoBankWriter {
 		DataBank bank =  event.createBank("CND::hits", hitlist.size());
 		
 		if (bank == null) {
-			System.err.println("COULD NOT CREATE A CND::Hits BANK!!!!!!");
+			LOGGER.warn("COULD NOT CREATE A CND::Hits BANK!!!!!!");
 			return null;
 		}
 

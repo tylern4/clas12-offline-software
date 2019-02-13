@@ -3,12 +3,14 @@ package org.jlab.rec.dc;
 import java.util.ArrayList;
 
 import cnuphys.snr.NoiseReductionParameters;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Constants used in the reconstruction
  */
 public class Constants {
-
+    public static Logger LOGGER = LogManager.getLogger(Constants.class.getName());
     private static boolean ConstantsLoaded = false;
     // RECONSTRUCTION PARAMETERS
     public static final int DC_MIN_NLAYERS = 4;
@@ -256,7 +258,7 @@ public class Constants {
             MAXENDPLTDEFLEC[2][5][0] = 0.;
             MAXENDPLTDEFLEC[2][5][1] = 0.;
             
-            System.out.println("CONSTANTS LOADED!!!");
+            LOGGER.debug("CONSTANTS LOADED!!!");
 
     }
 

@@ -51,7 +51,7 @@ public class ECEngine extends ReconstructionEngine {
             DataBank bank = de.getBank("RUN::config");
             runNo = bank.getInt("run", 0);
             if (runNo<=0) {
-                System.err.println("ECEngine:  got run <= 0 in RUN::config, skipping event.");
+                LOGGER.warn("ECEngine:  got run <= 0 in RUN::config, skipping event.");
                 return false;
             }
         }
@@ -66,12 +66,12 @@ public class ECEngine extends ReconstructionEngine {
         ECCommon.shareClustersEnergy(ecClusters);  // Repair 2 clusters which share the same peaks
        
         if (debug) {
-            System.out.println(" STRIPS SIZE = " + ecStrips.size());
-            for(ECStrip strip : ecStrips) System.out.println(strip);
-            System.out.println(" PEAKS  SIZE = " + ecPeaks.size());
-            for(ECPeak p : ecPeaks) System.out.println(p);
-            System.out.println("\n\n\n\n\nEC CLUSTERS SIZE = " + ecClusters.size());
-            if(ecClusters.size()==2) {for(ECCluster c : ecClusters) System.out.println(c);}
+            LOGGER.debug(" STRIPS SIZE = " + ecStrips.size());
+            for(ECStrip strip : ecStrips) LOGGER.debug(strip);
+            LOGGER.debug(" PEAKS  SIZE = " + ecPeaks.size());
+            for(ECPeak p : ecPeaks) LOGGER.debug(p);
+            LOGGER.debug("\n\n\n\n\nEC CLUSTERS SIZE = " + ecClusters.size());
+            if(ecClusters.size()==2) {for(ECCluster c : ecClusters) LOGGER.debug(c);}
         }
 	    
         if(de instanceof HipoDataEvent) this.writeHipoBanks(de,ecStrips,ecPeaks,ecClusters);
@@ -183,36 +183,36 @@ public class ECEngine extends ReconstructionEngine {
     }
    
     public void setCalRun(int runno) {
-        System.out.println("ECEngine: Calibration Run Number = "+runno);
+        LOGGER.debug("ECEngine: Calibration Run Number = "+runno);
         this.calrun = runno;
     }
     
     public void setVariation(String variation) {
-        System.out.println("ECEngine: Variation = "+variation);
+        LOGGER.debug("ECEngine: Variation = "+variation);
         ECCommon.variation = variation;
     } 
     
     public void setVeff(float veff) {
-        System.out.println("ECEngine: Veff = "+veff);
+        LOGGER.debug("ECEngine: Veff = "+veff);
     	    ECCommon.veff = veff;
     }
     
     public void setStripThresholds(int thr0, int thr1, int thr2) {
-        System.out.println("ECEngine: Strip ADC thresholds = "+thr0+" "+thr1+" "+thr2);
+        LOGGER.debug("ECEngine: Strip ADC thresholds = "+thr0+" "+thr1+" "+thr2);
         ECCommon.stripThreshold[0] = thr0;
         ECCommon.stripThreshold[1] = thr1;
         ECCommon.stripThreshold[2] = thr2;
     }
     
     public void setPeakThresholds(int thr0, int thr1, int thr2) {
-        System.out.println("ECEngine: Peak ADC thresholds = "+thr0+" "+thr1+" "+thr2);
+        LOGGER.debug("ECEngine: Peak ADC thresholds = "+thr0+" "+thr1+" "+thr2);
         ECCommon.peakThreshold[0] = thr0;
         ECCommon.peakThreshold[1] = thr1;
         ECCommon.peakThreshold[2] = thr2;
     }   
     
     public void setClusterCuts(float err0, float err1, float err2) {
-        System.out.println("ECEngine: Cluster Dalitz Cuts = "+err0+" "+err1+" "+err2);
+        LOGGER.debug("ECEngine: Cluster Dalitz Cuts = "+err0+" "+err1+" "+err2);
         ECCommon.clusterError[0] = err0;
         ECCommon.clusterError[1] = err1;
         ECCommon.clusterError[2] = err2;

@@ -22,7 +22,7 @@ public class FTCALHit implements Comparable<FTCALHit>{
 		this.set_Time(((double) this._TDC)/FTCALConstantsLoader.TIMECONVFAC
                                                  -(FTCALConstantsLoader.CRYS_LENGTH-cluster.getDoubleValue("depth_z", 1,1,0))/FTCALConstantsLoader.VEFF
 						 -timeOffsets.getDoubleValue("time_offset", 1,1,ICOMPONENT)); 
-//		if(this.get_Edep()>0.1) System.out.println(ICOMPONENT + " " + this._TDC + " " + 
+//		if(this.get_Edep()>0.1) LOGGER.debug(ICOMPONENT + " " + this._TDC + " " + 
 //				FTCALConstantsLoader.TIMECONVFAC + " " + FTCALConstantsLoader.time_offset[0][0][ICOMPONENT-1] + " " +
 //				this.get_Time());
 		this.set_Dx( (this._IDX-FTCALConstantsLoader.CRYS_DELTA )* FTCALConstantsLoader.CRYS_WIDTH);
@@ -43,7 +43,7 @@ public class FTCALHit implements Comparable<FTCALHit>{
 						  /charge2Energy.getDoubleValue("mips_charge", 1,1,ICOMPONENT)/1000.);
 		this.set_Time(time -(FTCALConstantsLoader.CRYS_LENGTH-cluster.getDoubleValue("depth_z", 1,1,0))/FTCALConstantsLoader.VEFF
 				   -timeOffsets.getDoubleValue("time_offset", 1,1,ICOMPONENT)); 
-//		if(this.get_Edep()>0.1) System.out.println(ICOMPONENT + " " + this._TDC + " " + 
+//		if(this.get_Edep()>0.1) LOGGER.debug(ICOMPONENT + " " + this._TDC + " " + 
 //				FTCALConstantsLoader.TIMECONVFAC + " " + FTCALConstantsLoader.time_offset[0][0][ICOMPONENT-1] + " " +
 //				this.get_Time());
 		this.set_Dx( (this._IDX-FTCALConstantsLoader.CRYS_DELTA )* FTCALConstantsLoader.CRYS_WIDTH);

@@ -561,7 +561,7 @@ public class ClusterCleanerUtilities {
     }
 
     public FittedCluster SecondariesRemover(FittedCluster clus, ClusterFitter cf, IndexedTable tab, DCGeant4Factory DcDetector, TimeToDistanceEstimator tde) {
-        //System.out.println(" secondaries Remover :"+clus.printInfo());
+        //LOGGER.debug(" secondaries Remover :"+clus.printInfo());
         Collections.sort(clus);
 
         ArrayList<ArrayList<FittedHit>> sortedHits = new ArrayList<ArrayList<FittedHit>>(6);
@@ -584,7 +584,7 @@ public class ClusterCleanerUtilities {
         for (int i = 0; i < 6; i++) {
             ArrayList<FittedHit> hitsInLayer = sortedHits.get(i);
             //for(int j =0; j<hitsInLayer.size(); j++) {
-            //	System.out.println("*  Hits in layer  :: "+(i+1)+" "+hitsInLayer.get(j).printInfo());
+            //	LOGGER.debug("*  Hits in layer  :: "+(i+1)+" "+hitsInLayer.get(j).printInfo());
             //}
             if (hitsInLayer.size() == 0) {
                 continue;
@@ -654,16 +654,16 @@ public class ClusterCleanerUtilities {
         }
 
         // get the best cluster
-        //System.out.println(" clusters for selection ");
+        //LOGGER.debug(" clusters for selection ");
         //for(FittedCluster c : clusters) {
-        //	System.out.println(c.printInfo());
+        //	LOGGER.debug(c.printInfo());
         //	for(FittedHit h : c)
-        //		System.out.println(h.printInfo());
+        //		LOGGER.debug(h.printInfo());
         //}
         FittedCluster BestCluster = cf.BestClusterSelector(clusters, "LC");
-        //System.out.println("  ---> selected cluster  : ");
+        //LOGGER.debug("  ---> selected cluster  : ");
         //for(FittedHit h : BestCluster)
-        //	System.out.println(h.printInfo());
+        //	LOGGER.debug(h.printInfo());
         return BestCluster;
     }
 
@@ -840,7 +840,7 @@ public class ClusterCleanerUtilities {
             if (fClus.get(i).get_OutOfTimeFlag() == true) {
 
                 //if(Constants.DEBUGPRINTMODE == true)
-                //	System.out.println("flag out of timer ? "+fClus.get(i).printInfo()+" correcting this hit ...");
+                //	LOGGER.debug("flag out of timer ? "+fClus.get(i).printInfo()+" correcting this hit ...");
                 if (removeHit == true) {
                     fClus.remove(i);
                 } else {

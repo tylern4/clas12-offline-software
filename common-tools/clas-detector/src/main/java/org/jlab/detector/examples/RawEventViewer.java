@@ -123,8 +123,8 @@ public class RawEventViewer implements IDataEventListener,DetectorListener {
         detectorDecoder.fitPulses(dataSetFull);
         
         List<DetectorDataDgtz>  dataSet = this.detectorFilterPane.getFilter().filter(dataSetFull);
-        //System.out.println(" EVENT TYPE = " + event.getType());
-        //System.out.println(" processed the event data set Size = " + dataSet.size());
+        //LOGGER.debug(" EVENT TYPE = " + event.getType());
+        //LOGGER.debug(" processed the event data set Size = " + dataSet.size());
         //detectorData.clear();
         //detectorData.addAll(dataSet);
         //this.updateTableModel();
@@ -175,7 +175,7 @@ public class RawEventViewer implements IDataEventListener,DetectorListener {
     
     @Override
     public void processShape(DetectorShape2D shape) {
-        System.out.println("SHAPE SELECTED = " + shape.getDescriptor());
+        LOGGER.debug("SHAPE SELECTED = " + shape.getDescriptor());
     }
     
     public static void main(String[] args){

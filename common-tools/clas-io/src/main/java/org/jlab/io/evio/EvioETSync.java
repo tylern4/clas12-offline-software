@@ -41,53 +41,53 @@ public class EvioETSync implements DataSync {
     private Integer  etRingPort   = 11111;
     private EtSystem sys = null;
     private EtAttachment  myAttachment = null;
-    
-    
+
+
     public EvioETSync(String ip){
         this.etRingHost = ip;
     }
-    
+
     public void open(String filename) {
         try {
             this.connectionOK = true;
             String etFile = filename;
-            
+
             EtSystemOpenConfig config = new EtSystemOpenConfig( etFile,this.etRingHost,this.etRingPort);
             sys = new EtSystem(config);
             sys.open();
-            
+
             EtStationConfig statConfig = new EtStationConfig();
             statConfig.setBlockMode(EtConstants.stationBlocking);
             statConfig.setUserMode(EtConstants.stationUserSingle);
             statConfig.setRestoreMode(EtConstants.stationRestoreOut);
-            
+
             EtStation gsStation = sys.stationNameToObject("GRAND_CENTRAL");
-            
+
             //EtStation station = sys.createStation(statConfig, "my_station");
             //EtStation etst = new EtStation();
             //EtStation station = sys.attach();
             myAttachment = sys.attach(gsStation);
-            
+
         } catch (EtException ex) {
             this.connectionOK = false;
             ex.printStackTrace();
         } catch (IOException ex) {
             this.connectionOK = false;
-            Logger.getLogger(EvioETSource.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex);
         } catch (EtTooManyException ex) {
             this.connectionOK = false;
-            Logger.getLogger(EvioETSource.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex);
         } catch (EtDeadException ex) {
-            Logger.getLogger(EvioETSource.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex);
         } catch (EtClosedException ex) {
-            Logger.getLogger(EvioETSource.class.getName()).log(Level.SEVERE, null, ex);
-        } 
-    
+            LOGGER.error(ex);
+        }
+
     }
 
     public void writeEvent(DataEvent event) {
         EvioDataEvent  evioEvent = (EvioDataEvent) event;
-        
+
         //byte[]  buffer = evioEvent.getHandler().getStructure().getByteBuffer().array();
         //EtEventImpl  etEvent = new EtEventImpl(buffer.length);
         //etEvent.setData(buffer);
@@ -95,49 +95,49 @@ public class EvioETSync implements DataSync {
         //EtEvent[]  evs = new EtEvent[]{etEvent};
         byte[] buffer = new byte[200];
         int eventLength = buffer.length;
-        
-        System.out.println("WRITING DATA WITH LENGTH " + buffer.length);
+
+        LOGGER.debug("WRITING DATA WITH LENGTH " + buffer.length);
          try {
-             
-             EtEvent[]  etevents = sys.newEvents(myAttachment, Mode.SLEEP, false, 
+
+             EtEvent[]  etevents = sys.newEvents(myAttachment, Mode.SLEEP, false,
                      0,1,buffer.length, 1);
-             
+
              ByteBuffer byteBuffer = etevents[0].getDataBuffer();
              byteBuffer.put(buffer);
              byteBuffer.flip();
-             
+
              etevents[0].setLength(eventLength);
-             
-             //System.out.println("# of events = " + etevents.length + "  BUFFER SIZE = " + byteBuffer.capacity()
+
+             //LOGGER.debug("# of events = " + etevents.length + "  BUFFER SIZE = " + byteBuffer.capacity()
              //+ "  LENGTH = " + etevents[0].getLength());
-             
-             
+
+
              sys.putEvents(myAttachment, etevents);
-             
+
          } catch (IOException ex) {
-             Logger.getLogger(EvioETSync.class.getName()).log(Level.SEVERE, null, ex);
+             LOGGER.error(ex);
          } catch (EtException ex) {
-             Logger.getLogger(EvioETSync.class.getName()).log(Level.SEVERE, null, ex);
+             LOGGER.error(ex);
          } catch (EtDeadException ex) {
-             Logger.getLogger(EvioETSync.class.getName()).log(Level.SEVERE, null, ex);
+             LOGGER.error(ex);
          } catch (EtClosedException ex) {
-             Logger.getLogger(EvioETSync.class.getName()).log(Level.SEVERE, null, ex);
+             LOGGER.error(ex);
          } catch (EtEmptyException ex) {
-             Logger.getLogger(EvioETSync.class.getName()).log(Level.SEVERE, null, ex);
+             LOGGER.error(ex);
          } catch (EtBusyException ex) {
-             Logger.getLogger(EvioETSync.class.getName()).log(Level.SEVERE, null, ex);
+             LOGGER.error(ex);
          } catch (EtTimeoutException ex) {
-             Logger.getLogger(EvioETSync.class.getName()).log(Level.SEVERE, null, ex);
+             LOGGER.error(ex);
          } catch (EtWakeUpException ex) {
-             Logger.getLogger(EvioETSync.class.getName()).log(Level.SEVERE, null, ex);
+             LOGGER.error(ex);
          }
     }
 
     public void close() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
-    
+
+
     public static void main(String[] args){
         String ethost = "129.57.76.215";
         String file   = "/tmp/myEtRing";
@@ -147,13 +147,13 @@ public class EvioETSync implements DataSync {
             ethost = args[0];
             file   = args[1];
         } else {
-            System.out.println("\n\n\nUsage : et-connect host etfile\n");
-            System.exit(0);            
+            LOGGER.debug("\n\n\nUsage : et-connect host etfile\n");
+            System.exit(0);
         }*/
-        
+
         EvioETSync  writer = new EvioETSync(ethost);
         writer.open(file);
-        
+
         EvioSource reader = new EvioSource();
         reader.open(evioFile);
         int counter = 0;
@@ -161,9 +161,9 @@ public class EvioETSync implements DataSync {
             try {
                 Thread.sleep(200);
             } catch (InterruptedException ex) {
-                Logger.getLogger(EvioETSource.class.getName()).log(Level.SEVERE, null, ex);
+                LOGGER.error(ex);
             }
-            System.out.println("Reading next event # " + counter);
+            LOGGER.debug("Reading next event # " + counter);
             counter++;
             EvioDataEvent  event = (EvioDataEvent) reader.getNextEvent();
             writer.writeEvent(event);

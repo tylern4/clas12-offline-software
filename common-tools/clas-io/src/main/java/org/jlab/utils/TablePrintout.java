@@ -6,6 +6,9 @@
 
 package org.jlab.utils;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.ArrayList;
 
 /**
@@ -13,7 +16,7 @@ import java.util.ArrayList;
  * @author gavalian
  */
 public class TablePrintout {
-    
+    public static Logger LOGGER = LogManager.getLogger(TablePrintout.class.getName());
     private ArrayList<String>  headerDesc   = new ArrayList<String>();
     private ArrayList<Integer> headerLength = new ArrayList<Integer>();    
     private ArrayList<String[]> tableData   = new ArrayList<String[]>();
@@ -84,7 +87,7 @@ public class TablePrintout {
     }
     public void addData(String[] data){
         if(data.length!=headerLength.size()){
-            System.err.println("[Table data] ---> error. data size "
+            LOGGER.warn("[Table data] ---> error. data size "
             + data.length + " does not match with header size = " +
                     headerLength.size());
             return;
@@ -97,17 +100,15 @@ public class TablePrintout {
         String headerLine = this.getHeaderLineString();
         String header     = this.getHeaderString("*");
         String indentString = this.lineWithLengthSymbol(tableIndent, ' ');
-        System.err.println();
-        System.err.println(indentString + headerLine);
-        System.err.println(indentString + header);
-        System.err.println(indentString + headerLine);
+        LOGGER.warn(indentString + headerLine);
+        LOGGER.warn(indentString + header);
+        LOGGER.warn(indentString + headerLine);
         
         for(int loop = 0; loop < tableData.size(); loop++){
-            System.err.println(indentString + this.getFormattedDataString(loop));
+            LOGGER.warn(indentString + this.getFormattedDataString(loop));
         }
         
-        System.err.println(indentString + headerLine);
-        System.err.println();
+        LOGGER.warn(indentString + headerLine);
     }
     
     public String getFormattedDataString(int index){

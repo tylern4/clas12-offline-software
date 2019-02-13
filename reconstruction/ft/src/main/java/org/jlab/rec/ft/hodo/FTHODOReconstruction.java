@@ -3,6 +3,9 @@ package org.jlab.rec.ft.hodo;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.detector.calib.utils.ConstantsManager;
 import org.jlab.io.base.DataBank;
 import org.jlab.io.base.DataEvent;
@@ -13,7 +16,7 @@ import org.jlab.io.hipo.HipoDataEvent;
 import org.jlab.utils.groups.IndexedTable;
 
 public class FTHODOReconstruction {
-
+    public static Logger LOGGER = LogManager.getLogger(FTHODOReconstruction.class.getName());
 
     public int debugMode = 0;
 
@@ -26,7 +29,7 @@ public class FTHODOReconstruction {
         IndexedTable timeOffsets   = manager.getConstants(run, "/calibration/ft/fthodo/time_offsets");
         IndexedTable geometry      = manager.getConstants(run, "/geometry/ft/fthodo");
         
-        if(debugMode>=1) System.out.println("\nAnalyzing new event");
+        if(debugMode>=1) LOGGER.debug("\nAnalyzing new event");
         List<FTHODOHit> allhits = null;
         
         if(event instanceof EvioDataEvent) {
@@ -37,7 +40,7 @@ public class FTHODOReconstruction {
             allhits = this.readRawHitsHipo(event,charge2Energy,timeOffsets,geometry);
         }
         if(debugMode>=1) {
-            System.out.println("Found " + allhits.size() + " hits");
+            LOGGER.debug("Found " + allhits.size() + " hits");
             for(int i = 0; i < allhits.size(); i++) {
                 System.out.print(i + "\t");
                 allhits.get(i).showHit();
@@ -48,7 +51,7 @@ public class FTHODOReconstruction {
     
     public List<FTHODOHit> selectHits(List<FTHODOHit> allhits) {
 
-        if(debugMode>=1) System.out.println("\nSelecting hits");
+        if(debugMode>=1) LOGGER.debug("\nSelecting hits");
         ArrayList<FTHODOHit> hits = new ArrayList<FTHODOHit>();
         
         for(int i = 0; i < allhits.size(); i++) 
@@ -59,7 +62,7 @@ public class FTHODOReconstruction {
         }	
         Collections.sort(hits);
         if(debugMode>=1) {
-            System.out.println("List of selected hits");
+            LOGGER.debug("List of selected hits");
             for(int i = 0; i < hits.size(); i++) 
             {	
                 System.out.print(i + "\t");
@@ -73,7 +76,7 @@ public class FTHODOReconstruction {
 
         List<FTHODOCluster> clusters = new ArrayList();
         
-        if(debugMode>=1) System.out.println("\nBuilding clusters");
+        if(debugMode>=1) LOGGER.debug("\nBuilding clusters");
         for(int ihit=0; ihit<hits.size(); ihit++) {
             FTHODOHit hit = hits.get(ihit);
             if(hit.get_ClusterIndex()==0)  {                       // this hit is not yet associated with a cluster
@@ -82,7 +85,7 @@ public class FTHODOReconstruction {
                     if(cluster.containsHit(hit)) {
                         hit.set_ClusterIndex(cluster.getID());     // attaching hit to previous cluster 
                         cluster.add(hit);
-                        if(debugMode>=1) System.out.println("Attaching hit " + ihit + " to cluster " + cluster.getID());
+                        if(debugMode>=1) LOGGER.debug("Attaching hit " + ihit + " to cluster " + cluster.getID());
                     }
                 }
             }
@@ -91,7 +94,7 @@ public class FTHODOReconstruction {
                 hit.set_ClusterIndex(cluster.getID());
                 cluster.add(hit);
                 clusters.add(cluster);
-                if(debugMode>=1) System.out.println("Creating new cluster with ID " + cluster.getID());
+                if(debugMode>=1) LOGGER.debug("Creating new cluster with ID " + cluster.getID());
             }
         }
         return clusters;
@@ -112,7 +115,7 @@ public class FTHODOReconstruction {
         if(hits.size()!=0) {
             DataBank bankHits = event.createBank("FTHODO::hits", hits.size());    
             if(bankHits==null){
-                System.out.println("ERROR CREATING BANK : FTHODO::hits");
+                LOGGER.debug("ERROR CREATING BANK : FTHODO::hits");
                 return;
             }
             for(int i = 0; i < hits.size(); i++){
@@ -133,7 +136,7 @@ public class FTHODOReconstruction {
         if(clusters.size()!=0){
             DataBank bankCluster = event.createBank("FTHODO::clusters", clusters.size());    
             if(bankCluster==null){
-                System.out.println("ERROR CREATING BANK : FTHODO::clusters");
+                LOGGER.debug("ERROR CREATING BANK : FTHODO::clusters");
                 return;
             }
             for(int i = 0; i < clusters.size(); i++){
@@ -203,7 +206,7 @@ public class FTHODOReconstruction {
     }
     public List<FTHODOHit> readRawHits(DataEvent event, IndexedTable charge2Energy, IndexedTable timeOffsets, IndexedTable geometry) {
         // getting raw data bank
-	if(debugMode>=1) System.out.println("Getting raw hits from FTHODO:dgtz bank");
+	if(debugMode>=1) LOGGER.debug("Getting raw hits from FTHODO:dgtz bank");
 
         List<FTHODOHit>  hits = new ArrayList<FTHODOHit>();
 	if(event.hasBank("FTHODO::dgtz")==true) {
@@ -226,7 +229,7 @@ public class FTHODOReconstruction {
     
     public List<FTHODOHit> readRawHitsHipo(DataEvent event, IndexedTable charge2Energy, IndexedTable timeOffsets, IndexedTable geometry) {
         // getting raw data bank
-	if(debugMode>=1) System.out.println("Getting raw hits from FTHODO:adc bank");
+	if(debugMode>=1) LOGGER.debug("Getting raw hits from FTHODO:adc bank");
 
         List<FTHODOHit>  hits = new ArrayList<FTHODOHit>();
 	if(event.hasBank("FTHODO::adc")==true) {

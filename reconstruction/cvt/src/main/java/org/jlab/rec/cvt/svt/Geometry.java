@@ -4,6 +4,9 @@ package org.jlab.rec.cvt.svt;
 import eu.mihosoft.vrl.v3d.Transform;
 import eu.mihosoft.vrl.v3d.Vector3d;
 import java.io.FileNotFoundException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.detector.geant4.v2.SVT.SVTConstants;
 
 import org.jlab.geom.prim.Point3D;
@@ -12,7 +15,7 @@ import org.jlab.geometry.prim.Triangle3d;
 import org.jlab.rec.cvt.trajectory.Helix;
 
 public class Geometry {
-
+    public static Logger LOGGER = LogManager.getLogger(Geometry.class.getName());
     public Geometry() {
 
     }
@@ -326,7 +329,7 @@ public class Geometry {
 				if(sdelta<-(P+z*Math.tan(alpha))/4.)
 					s= newStrip+0.5;
 				//s=(-x+b+alpha*z)/(alpha*z+P); */
-            //System.out.println(" nearest strip "+s+" at ("+X+", "+Y+", "+Z+"); delta = "+delta);
+            //LOGGER.debug(" nearest strip "+s+" at ("+X+", "+Y+", "+Z+"); delta = "+delta);
         }
         if (layer % 2 == 0) {
             //layers 2,4,6 == top ==j ==>(2) : regular configuration
@@ -365,7 +368,7 @@ public class Geometry {
 				if(sdelta<-(P+z*Math.tan(alpha))/4.)
 					s= newStrip-0.5;
 				//s=(x+alpha*z)/(alpha*z+P); */
-            //System.out.println(" nearest strip "+s+" at ("+X+", "+Y+", "+Z+"); delta = "+delta);
+            //LOGGER.debug(" nearest strip "+s+" at ("+X+", "+Y+", "+Z+"); delta = "+delta);
         }
         if (s <= 1) {
             s = 1;
@@ -374,7 +377,7 @@ public class Geometry {
             s = 256;
         }
 
-        //System.out.println(" layer "+layer+" sector "+sect+" strip "+s);
+        //LOGGER.debug(" layer "+layer+" sector "+sect+" strip "+s);
         return s;
     }
     //****
@@ -700,7 +703,7 @@ public class Geometry {
         Vector3d translationVec = new Vector3d( Constants.TX[region-1][sector-1], Constants.TY[region-1][sector-1], Constants.TZ[region-1][sector-1] );
         aPoint.set( aPoint.add( translationVec ) ); 
         //if(Math.abs(cross.x()-aPoint.x)<1 && Math.abs(cross.y()-aPoint.y)<1) {
-        System.out.println("  unshifted \n"+cross.toString()+" in sector "+sector+" region "+region);
+        LOGGER.debug("  unshifted \n"+cross.toString()+" in sector "+sector+" region "+region);
         cross.set(aPoint.x, aPoint.y, aPoint.z);
         System.out.printf("        --> shifted : % 8.4f % 8.4f % 8.4f\n", aPoint.x, aPoint.y, aPoint.z );
        // }
@@ -778,7 +781,7 @@ public static void applyInverseShift( Vector3d aPoint, double[] aShift, Vector3d
 
         Geometry geo = new Geometry();
 
-        System.out.println("  old geom strip inter " + geo.getLocCoord(s1, s2)[0] + "," + geo.getLocCoord(s1, s2)[1]);
+        LOGGER.debug("  old geom strip inter " + geo.getLocCoord(s1, s2)[0] + "," + geo.getLocCoord(s1, s2)[1]);
 
         /*
 	    	 * X[0][0] = x1;
@@ -786,24 +789,24 @@ public static void applyInverseShift( Vector3d aPoint, double[] aShift, Vector3d
 			X[1][0] = x2;
 			X[1][1] = z2;
          */
-        //System.out.println(" end points 1"+geo.getStripEndPoints(s1, 0)[0][0]+", "+geo.getStripEndPoints(s1, 0)[0][1]);
-        //System.out.println(" end points "+(geo.getStripEndPoints(10, 1)[0][0]-Constants.ACTIVESENWIDTH/2)+", "+geo.getStripEndPoints(10, 1)[0][1]+"; "
+        //LOGGER.debug(" end points 1"+geo.getStripEndPoints(s1, 0)[0][0]+", "+geo.getStripEndPoints(s1, 0)[0][1]);
+        //LOGGER.debug(" end points "+(geo.getStripEndPoints(10, 1)[0][0]-Constants.ACTIVESENWIDTH/2)+", "+geo.getStripEndPoints(10, 1)[0][1]+"; "
         //		+(geo.getStripEndPoints(10, 1)[1][0]-Constants.ACTIVESENWIDTH/2)+", "+geo.getStripEndPoints(10, 1)[1][1]);
         double[][] X = geo.getStripEndPoints(s1, 0);
         double[][] Y = geo.getStripEndPoints(s2, 1);
-        System.out.println(" ep1 loc x " + X[0][0] + ", y" + X[0][1] + ", x " + X[1][0] + ", y " + X[1][1] + " ep2 loc x " + Y[0][0] + ", y" + Y[0][1] + ", x " + Y[1][0] + ", y " + Y[1][1]);
+        LOGGER.debug(" ep1 loc x " + X[0][0] + ", y" + X[0][1] + ", x " + X[1][0] + ", y " + X[1][1] + " ep2 loc x " + Y[0][0] + ", y" + Y[0][1] + ", x " + Y[1][0] + ", y " + Y[1][1]);
         Point3D EP1u = geo.transformToFrame(1, 1, X[0][0], 0, X[0][1], "lab", "");
         Point3D EP2u = geo.transformToFrame(1, 1, X[1][0], 0, X[1][1], "lab", "");
 
         Point3D EP1v = geo.transformToFrame(1, 2, Y[0][0], 0, Y[0][1], "lab", "");
         Point3D EP2v = geo.transformToFrame(1, 2, Y[1][0], 0, Y[1][1], "lab", "");
-        System.out.println(EP1u.toString());
-        System.out.println(EP2u.toString());
-        System.out.println(EP1v.toString());
-        System.out.println(EP2v.toString());
+        LOGGER.debug(EP1u.toString());
+        LOGGER.debug(EP2u.toString());
+        LOGGER.debug(EP1v.toString());
+        LOGGER.debug(EP2v.toString());
 
-        //System.out.println(geo.calcNearestStrip(25.66, -66.55, 1.37,2, 10) );
-        //System.out.println(geo.transformToFrame(8, 1, 66.3, 7.8, 38.6, "local", "").z()-Constants.ACTIVESENLEN*2-2*0.835-Constants.ACTIVESENLEN/2);
+        //LOGGER.debug(geo.calcNearestStrip(25.66, -66.55, 1.37,2, 10) );
+        //LOGGER.debug(geo.transformToFrame(8, 1, 66.3, 7.8, 38.6, "local", "").z()-Constants.ACTIVESENLEN*2-2*0.835-Constants.ACTIVESENLEN/2);
         /*
 	    	Line3D stripLine1 = svt.createStrip(s1-1);
 	    	Line3D stripLine2 = svt.createStrip(s2-1);	    	
@@ -828,9 +831,9 @@ public static void applyInverseShift( Vector3d aPoint, double[] aShift, Vector3d
 	    	double b2 = stripLine2.origin().x() - stripLine2.origin().z()*m2;
 	    	double z = (b2-b1)/(m1-m2);
 			double x = m1*z +b1;
-	    	System.out.println(" x "+x +" z "+z+" my geo "+crPoint.toString());
+	    	LOGGER.debug(" x "+x +" z "+z+" my geo "+crPoint.toString());
 	    	
-	    	System.out.println(geo.getPlaneModuleOrigin(1, 1).toString() );
+	    	LOGGER.debug(geo.getPlaneModuleOrigin(1, 1).toString() );
          */
  /*
 	    	int l = 1;
@@ -842,7 +845,7 @@ public static void applyInverseShift( Vector3d aPoint, double[] aShift, Vector3d
 	    	double s2 = geo.calcNearestStrip(0.5, Constants.MODULERADIUS[l][s-1], 0, l+1, s);
 	    	
 	    	
-	    	System.out.println("D "+geo.getLocCoord(s10, s20)[0]+","+geo.getLocCoord(s10, s20)[1]+"  ;  "+geo.getLocCoord(s1, s2)[0]+","+geo.getLocCoord(s1, s2)[1]);
+	    	LOGGER.debug("D "+geo.getLocCoord(s10, s20)[0]+","+geo.getLocCoord(s10, s20)[1]+"  ;  "+geo.getLocCoord(s1, s2)[0]+","+geo.getLocCoord(s1, s2)[1]);
          */
     }
 

@@ -121,7 +121,7 @@ public class ECCommon {
             int component = strip.getDescriptor().getComponent();
             int superlayer = (int) ((layer-1)/3);
             int localLayer = (layer-1)%3;
-            /*System.out.println(" SUPERLAYER = " + superlayer 
+            /*LOGGER.debug(" SUPERLAYER = " + superlayer 
                     + "  LOCAL LAYER = " + localLayer
                     + "  LAYER = " + layer);
             */
@@ -280,14 +280,14 @@ public class ECCommon {
                 int sharedView = clusters.get(i).sharedView(clusters.get(k));
                 if(sharedView>=0){
                     
-                    //System.out.println(" CLUSTERS SHARE VIEW : " + i + " " + k 
+                    //LOGGER.debug(" CLUSTERS SHARE VIEW : " + i + " " + k 
                     //+ "  energy " + clusters.get(i).getEnergy() + "  " + clusters.get(k).getEnergy());
                     
-                    //System.out.println(clusters.get(i));
-                    //System.out.println(clusters.get(k));
+                    //LOGGER.debug(clusters.get(i));
+                    //LOGGER.debug(clusters.get(k));
                     
                     ECCluster.shareEnergy(clusters.get(i), clusters.get(k), sharedView);
-                    //System.out.println("\t -->  " 
+                    //LOGGER.debug("\t -->  " 
                     //+ " corrected energy " + clusters.get(i).getEnergy() + "  " + clusters.get(k).getEnergy());
                 }
             }
@@ -307,7 +307,7 @@ public class ECCommon {
             List<ECPeak>  pU = ECCommon.getPeaks(sector, startLayer,   peaks);
             List<ECPeak>  pV = ECCommon.getPeaks(sector, startLayer+1, peaks);
             List<ECPeak>  pW = ECCommon.getPeaks(sector, startLayer+2, peaks);
-            /*System.out.println("-------->  peaks are found " +
+            /*LOGGER.debug("-------->  peaks are found " +
                     " U " + pU.size() +
                     " V " + pV.size() +
                     " W " + pW.size()
@@ -334,7 +334,7 @@ public class ECCommon {
 //								if (sector==2) {
 //								System.out.printf("U %4.1f V %4.1f W %4.1f%n",tU,tV,tW);
 //								System.out.printf("U %4.1f V %4.1f W %4.1f%n%n",eU,eV,eW);
-//                            	    System.out.println(cluster.toString());
+//                            	    LOGGER.debug(cluster.toString());
 //								}
 								clusters.add(cluster);
 								//if ((Math.abs(tU - tV) < ECCommon.clusterDeltaT[ind[startLayer - 1]]) &&

@@ -334,7 +334,7 @@ public final class ECGeant4Factory extends Geant4Factory {
         int iview = (ilayer - 1) % 3;
         int[] npaddles = {nustrips, nvstrips, nwstrips};
         if (isector < 1 || isector > nsectors || ilayer < 1 || ilayer > nlayers * nviews || ipaddle < 1 || ipaddle > npaddles[iview]) {
-            System.err.println(String.format("Paddle #%d in sector %d, layer %d doesn't exist", ipaddle, isector, ilayer));
+            LOGGER.warn(String.format("Paddle #%d in sector %d, layer %d doesn't exist", ipaddle, isector, ilayer));
             throw new IndexOutOfBoundsException();
         }
 
@@ -345,7 +345,7 @@ public final class ECGeant4Factory extends Geant4Factory {
 
     public Plane3D getFrontalFace(int sector) {
         if (sector < 1 || sector > nsectors) {
-            System.err.println(String.format("Sector %d doesn't exist", sector));
+            LOGGER.warn(String.format("Sector %d doesn't exist", sector));
             throw new IndexOutOfBoundsException();
         }
 
@@ -353,8 +353,8 @@ public final class ECGeant4Factory extends Geant4Factory {
         G4Trap padl = (G4Trap) layerVol.getChildren().get(1);
         Vector3d point = new Vector3d(padl.getVertex(0));
         Vector3d normal = new Vector3d(layerVol.getLineZ().diff().normalized());
-        //System.out.println("color(\"red\") translate(" + point + ") sphere(2, $fn=100);");
-        //System.out.println("line3d(" + point + ", "+point.plus(normal.times(20))+");");
+        //LOGGER.debug("color(\"red\") translate(" + point + ") sphere(2, $fn=100);");
+        //LOGGER.debug("line3d(" + point + ", "+point.plus(normal.times(20))+");");
         return new Plane3D(point.x, point.y, point.z, normal.x, normal.y, normal.z);
     }
 }

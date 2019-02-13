@@ -44,11 +44,11 @@ public class CalibrationEngineView extends JPanel implements CalibrationConstant
 
     @Override
     public void constantsEvent(CalibrationConstants cc, int col, int row) {
-        System.out.println("Well. it's working " + col + "  " + row);
+        LOGGER.debug("Well. it's working " + col + "  " + row);
         String str_sector    = (String) cc.getValueAt(row, 0);
         String str_layer     = (String) cc.getValueAt(row, 1);
         String str_component = (String) cc.getValueAt(row, 2);
-        System.out.println(str_sector + " " + str_layer + " " + str_component);
+        LOGGER.debug(str_sector + " " + str_layer + " " + str_component);
         IndexedList<DataGroup> group = engine.getDataGroup();
         
         int sector    = Integer.parseInt(str_sector);
@@ -60,7 +60,7 @@ public class CalibrationEngineView extends JPanel implements CalibrationConstant
             this.canvas.draw(dataGroup);
             this.canvas.update();
         } else {
-            System.out.println(" ERROR: can not find the data group");
+            LOGGER.debug(" ERROR: can not find the data group");
         }
     }
     

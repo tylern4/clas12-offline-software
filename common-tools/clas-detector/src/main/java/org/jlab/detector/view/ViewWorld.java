@@ -5,6 +5,8 @@
  */
 package org.jlab.detector.view;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.groot.math.Dimension2D;
 
 /**
@@ -12,7 +14,7 @@ import org.jlab.groot.math.Dimension2D;
  * @author gavalian
  */
 public class ViewWorld {
-    
+    public static Logger LOGGER = LogManager.getLogger(ViewWorld.class.getName());
     Dimension2D   axisWorld = new Dimension2D();
     Dimension2D   axisView  = new Dimension2D();
     
@@ -31,7 +33,7 @@ public class ViewWorld {
         /*
         double aspectRatioW = axisWorld.getDimension(0).getLength()/axisWorld.getDimension(1).getLength();
         double aspectRatioV = viewDim.getDimension(0).getLength()/viewDim.getDimension(1).getLength();
-        System.out.println("ASPECT RATIO : W = " + aspectRatioW + "  VIEW = " + aspectRatioV);
+        LOGGER.debug("ASPECT RATIO : W = " + aspectRatioW + "  VIEW = " + aspectRatioV);
         
         double correctionX = 1.0;
         double correctionY = 1.0;
@@ -46,7 +48,7 @@ public class ViewWorld {
                 centerOffsetY + viewDim.getDimension(1).getMin() - 0.5*correctionY*viewDim.getDimension(1).getLength(),               
                 centerOffsetY + viewDim.getDimension(1).getMin() + 0.5*correctionY*viewDim.getDimension(1).getLength());
             this.axisView.getDimension(0).copy(viewDim.getDimension(0));
-            //System.out.println(" correction Y = " + correctionY);
+            //LOGGER.debug(" correction Y = " + correctionY);
         } else {
             correctionX = aspectRatioW/aspectRatioV;
             centerOffsetX = viewDim.getDimension(0).getMin() + 0.5*viewDim.getDimension(0).getLength();
@@ -71,7 +73,7 @@ public class ViewWorld {
         
         double aspectRatioW = this.axisWorld.getDimension(0).getLength()/this.axisWorld.getDimension(1).getLength();
         double aspectRatioV = this.axisView.getDimension(0).getLength()/this.axisView.getDimension(1).getLength();
-        //System.out.println(String.format("ASPECT RATIO WORLD = %8.3f  VIEW = %8.3f", aspectRatioW,aspectRatioV));
+        //LOGGER.debug(String.format("ASPECT RATIO WORLD = %8.3f  VIEW = %8.3f", aspectRatioW,aspectRatioV));
         
         if(aspectRatioV>aspectRatioW){
             double lenY = this.axisView.getDimension(1).getLength();
@@ -81,7 +83,7 @@ public class ViewWorld {
             double min = midY - factor*lenY*0.5;
             double max = midY + factor*lenY*0.5;
             this.axisView.getDimension(1).setMinMax(min, max);
-            //System.out.println(String.format(" LENGTH = %8.3f   MID = %8.3f factor = %9.6f min/max = %9.6f %9.6f", 
+            //LOGGER.debug(String.format(" LENGTH = %8.3f   MID = %8.3f factor = %9.6f min/max = %9.6f %9.6f", 
             //        lenY,midY,factor,min,max));
         } else {
             double lenX = this.axisView.getDimension(0).getLength();
@@ -109,8 +111,8 @@ public class ViewWorld {
     }
     
     public void show(){
-        System.out.println(" WORLD : " + axisWorld);
-        System.out.println(" VIEW  : " + axisView);
+        LOGGER.debug(" WORLD : " + axisWorld);
+        LOGGER.debug(" VIEW  : " + axisView);
     }
     
     public double getPointX(double value){
@@ -120,7 +122,7 @@ public class ViewWorld {
     
     public double getPointY(double value){
         double fraction = this.axisView.getDimension(1).getFraction(value);
-        //System.out.println(" FRACTION = for value " + value + " = " + fraction);
+        //LOGGER.debug(" FRACTION = for value " + value + " = " + fraction);
         return this.axisWorld.getDimension(1).getPoint(fraction);
     }
     
@@ -133,16 +135,16 @@ public class ViewWorld {
         world.setWorld(new Dimension2D(0,16.0,0.0,9.0));
         world.setView(new Dimension2D(0,8.0,4,sizeY+4));
         world.show();                
-        /*System.out.println( " BRUT FORCE TESTY = " + 20 + "  world = " + world.getPointY(20.0));
+        /*LOGGER.debug( " BRUT FORCE TESTY = " + 20 + "  world = " + world.getPointY(20.0));
         world.setView(new Dimension2D(0,160.0,40,80));
         world.show();                
-        System.out.println( " BRUT FORCE TESTY = " + 60 + "  world = " + world.getPointY(60.0));
+        LOGGER.debug( " BRUT FORCE TESTY = " + 60 + "  world = " + world.getPointY(60.0));
         
-        System.out.println( " BRUT FORCE TESTX = " + 4.0  + "  world = " + world.getPointX(4.0));
+        LOGGER.debug( " BRUT FORCE TESTX = " + 4.0  + "  world = " + world.getPointX(4.0));
         
 
         for(double d  = 0.0; d < 1.0; d+=0.1){
-            System.out.println( " Y = " + d + "  world = " + world.getPointY(d));
+            LOGGER.debug( " Y = " + d + "  world = " + world.getPointY(d));
         }*/
     }
 }

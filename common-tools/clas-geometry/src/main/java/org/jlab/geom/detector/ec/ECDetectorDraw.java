@@ -9,6 +9,9 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.geom.base.ConstantProvider;
 import org.jlab.geom.prim.Shape3D;
 
@@ -17,6 +20,7 @@ import org.jlab.geom.prim.Shape3D;
  * @author gavalian
  */
 public class ECDetectorDraw {
+    Logger LOGGER = LogManager.getLogger(ECDetectorDraw.class.getName());
     private Color   outlineColor = new Color(   0,   0,   0);
     private Color      fillColor = new Color( 254, 161, 127);
     private ECSector    detector = null;
@@ -34,7 +38,7 @@ public class ECDetectorDraw {
         ECLayer ecLayer = (ECLayer) detector.getSuperlayer(superlayer).getLayer(layer);
         Rectangle region = g2d.getClipBounds();
         if(region==null){
-            System.err.println("[DetectorDraw] error -> no clip rectange has been set.");
+            LOGGER.warn("[DetectorDraw] error -> no clip rectange has been set.");
             return;
         }
         

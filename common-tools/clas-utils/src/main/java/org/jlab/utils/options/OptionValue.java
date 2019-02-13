@@ -48,7 +48,7 @@ public class OptionValue {
         int index = this.getOptionIndex(arguments);
         if(index<0) return false;
         if(index>arguments.size()-2){
-            System.out.println("****>>>> error : argument " + this.optionString 
+            System.err.println("****>>>> error : argument " + this.optionString
                     + " must follow with a value");
             return false;
         }

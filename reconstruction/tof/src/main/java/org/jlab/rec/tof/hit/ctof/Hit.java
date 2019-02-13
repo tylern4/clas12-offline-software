@@ -134,7 +134,7 @@ public class Hit extends AHit implements IGetCalibrationParams {
 
         paddleLine.set(l.origin().x, l.origin().y, l.origin().z, l.end().x,
                 l.end().y, l.end().z);
-       // this.printInfo();System.out.println(" ");
+       // this.printInfo();LOGGER.debug(" ");
         this.set_paddleLine(paddleLine);
         
         this.set_barthickness(geometry.getThickness(get_Paddle()));
@@ -157,7 +157,7 @@ public class Hit extends AHit implements IGetCalibrationParams {
         hitPosition.setX(startpoint.x());
         hitPosition.setY(startpoint.y());
         hitPosition.setZ(this.get_y());
-//        System.out.println(hitPosition.x() + " " + hitPosition.y() + " " +hitPosition.z() + " " + Constants.SCBARTHICKN[0]);
+//        LOGGER.debug(hitPosition.x() + " " + hitPosition.y() + " " +hitPosition.z() + " " + Constants.SCBARTHICKN[0]);
 
         return hitPosition;
     }
@@ -186,7 +186,7 @@ public class Hit extends AHit implements IGetCalibrationParams {
                     + "  zPos =  " + form.format(this.get_Position().z())
                     + "\n ";
         }
-        System.out.println(s);
+        LOGGER.debug(s);
     }
 
     @Override
@@ -418,7 +418,7 @@ public class Hit extends AHit implements IGetCalibrationParams {
 		 * get the line in the middle of the paddle
 		 * //hit.set_paddleLine(hit.calc_PaddleLine(geometry));
 		 * hit.set_StatusWord(statusWord); hit.set_HitParameters(superlayer); //
-		 * read the hit object System.out.println(" hit "); hit.printInfo();
+		 * read the hit object LOGGER.debug(" hit "); hit.printInfo();
          */
     }
 

@@ -36,7 +36,7 @@ public class MeasVecs {
     }
 
         public void setMeasVecs(Seed trkcand, org.jlab.rec.cvt.svt.Geometry sgeo) {
-       // for(Cross c : trkcand.get_Crosses() ) { System.out.println(" crosses in seed passed to KF: "+c.printInfo());}System.out.println(" =========");
+       // for(Cross c : trkcand.get_Crosses() ) { LOGGER.debug(" crosses in seed passed to KF: "+c.printInfo());}LOGGER.debug(" =========");
         measurements = new ArrayList<MeasVec>();
         MeasVec meas0 = new MeasVec();
         meas0.centroid = 0;
@@ -244,7 +244,7 @@ public class MeasVecs {
 
     public double[] H2(StateVec stateVec, StateVecs sv) {
         double[] H = new double[]{0, 0, 0, 0, 0};
-        //System.out.println(" Projecting to meas plane ...........");
+        //LOGGER.debug(" Projecting to meas plane ...........");
         if (stateVec.k > 0) {
 
             double del_m_del_x = 0;
@@ -266,7 +266,7 @@ public class MeasVecs {
                 del_m_del_y = 0;
             }
 
-            //System.out.println("... del_m_del_x = "+del_m_del_x+" del_m_del_y = "+del_m_del_y+" del_m_del_z = "+del_m_del_z);
+            //LOGGER.debug("... del_m_del_x = "+del_m_del_x+" del_m_del_y = "+del_m_del_y+" del_m_del_z = "+del_m_del_z);
             // find H
             //==========================================================================//
             // x = x0 + drho * cos(phi0) + alpha/kappa *(cos(phi0) - cos(phi0 + phi) )  //

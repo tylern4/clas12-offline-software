@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.detector.calib.utils.DatabaseConstantProvider;
 import org.jlab.detector.volume.G4Box;
 import org.jlab.detector.volume.G4Tubs;
@@ -37,6 +39,7 @@ import eu.mihosoft.vrl.v3d.Vector3d;
  */
 public class SVTVolumeFactory
 {
+    public static Logger LOGGER = LogManager.getLogger(SVTVolumeFactory.class.getName());
 	private Geant4Basic motherVol;
 	private final HashMap< String, String > parameters = new LinkedHashMap<>(); // store core parameters from CCDB and build switches for GEMC's perl scripts
 	private final HashMap< String, String > properties = new LinkedHashMap<>(); // author, email, date
@@ -108,7 +111,7 @@ public class SVTVolumeFactory
 		SVTConstants.load( cp );
 		setApplyAlignmentShifts( applyAlignmentShifts );
 		if( bShift == true && SVTConstants.getDataAlignmentSectorShift() == null ){
-			System.err.println("error: SVTVolumeFactory: no shifts loaded");
+			LOGGER.warn("error: SVTVolumeFactory: no shifts loaded");
 			System.exit(-1);
 		}
 		
@@ -136,7 +139,7 @@ public class SVTVolumeFactory
 	 */
 	public void putParameters()
 	{
-		System.out.println("factory: populating HashMap with parameters");
+		LOGGER.debug("factory: populating HashMap with parameters");
 		
 		properties.put("unit_length", "mm");
 		properties.put("unit_angle", "deg");
@@ -165,7 +168,7 @@ public class SVTVolumeFactory
 		
 		/*for( Map.Entry< String, String > entry : parameters.entrySet() )
 		{
-			System.out.println( entry.getKey() +" "+ entry.getValue() );
+			LOGGER.debug( entry.getKey() +" "+ entry.getValue() );
 		}
 		System.exit(0);*/
 	}
@@ -200,26 +203,26 @@ public class SVTVolumeFactory
 	 */
 	public void makeVolumes()
 	{
-		System.out.println("factory: generating geometry with the following parameters");
+		LOGGER.debug("factory: generating geometry with the following parameters");
 		
 		if( bShift )
 		{
-			System.out.println("  variation: shifted" );
-			if( !(scaleT - 1.0 < 1.0E-3 && scaleR - 1.0 < 1.0E-3) ){ System.out.println("  scale(T,R): "+ scaleT + " " + scaleR ); }
+			LOGGER.debug("  variation: shifted" );
+			if( !(scaleT - 1.0 < 1.0E-3 && scaleR - 1.0 < 1.0E-3) ){ LOGGER.debug("  scale(T,R): "+ scaleT + " " + scaleR ); }
 		}
 		else
 		{
-			System.out.println("  variation: ideal");
+			LOGGER.debug("  variation: ideal");
 		}
-		System.out.println( "  "+showRange() );
-		System.out.println("  build passive materials ? "+ BUILDPASSIVES );
-		System.out.println("  include physical sensors ? "+ BUILDSENSORS );
-		if( BUILDSENSORS ) System.out.println("  include sensor active and dead zones ? "+ BUILDSENSORZONES );
-		//System.out.println("  halve dimensions of boxes ? "+ HALFBOXES );
+		LOGGER.debug( "  "+showRange() );
+		LOGGER.debug("  build passive materials ? "+ BUILDPASSIVES );
+		LOGGER.debug("  include physical sensors ? "+ BUILDSENSORS );
+		if( BUILDSENSORS ) LOGGER.debug("  include sensor active and dead zones ? "+ BUILDSENSORZONES );
+		//LOGGER.debug("  halve dimensions of boxes ? "+ HALFBOXES );
 		
 		for( int region = regionMin-1; region < regionMax; region++ ) // NREGIONS
 		{
-			//if( VERBOSE ) System.out.println("r "+region);			
+			//if( VERBOSE ) LOGGER.debug("r "+region);			
 			G4Tubs regionVol = (G4Tubs) createRegion( region );
 			regionVol.setMother( motherVol );
 			regionVol.setName( regionVol.getName() + (region+1) );
@@ -235,11 +238,11 @@ public class SVTVolumeFactory
 				{
 					Geant4Basic sectorVol = regionVol.getChildren().get( sector );
 					
-					//System.out.println("N "+sectorVol.gemcString() );
+					//LOGGER.debug("N "+sectorVol.gemcString() );
 					Vector3d[] fidPos3Ds = SVTAlignmentFactory.getIdealFiducials( region, sector );
 					Triangle3d fidTri3D = new Triangle3d( fidPos3Ds[0], fidPos3Ds[1], fidPos3Ds[2] );
 					
-					//System.out.println("rs "+ convertRegionSector2SvtIndex( aRegion, sector ));
+					//LOGGER.debug("rs "+ convertRegionSector2SvtIndex( aRegion, sector ));
 					//double[] shift = SVTConstants.getDataAlignmentSectorShift()[SVTConstants.convertRegionSector2Index( region, sector )].clone();
 					
 					/*if( VERBOSE )
@@ -251,26 +254,26 @@ public class SVTVolumeFactory
 						Geant4Basic vecVol = Util.createArrow("rotAxis"+sector, vec, 2.0, 1.0, true, true, false );
 						vecVol.setPosition( fidTri3D.center().times(0.1) );
 						vecVol.setMother( regionVol );
-						//System.out.println( vecVol.gemcString() );
+						//LOGGER.debug( vecVol.gemcString() );
 					}*/
 					
 					/*int n = 1; // number of steps to show (n=1 for final step only)
 					double d = shift[6]/n;
 					for( int i = 1; i < n; i++ )
 					{
-						//System.out.println( "vol "+ i );
+						//LOGGER.debug( "vol "+ i );
 						Geant4Basic stepVol = Util.clone( sectorVol );
 						stepVol.setMother(regionVol);
 						Util.appendName( stepVol, "_"+i );
 						shift[6] = i*d;
 						AlignmentFactory.applyShift( stepVol, shift, fidTri3D.center(), scaleT, scaleR );
-						//System.out.println("  "+stepVol.gemcString() );
+						//LOGGER.debug("  "+stepVol.gemcString() );
 						//for( int j = 0; j < stepVol.getChildren().size(); j++ )
-							//System.out.println( stepVol.getChildren().get(j).gemcString() );
+							//LOGGER.debug( stepVol.getChildren().get(j).gemcString() );
 					}*/
 					
 					AlignmentFactory.applyShift( sectorVol, SVTConstants.getDataAlignmentSectorShift()[SVTConstants.convertRegionSector2Index( region, sector )], fidTri3D.center(), scaleT, scaleR );
-					//System.out.println("S "+sectorVol.gemcString() );
+					//LOGGER.debug("S "+sectorVol.gemcString() );
 				}
 			}
 		}
@@ -299,13 +302,12 @@ public class SVTVolumeFactory
 		
 		if( VERBOSE )
 		{
-			System.out.printf("region= %d\n", aRegion );
-			System.out.printf("rcen=% 8.3f\n", rcen );
-			System.out.printf("rthk=% 8.3f\n", rthk );
-			System.out.printf("rmin=% 8.3f\n", rmin );
-			System.out.printf("rmax=% 8.3f\n", rmax );
-			System.out.printf("len= % 8.3f\n", zlen );
-			System.out.println();
+			LOGGER.debug("region= %d\n", aRegion );
+			LOGGER.debug("rcen=% 8.3f\n", rcen );
+			LOGGER.debug("rthk=% 8.3f\n", rthk );
+			LOGGER.debug("rmin=% 8.3f\n", rmin );
+			LOGGER.debug("rmax=% 8.3f\n", rmax );
+			LOGGER.debug("len= % 8.3f\n", zlen );
 		}
 		
 		Geant4Basic regionVol = new G4Tubs("region", rmin*0.1, rmax*0.1, zlen/2.0*0.1, 0, 360 );
@@ -314,7 +316,7 @@ public class SVTVolumeFactory
 		
 		for( int sector = sectorMin[aRegion]-1; sector < sectorMax[aRegion]; sector++ ) // NSECTORS[region]
 		{
-			//if( VERBOSE ) System.out.println(" s "+sector);
+			//if( VERBOSE ) LOGGER.debug(" s "+sector);
 			Geant4Basic sectorVol = createSector();
 			sectorVol.setMother( regionVol );
 			
@@ -324,11 +326,11 @@ public class SVTVolumeFactory
 			double phi = SVTConstants.getPhi( aRegion, sector ); // module rotation about target / origin
 			double psi = phi - SVTConstants.SECTOR0 - Math.PI; // module rotation about centre of geometry, -180 deg to set zero volume rotation for sector 1
 			
-			//System.out.println("phi="+Math.toDegrees(phi));
+			//LOGGER.debug("phi="+Math.toDegrees(phi));
 			
 			Vector3d pos = new Vector3d( rcen, 0.0, 0.0 );
 			pos.transform( new Transform().rotZ( -phi ) ); // change of sign for active/alibi -> passive/alias rotation
-			//System.out.printf("% 8.3f % 8.3f % 8.3f\n", pos.x, pos.y, pos.z );
+			//LOGGER.debug("% 8.3f % 8.3f % 8.3f\n", pos.x, pos.y, pos.z );
 			
 			sectorVol.rotate("xyz", 0.0, 0.0, -psi ); // change of sign for active/alibi -> passive/alias rotation
 			sectorVol.setPosition( pos.times(0.1) );
@@ -396,7 +398,7 @@ public class SVTVolumeFactory
 		{
 			if( BUILDMODULES )
 			{
-				//if( VERBOSE ) System.out.println("  m "+ module );
+				//if( VERBOSE ) LOGGER.debug("  m "+ module );
 				Geant4Basic moduleVol = createModule();
 				moduleVol.setMother( sectorVol );
 				moduleVol.setName( moduleVol.getName() + "_m" + (module+1) );
@@ -507,7 +509,7 @@ public class SVTVolumeFactory
 		{
 			for( int sensor = 0; sensor < SVTConstants.NSENSORS; sensor++ )
 			{
-				//if( VERBOSE ) System.out.println("   sp "+ sensor );
+				//if( VERBOSE ) LOGGER.debug("   sp "+ sensor );
 				Geant4Basic sensorVol = createSensorPhysical(); // includes active and dead zones as children
 				sensorVol.setMother( moduleVol );
 				sensorVol.setName( sensorVol.getName() + (sensor+1) ); // add switch for hybrid, intermediate and far labels?
@@ -787,7 +789,7 @@ public class SVTVolumeFactory
 			double padPos = padZSpacingFromEnd[0];
 			for( int p = 1; p < pad; p++ )
 				padPos += padZSpacingFromEnd[p];
-			//System.out.printf("padPos[%d]=% 8.3f\n", pad, padPos );
+			//LOGGER.debug("padPos[%d]=% 8.3f\n", pad, padPos );
 			
 			padVol.setPosition( 
 					-railXStart*0.1, 

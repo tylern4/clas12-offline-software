@@ -2,6 +2,9 @@ package org.jlab.rec.ft.hodo;
 
 
 import java.util.ArrayList;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.geom.prim.Point3D;
 
 import org.jlab.io.evio.EvioDataBank;
@@ -9,7 +12,7 @@ import org.jlab.io.evio.EvioDataBank;
 
 
 public class FTHODOCluster extends ArrayList<FTHODOHit> {
-
+    public static Logger LOGGER = LogManager.getLogger(FTHODOCluster.class.getName());
 	/**
 	 * A signal in the hodoscope is a pair of hits above threshold in the two layers. 
 	 * The hit pair is define according o the algorithm in HodoSignalFinder
@@ -168,7 +171,7 @@ public class FTHODOCluster extends ArrayList<FTHODOHit> {
 		double tDiff = Math.abs(hit.get_Time() - this.get(j).get_Time());
 		double xDiff = Math.abs(hit.get_Dx()   - this.get(j).get_Dx());
 		double yDiff = Math.abs(hit.get_Dy()   - this.get(j).get_Dy());
-//                System.out.println("DT: " + tDiff + "(" + FTHODOConstantsLoader.time_window 
+//                LOGGER.debug("DT: " + tDiff + "(" + FTHODOConstantsLoader.time_window 
 //                             + ")\t DX: " + xDiff + "(" + FTHODOConstantsLoader.hit_distance 
 //                             + ")\t DY: " + yDiff + "(" + FTHODOConstantsLoader.hit_distance + ")");
                 if(tDiff <= FTHODOConstantsLoader.time_window && 
@@ -179,14 +182,14 @@ public class FTHODOCluster extends ArrayList<FTHODOHit> {
         }
         
         public void showCluster() {
-            System.out.println("\nCluster = "  + this._clusID); 
-            System.out.println("Size = "    + this.getSize() + 
+            LOGGER.debug("\nCluster = "  + this._clusID); 
+            LOGGER.debug("Size = "    + this.getSize() + 
                                "\tE = "     + this.getEnergy() + 
                                "\tTime = "  + this.getTime() + 
                                "\tTheta = " + this.getTheta()  + 
                                "\tPhi = "   + this.getPhi());
             for(int j = 0; j< this.size(); j++) {
-                System.out.println("hit # " + j + "\t" + this.get(j).get_Layer() + "\t" + this.get(j).get_Sector() + "\t" + this.get(j).get_ID() + "\t" + this.get(j).get_Edep());
+                LOGGER.debug("hit # " + j + "\t" + this.get(j).get_Layer() + "\t" + this.get(j).get_Sector() + "\t" + this.get(j).get_ID() + "\t" + this.get(j).get_Edep());
             }
         }
 	

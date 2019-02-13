@@ -61,7 +61,7 @@ public class BosDataSource implements DataSource {
 			currentEventInBuffer = -1;
 			isLastBufferRead = false;
 		} catch (FileNotFoundException ex) {
-			Logger.getLogger(BosDataSource.class.getName()).log(Level.SEVERE, null, ex);
+			LOGGER.error(ex);
 		}
 	}
 
@@ -86,16 +86,16 @@ public class BosDataSource implements DataSource {
 	}
 
 	public void dumpBufferToFile(String filename) {
-		System.out.println("DUMPING EVENT # " + this.currentEventInBuffer + "  BUFF " + this.currentBufferPosition);
+		LOGGER.debug("DUMPING EVENT # " + this.currentEventInBuffer + "  BUFF " + this.currentBufferPosition);
 		try {
 			boolean append = false;
 			FileChannel wChannel = new FileOutputStream(new File(filename), append).getChannel();
 			wChannel.write(this.ioFileBuffer);
 			wChannel.close();
 		} catch (FileNotFoundException ex) {
-			Logger.getLogger(BosDataSource.class.getName()).log(Level.SEVERE, null, ex);
+			LOGGER.error(ex);
 		} catch (IOException ex) {
-			Logger.getLogger(BosDataSource.class.getName()).log(Level.SEVERE, null, ex);
+			LOGGER.error(ex);
 		}
 	}
 
@@ -105,10 +105,10 @@ public class BosDataSource implements DataSource {
 		for (int loop = startpos; loop < bufferBytes.length; loop++) {
 			if (bufferBytes[loop] == nameBytes[0] && loop < bufferBytes.length - 12) {
 				String header = new String(bufferBytes, loop, struct.length());
-				// System.out.println("[StrcutureFinder] ----> Found R at pos = "
+				// LOGGER.debug("[StrcutureFinder] ----> Found R at pos = "
 				// + loop + " header = " + header);
 				if (header.compareTo(struct) == 0) {
-					// System.out.println("[StrcutureFinder] ----> Found events at pos = "
+					// LOGGER.debug("[StrcutureFinder] ----> Found events at pos = "
 					// + loop);
 					return loop;
 				}
@@ -118,42 +118,42 @@ public class BosDataSource implements DataSource {
 	}
 
 	private void printIndexArray() {
-		System.err.print("--> EVENT INDEX : ");
+		LOGGER.warn("--> EVENT INDEX : ");
 		for (Integer i : eventIndex) {
-			System.out.print(" " + i);
+			LOGGER.warn(" " + i);
 		}
-		System.err.println();
-		System.err.print("--> EVENT SIZE : ");
+		LOGGER.warn("");
+		LOGGER.warn("--> EVENT SIZE : ");
 		for (int loop = 0; loop < eventIndex.size() - 1; loop++) {
-			System.out.print(" " + (eventIndex.get(loop + 1) - eventIndex.get(loop)));
+			LOGGER.warn(" " + (eventIndex.get(loop + 1) - eventIndex.get(loop)));
 		}
-		System.err.println();
+		LOGGER.warn("");
 	}
 
 	private void readAppendEvent(int last_event_start) {
 
-		// System.out.println(" REDING EVENT BUFFER ----> CURRENT EVENT " + this.currentEventInBuffer);
+		// LOGGER.debug(" REDING EVENT BUFFER ----> CURRENT EVENT " + this.currentEventInBuffer);
 		byte[] a = Arrays.copyOfRange(ioFileBuffer.array(), last_event_start, ioFileBuffer.array().length);
 		byte[] b = new byte[MAXIMUM_BYTE_READ];
 		try {
 			int bytesRead = buffInputStream.read(b);
 			if (bytesRead < MAXIMUM_BYTE_READ) {
-				System.err.println("********** BOSIO FILE LAST BUFFER READ ********");
+				LOGGER.warn("********** BOSIO FILE LAST BUFFER READ ********");
 				isLastBufferRead = true;
 			}
 			byte[] c = new byte[a.length + b.length];
 			System.arraycopy(a, 0, c, 0, a.length);
 			System.arraycopy(b, 0, c, a.length, b.length);
 			/*
-			 * System.out.println("-----> array copy " + " a = " + a.length + " b = " + b.length + " c = " + c.length);
+			 * LOGGER.debug("-----> array copy " + " a = " + a.length + " b = " + b.length + " c = " + c.length);
 			 */
 			ioFileBuffer = ByteBuffer.wrap(c);
 			// ioFileBuffer = ByteBuffer.wrap(b);
-			// System.out.println("----> result buffer = " + ioFileBuffer.array().length);
+			// LOGGER.debug("----> result buffer = " + ioFileBuffer.array().length);
 			this.updateEventIndex();
 			currentEventInBuffer = 0;
 		} catch (IOException ex) {
-			Logger.getLogger(BosDataSource.class.getName()).log(Level.SEVERE, null, ex);
+			LOGGER.error(ex);
 		}
 
 	}
@@ -170,17 +170,17 @@ public class BosDataSource implements DataSource {
 				}
 			}
 		}
-		// System.out.println("POSITION DIFFERENCE = " + position + " " + head_position);
+		// LOGGER.debug("POSITION DIFFERENCE = " + position + " " + head_position);
 		return (head_position - position);
 	}
 
 	public void showIndex() {
-		System.out.println(" INDEX ARRAY SIZE = " + this.eventIndex.size());
+		LOGGER.debug(" INDEX ARRAY SIZE = " + this.eventIndex.size());
 		int counter = 1;
 		for (Integer index : this.eventIndex) {
-			System.out.print(String.format("%8d", index));
+			LOGGER.warn(String.format("%8d", index));
 			if (counter % 5 == 0)
-				System.out.println();
+				LOGGER.debug(counter);
 			counter++;
 		}
 	}
@@ -192,13 +192,13 @@ public class BosDataSource implements DataSource {
 		this.findNextPosition(0);
 		int start_position = 0;
 		int nextPosition = this.findStructure("RUNEVENT", start_position);
-		// System.out.println("------> first position = " + nextPosition);
+		// LOGGER.debug("------> first position = " + nextPosition);
 		// eventIndex.add(nextPosition);
 		crudeIndex.add(nextPosition);
 		while (nextPosition >= 0) {
 			start_position = nextPosition + 8;
 			nextPosition = this.findStructure("RUNEVENT", start_position);
-			// System.out.println("------> adding position " + nextPosition);
+			// LOGGER.debug("------> adding position " + nextPosition);
 			if (nextPosition > 0) {
 				crudeIndex.add(nextPosition);
 				// eventIndex.add(nextPosition);
@@ -211,7 +211,7 @@ public class BosDataSource implements DataSource {
 			}
 		}
 		// this.showIndex();
-		// System.err.println("[BosDataSource]-----> read buffer contains " +
+		// LOGGER.warn("[BosDataSource]-----> read buffer contains " +
 		// eventIndex.size() + " events");
 		// this.printIndexArray();
 	}
@@ -229,13 +229,13 @@ public class BosDataSource implements DataSource {
 			try {
 				byte[] result = new byte[MAXIMUM_BYTE_READ];
 				int bytesRead = buffInputStream.read(result);
-				System.err.println("[BosDataSource]----> Read buffer bytes read = " + bytesRead);
+				LOGGER.warn("[BosDataSource]----> Read buffer bytes read = " + bytesRead);
 				ioFileBuffer = ByteBuffer.wrap(result);
 				ioFileBuffer.order(ByteOrder.LITTLE_ENDIAN);
 				currentEventInBuffer = 0;
 				this.updateEventIndex();
 			} catch (IOException ex) {
-				System.err.println("[BosDataSource]----> ERROR while reading the file...");
+				LOGGER.warn("[BosDataSource]----> ERROR while reading the file...");
 			}
 		}
 		/*
@@ -243,18 +243,18 @@ public class BosDataSource implements DataSource {
 		 */
 		if (currentEventInBuffer == eventIndex.size() - 2) {
 			/*
-			 * System.out.println("[BosDataSource]----> current size " + ioFileBuffer.array().length + "  " + eventIndex.get(eventIndex.size()-2));
-			 * System.out.println("[BosDataSource]----> READING new BUFFER " + " remaining size = " + (ioFileBuffer.array().length-
+			 * LOGGER.debug("[BosDataSource]----> current size " + ioFileBuffer.array().length + "  " + eventIndex.get(eventIndex.size()-2));
+			 * LOGGER.debug("[BosDataSource]----> READING new BUFFER " + " remaining size = " + (ioFileBuffer.array().length-
 			 * eventIndex.get(eventIndex.size()-2)));
 			 */
 			this.readAppendEvent(eventIndex.get(eventIndex.size() - 2));
 		}
 
-		// System.err.println(" current event = " + currentEventInBuffer + " index size = "
+		// LOGGER.warn(" current event = " + currentEventInBuffer + " index size = "
 		// + eventIndex.size());
 		// THIS WAS CHANGED from if(currentEventInBuffer>=0&&currentEventInBuffer<eventIndex.size()-2){
 		if (currentEventInBuffer >= 0 && currentEventInBuffer < eventIndex.size() - 2) {
-			// System.err.println("[BosDataSource]----> creating an event start pos = "
+			// LOGGER.warn("[BosDataSource]----> creating an event start pos = "
 			// + eventIndex.get(currentEventInBuffer) + " end pos = "
 			// + eventIndex.get(currentEventInBuffer+1));
 			byte[] evt = ioFileBuffer.array();
@@ -268,9 +268,9 @@ public class BosDataSource implements DataSource {
 		}
 		/*
 		 * try { byte[] result = new byte[MAXIMUM_BYTE_READ]; int bytesRead = buffInputStream.read(result);
-		 * 
+		 *
 		 * ByteBuffer bosBytes = ByteBuffer.wrap(result); bosBytes.order(ByteOrder.LITTLE_ENDIAN); return new BosDataEvent(bosBytes,dictionary); } catch (IOException
-		 * ex) { Logger.getLogger(BosDataSource.class.getName()).log(Level.SEVERE, null, ex); }
+		 * ex) { LOGGER.error(ex); }
 		 */
 		return null;
 	}
@@ -305,7 +305,7 @@ public class BosDataSource implements DataSource {
 
     @Override
     public void waitForEvents() {
-        
+
     }
 
 }

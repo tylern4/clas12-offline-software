@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.detector.calib.utils.ConstantsManager;
 import org.jlab.io.base.DataBank;
 import org.jlab.io.base.DataEvent;
@@ -26,7 +29,7 @@ import org.jlab.utils.options.OptionParser;
  * @author gavalian
  */
 public class Clas12DetectorDecoder {
-    
+    public static Logger LOGGER = LogManager.getLogger(Clas12DetectorDecoder.class.getName());
     private ConstantsManager  translationManager = new ConstantsManager();
     private Map<String,AbsDetectorDataDecoder>  detectorDecoders = 
             new LinkedHashMap<String,AbsDetectorDataDecoder>();
@@ -42,7 +45,7 @@ public class Clas12DetectorDecoder {
     
     public void addDecoder(AbsDetectorDataDecoder decoder){
         if(detectorDecoders.containsKey(decoder.getName())==true){
-            System.out.println("DetectorDetector : entry with [" +
+            LOGGER.debug("DetectorDetector : entry with [" +
                     decoder.getName() + "] already exists.");
         } else {
             detectorDecoders.put(decoder.getName(), decoder);
@@ -54,12 +57,12 @@ public class Clas12DetectorDecoder {
         List<String> tables = new ArrayList<String>();
         
         for(Map.Entry<String,AbsDetectorDataDecoder> decoder : detectorDecoders.entrySet()){
-            System.out.println(" aa = " + decoder.getKey());
+            LOGGER.debug(" aa = " + decoder.getKey());
             if(decoder.getValue().getTable()!=null){
                 keys.add(decoder.getValue().getName());
                 tables.add(decoder.getValue().getTable());
             } else {
-                System.out.println("[Clas12DetectorDecoder] skipping module : " + decoder.getKey());
+                LOGGER.debug("[Clas12DetectorDecoder] skipping module : " + decoder.getKey());
             }
         }
         translationManager.init(keys, tables);
@@ -97,11 +100,11 @@ public class Clas12DetectorDecoder {
                                 }
                             }
                         } else {
-                            System.out.println("*** error *** unable to get translation table for run = "
+                            LOGGER.debug("*** error *** unable to get translation table for run = "
                                     + run);
                         }
                     } catch(Exception e){
-                        System.out.println("***** decoder error **** exception in module : " + entry.getKey());
+                        LOGGER.debug("***** decoder error **** exception in module : " + entry.getKey());
                         e.printStackTrace();
                     }
                 }
@@ -122,7 +125,7 @@ public class Clas12DetectorDecoder {
                  }
              }
         } catch (Exception e) {
-            System.out.println("*** error *** something went wrong when creating header banks");
+            LOGGER.debug("*** error *** something went wrong when creating header banks");
         }
         
         return outputEvent;
@@ -202,11 +205,11 @@ public class Clas12DetectorDecoder {
         while(reader.hasEvent()==true&&icounter<maxEvents){
             
             EvioDataEvent event = (EvioDataEvent) reader.getNextEvent();
-            System.out.println("---> printout EVENT # " + icounter);
+            LOGGER.debug("---> printout EVENT # " + icounter);
             DataEvent decodedEvent = decoder.decodeEvent(event);
             //decodedEvent.show();
             icounter++;
         }
-        System.out.println("Done...");*/
+        LOGGER.debug("Done...");*/
     }
 }

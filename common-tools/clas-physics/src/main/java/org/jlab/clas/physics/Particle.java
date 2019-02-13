@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.clas.pdg.PDGDatabase;
 import org.jlab.clas.pdg.PDGParticle;
 
@@ -17,7 +19,7 @@ import org.jlab.clas.pdg.PDGParticle;
  */
 
 public class Particle {
-
+	public static Logger LOGGER = LogManager.getLogger(Particle.class.getName());
 	LorentzVector partVector;
 	Vector3 partVertex;
 	int particleID;
@@ -70,7 +72,7 @@ public class Particle {
 	public final void initParticle(int pid, double px, double py, double pz, double vx, double vy, double vz) {
 		PDGParticle particle = PDGDatabase.getParticleById(pid);
 		if (particle == null) {
-			System.out.println("Particle: warning. particle with pid=" + pid + " does not exist.");
+			LOGGER.debug("Particle: warning. particle with pid=" + pid + " does not exist.");
 			initParticleWithMass(0., px, py, pz, vx, vy, vz);
 			particleID = 0;
 			particleGeantID = 0;
@@ -102,7 +104,7 @@ public class Particle {
 	public void changePid(int pid) {
 		PDGParticle part = PDGDatabase.getParticleById(pid);
 		if (part == null) {
-			System.err.println("[Particle::changePid]  error ---> unknown particle id " + pid);
+			LOGGER.warn("[Particle::changePid]  error ---> unknown particle id " + pid);
 			return;
 		}
 		partVector.setPxPyPzM(this.partVector.px(), this.partVector.py(), this.partVector.pz(), part.mass());
@@ -120,7 +122,7 @@ public class Particle {
 	public void setVector(int pid, double px, double py, double pz, double vx, double vy, double vz) {
 		PDGParticle particle = PDGDatabase.getParticleById(pid);
 		if (particle == null) {
-			System.out.println("Particle: warning. particle with pid=" + pid + " does not exist.");
+			LOGGER.debug("Particle: warning. particle with pid=" + pid + " does not exist.");
 			particleID = 0;
 		} else {
 			partVector.setPxPyPzM(px, py, pz, particle.mass());
@@ -178,7 +180,7 @@ public class Particle {
 	public void setVector(int pid, Vector3 nvect, Vector3 nvert) {
 		PDGParticle particle = PDGDatabase.getParticleById(pid);
 		if (particle == null) {
-			System.out.println("Particle: warning. particle with pid=" + pid + " does not exist.");
+			LOGGER.debug("Particle: warning. particle with pid=" + pid + " does not exist.");
 			particleID = 0;
 		} else {
 			partVector.setVectM(nvect, particle.mass());
@@ -301,7 +303,7 @@ public class Particle {
 		if (pname.compareTo("vertz") == 0)
 			return partVertex.z();
 
-		System.out.println("[Particle::get] ERROR ----> variable " + pname + "  is not defined");
+		LOGGER.debug("[Particle::get] ERROR ----> variable " + pname + "  is not defined");
 		return 0.0;
 	}
 
@@ -374,7 +376,7 @@ public class Particle {
 
 		// if(this.mass()==0.0&&this.vector().p()==0.0)
 		// {
-		// System.err.println(" pid = " + cpart.pid());
+		// LOGGER.warn(" pid = " + cpart.pid());
 		this.partVertex.setXYZ(cpart.vertex().x(), cpart.vertex().y(), cpart.vertex().z());
 		// } else {
 		/*

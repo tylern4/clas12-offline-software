@@ -67,7 +67,7 @@ public class FTHODOEngine extends ReconstructionEngine {
     public int setRunConditionsParameters(DataEvent event) {
         int run = -1;
         if(event.hasBank("RUN::config")==false) {
-                System.out.println("RUN CONDITIONS NOT READ!");
+                LOGGER.debug("RUN CONDITIONS NOT READ!");
         }       
     
         if(event instanceof EvioDataEvent) {

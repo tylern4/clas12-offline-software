@@ -8,6 +8,9 @@ package org.jlab.detector.decode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.io.evio.EvioDataEvent;
 import org.jlab.io.evio.EvioSource;
 
@@ -16,31 +19,31 @@ import org.jlab.io.evio.EvioSource;
  * @author gavalian
  */
 public class CLAS12DecoderCompact {
-    
+    public static Logger LOGGER = LogManager.getLogger(CLAS12DecoderCompact.class.getName());
     
     public static void readFile(String inputFile){
         CodaEventDecoder decoder = new CodaEventDecoder();
         EvioSource reader = new EvioSource();
-        System.out.println("openning file : " + inputFile);
+        LOGGER.debug("openning file : " + inputFile);
         reader.open(inputFile);
         int counter = 0;
 
         while(reader.hasEvent()==true&&counter<20){
             EvioDataEvent event = (EvioDataEvent) reader.getNextEvent();
             //List<FADCData>  adc = decoder.getADCEntries(event, 73,57638);
-            System.out.println("========================= EVENT # " + counter);
+            LOGGER.debug("========================= EVENT # " + counter);
             List<FADCData>  adc = decoder.getADCEntries(event);//, 73,57601);
             
             for(FADCData data : adc){
-                //System.out.println(data);
+                //LOGGER.debug(data);
                 data.show();
             }
             
             List<DetectorDataDgtz> dgtz = FADCData.convert(adc);
             
             for(DetectorDataDgtz data : dgtz){
-                System.out.println("ADC size = " + data.getADCSize() + "  " + data.getADCData(0).getPulseArray().length);
-                System.out.println(data);
+                LOGGER.debug("ADC size = " + data.getADCSize() + "  " + data.getADCData(0).getPulseArray().length);
+                LOGGER.debug(data);
             }
             //List<DetectorDataDgtz> data = decoder.getDataEntries(event);
             counter++;
@@ -55,7 +58,7 @@ public class CLAS12DecoderCompact {
        CLAS12DecoderCompact.readFile(inputFile);
         /*CodaEventDecoder decoder = new CodaEventDecoder();
         EvioSource reader = new EvioSource();
-        System.out.println("openning file : " + inputFile);
+        LOGGER.debug("openning file : " + inputFile);
         reader.open(inputFile);
         int counter = 0;
         int uncompressed = 0;
@@ -89,29 +92,29 @@ public class CLAS12DecoderCompact {
                     uncompressed += rawMap.get(hash).getSize();
                     compressed   += data.getValue().getSize();
                     List<Short> decodedList = data.getValue().getDecoded();
-                    System.out.println(data.getValue().getPulseString());
-                    System.out.println("------- decode size = " + decodedList.size());
+                    LOGGER.debug(data.getValue().getPulseString());
+                    LOGGER.debug("------- decode size = " + decodedList.size());
                     data.getValue().decode();
-                    System.out.println("------- end decode");
-                    System.out.println(rawMap.get(hash).getPulseString());
-                    System.out.println("------- array ");
+                    LOGGER.debug("------- end decode");
+                    LOGGER.debug(rawMap.get(hash).getPulseString());
+                    LOGGER.debug("------- array ");
                     StringBuilder str = new StringBuilder();
                     for(int j = 0; j < decodedList.size(); j++){
                         str.append(String.format("%6d", decodedList.get(j)));
                         if((j+1)%16==0) str.append("\n");
                     }
-                    System.out.println(str.toString());
-                    System.out.println("--- end");
+                    LOGGER.debug(str.toString());
+                    LOGGER.debug("--- end");
                 }
             }*/
             /*
             if(adc!=null){
-                System.out.println("------------------------------ EVENT " + counter);
-                System.out.println(" SIZE = " + adc.size());
+                LOGGER.debug("------------------------------ EVENT " + counter);
+                LOGGER.debug(" SIZE = " + adc.size());
                 for(int i = 0; i < adc.size(); i++){
-                    //System.out.println("\t ADC PULSE SIZE = " + i + " : "+ adc.get(i).getSize());
+                    //LOGGER.debug("\t ADC PULSE SIZE = " + i + " : "+ adc.get(i).getSize());
                     adc.get(i).show();
-                    System.out.println(adc.get(i).getPulseString());
+                    LOGGER.debug(adc.get(i).getPulseString());
                     if(adc.get(i).getSize()<96) adc.get(i).decode();
                     if(adc.get(i).getSize()==96){
                         uncompressed += adc.get(i).getSize();
@@ -124,6 +127,6 @@ public class CLAS12DecoderCompact {
             /*counter++;
         }
         double ratio = ((double) compressed)/uncompressed;
-        System.out.println("events processed = " + counter + "  ratio = " + ratio);*/
+        LOGGER.debug("events processed = " + counter + "  ratio = " + ratio);*/
     }
 }

@@ -68,7 +68,7 @@ public class KinematicsFactory {
     public static Particle getElectron(double E, double q2, double xb){        
         double eprime = KinematicsFactory.getEprime( E, q2, xb);
         double theta  = KinematicsFactory.getTheta(  E, q2, xb);
-        //System.out.println("E-prime = " + eprime + "  theta = " + Math.toDegrees(theta));
+        //LOGGER.debug("E-prime = " + eprime + "  theta = " + Math.toDegrees(theta));
         Vector3  vec = new Vector3();
         vec.setMagThetaPhi(eprime, theta, 0.0);
         return new Particle(11,vec.x(),vec.y(),vec.z(),0.0,0.0,0.0);

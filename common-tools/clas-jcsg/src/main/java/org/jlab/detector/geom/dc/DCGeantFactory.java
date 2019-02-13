@@ -172,7 +172,7 @@ public class DCGeantFactory implements Factory<DCDetector, DCSector, DCSuperlaye
             
             Point3D wireMid = new Point3D(vMidpoint.x, vMidpoint.y,vMidpoint.z);
             
-            /*System.out.println(" sector " + sectorId + " sl = " +  superlayerId 
+            /*LOGGER.debug(" sector " + sectorId + " sl = " +  superlayerId 
                     + " layer " + layerId + "  wire " + wireId + "  midpoint "
                     + wireMid.toString());*/
             List<Point3D> botHex = new ArrayList();

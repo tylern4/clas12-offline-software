@@ -74,7 +74,7 @@ public class FTCALConstantsLoader {
 //	
 //        public static synchronized void Load(int runno, String var) {
 //
-//            System.out.println(" LOADING CONSTANTS ");
+//            LOGGER.debug(" LOADING CONSTANTS ");
 ////		if (CSTLOADED == true) 
 ////			return null;
 //            dbprovider = new DatabaseConstantProvider(runno, var); // reset using the new variation
@@ -107,7 +107,7 @@ public class FTCALConstantsLoader {
 //	        mips_charge[iSec-1][iLay-1][iCom-1]    = imips_charge;
 //	        mips_energy[iSec-1][iLay-1][iCom-1]    = imips_energy;
 //	        fadc_to_charge[iSec-1][iLay-1][iCom-1] = ifadc2charge;
-//	        if(debugMode>=1) System.out.println("energy_to_charge table: " + iCom + " " + imips_charge + " " + imips_energy + " " + ifadc2charge);
+//	        if(debugMode>=1) LOGGER.debug("energy_to_charge table: " + iCom + " " + imips_charge + " " + imips_energy + " " + ifadc2charge);
 //	    }
 //	    // 2) Offsets : TIME_OFFSET 
 //	    for(int i =0; i< dbprovider.length("/calibration/ft/ftcal/time_offsets/time_offset"); i++) {
@@ -118,7 +118,7 @@ public class FTCALConstantsLoader {
 //	        double ioffset = dbprovider.getDouble("/calibration/ft/ftcal/time_offsets/time_offset", i);
 //	       
 //	        time_offset[iSec-1][iLay-1][iCom-1] = ioffset;
-//	        if(debugMode>=1) System.out.println("time_offset: " + iCom + " " + ioffset );
+//	        if(debugMode>=1) LOGGER.debug("time_offset: " + iCom + " " + ioffset );
 //	    }
 //	    // 3) Status : STATUS 
 //	    for(int i =0; i< dbprovider.length("/calibration/ft/ftcal/status/status"); i++) {
@@ -129,7 +129,7 @@ public class FTCALConstantsLoader {
 //	        int istatus = dbprovider.getInteger("/calibration/ft/ftcal/status/status", i);
 //	       
 //	        status[iSec-1][iLay-1][iCom-1] = istatus;
-//	        if(debugMode>=1) System.out.println("status: " + iCom + " " + istatus );
+//	        if(debugMode>=1) LOGGER.debug("status: " + iCom + " " + istatus );
 //	    }
 //	    // 4) Cluster Reconstruction Parameters : CLUSTER 
 //	    for(int i =0; i< dbprovider.length("/calibration/ft/ftcal/cluster/seed_min_energy"); i++) {
@@ -150,7 +150,7 @@ public class FTCALConstantsLoader {
 //	        time_window        = itime;
 //	        w0                 = iw0;
 //	        depth_z            = idepth;
-//	        if(debugMode>=1) System.out.println("cluster table: " + time_window + " " + cluster_min_energy + " " + cluster_min_size + " " + depth_z);
+//	        if(debugMode>=1) LOGGER.debug("cluster table: " + time_window + " " + cluster_min_energy + " " + cluster_min_size + " " + depth_z);
 //	    }
 //	    // 5) OLD Energy Corrections : ECORR 
 //	        energy_corr[0]    =  0.0587502;
@@ -174,7 +174,7 @@ public class FTCALConstantsLoader {
 //	        theta_corr[1]    = thetacorr1;
 //	        theta_corr[2]    = thetacorr2;
 //	        theta_corr[3]    = thetacorr3;
-//	        if(debugMode>=1) System.out.println("theta correction: " + thetacorr0 + " " + thetacorr1 + " " + thetacorr2 + " " + thetacorr3 );
+//	        if(debugMode>=1) LOGGER.debug("theta correction: " + thetacorr0 + " " + thetacorr1 + " " + thetacorr2 + " " + thetacorr3 );
 //	    }
 //	    // 7) Phi Corrections : PHICORR 
 //	    for(int i =0; i< dbprovider.length("/calibration/ft/ftcal/phicorr/phicorr0"); i++) {
@@ -195,7 +195,7 @@ public class FTCALConstantsLoader {
 //	        phi_corr[3]    = phicorr3;
 //	        phi_corr[4]    = phicorr4;
 //	        phi_corr[5]    = phicorr5;
-//	        if(debugMode>=1) System.out.println("theta correction: " + phicorr0 + " " + phicorr1 + " " + phicorr2 + " " 	        														 + phicorr3 + " " + phicorr4 + " " + phicorr5);	        
+//	        if(debugMode>=1) LOGGER.debug("theta correction: " + phicorr0 + " " + phicorr1 + " " + phicorr2 + " " 	        														 + phicorr3 + " " + phicorr4 + " " + phicorr5);	        
 //	    }
 //	    // 5) NEW Energy Corrections : ENERGYCORR 
 //	    for(int i =0; i< dbprovider.length("/calibration/ft/ftcal/energycorr/c0"); i++) {
@@ -215,12 +215,12 @@ public class FTCALConstantsLoader {
 //                c3[iSec-1][iLay-1][iCom-1] = ecorr3;
 //                c4[iSec-1][iLay-1][iCom-1] = ecorr4;
 //                
-//	        if(debugMode>=1) System.out.println("energy correction: " + ecorr0 + " " + ecorr1 + " " + ecorr2 + " " + ecorr3 + " " + ecorr4);
+//	        if(debugMode>=1) LOGGER.debug("energy correction: " + ecorr0 + " " + ecorr1 + " " + ecorr2 + " " + ecorr3 + " " + ecorr4);
 //	    }
 //
 //	
 //	CSTLOADED = true;
-//        System.out.println("SUCCESSFULLY LOADED FTCAL CALIBRATION CONSTANTS....");
+//        LOGGER.debug("SUCCESSFULLY LOADED FTCAL CALIBRATION CONSTANTS....");
 ////	return dbprovider;
 //	
 //	}

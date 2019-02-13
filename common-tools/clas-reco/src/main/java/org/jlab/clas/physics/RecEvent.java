@@ -47,9 +47,9 @@ public class RecEvent {
                 maxIndex = i;
                 maxDistance = distance;
             }
-            //System.out.println(" INDEX = " +  gindex +  " particle " + i + "  distance =  " + distance);
+            //LOGGER.debug(" INDEX = " +  gindex +  " particle " + i + "  distance =  " + distance);
         }
-        //System.out.println(" INDEX = " +  gindex +  " particle " + maxIndex + "  distance =  " + maxDistance);
+        //LOGGER.debug(" INDEX = " +  gindex +  " particle " + maxIndex + "  distance =  " + maxDistance);
         if(maxDistance<0.08) return recEvent.getParticle(maxIndex);
         return new Particle();
     }

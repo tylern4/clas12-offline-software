@@ -1,8 +1,12 @@
 package org.jlab.io.base;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.swing.table.TableModel;
 
 public interface DataBank {
+    Logger LOGGER = LogManager.getLogger(DataBank.class.getName());
     /**
      * Get the names of the columns in the bank.
      * The name is used in the calls getInt() and getDouble()

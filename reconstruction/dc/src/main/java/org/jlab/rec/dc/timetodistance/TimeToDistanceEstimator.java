@@ -109,7 +109,7 @@ public class TimeToDistanceEstimator {
         if(f_B_alpha_t>2*Constants.wpdist[SlyrIdx]) {
             f_B_alpha_t = 2*Constants.wpdist[SlyrIdx];
         }                                                      
-                // System.out.println(SlyrIdx+" t "+t+" "+f_B_alpha_t+" tmax "+CalibrationConstantsLoader.dmaxsuperlayer[SlyrIdx]);
+                // LOGGER.debug(SlyrIdx+" t "+t+" "+f_B_alpha_t+" tmax "+CalibrationConstantsLoader.dmaxsuperlayer[SlyrIdx]);
         return f_B_alpha_t;
     }
 

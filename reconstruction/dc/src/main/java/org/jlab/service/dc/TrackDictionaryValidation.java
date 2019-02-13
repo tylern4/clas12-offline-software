@@ -12,6 +12,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.JFrame;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.clas.physics.Particle;
 import org.jlab.groot.data.H2F;
 import org.jlab.groot.graphics.EmbeddedCanvasTabbed;
@@ -24,7 +27,7 @@ import org.jlab.utils.groups.IndexedList;
 import org.jlab.utils.options.OptionParser;
 
 public class TrackDictionaryValidation {
-
+    public static Logger LOGGER = LogManager.getLogger(TrackDictionaryValidation.class.getName());
     private Map<ArrayList<Integer>, Particle> dictionary = null;
     private IndexedList<DataGroup>           dataGroups = new IndexedList<DataGroup>(1);
     private EmbeddedCanvasTabbed             canvas     = new EmbeddedCanvasTabbed("Dictionary", "Matched Roads", "Matched Tracks", "Efficiency");
@@ -51,7 +54,7 @@ public class TrackDictionaryValidation {
     
     public void createDictionary(String inputFileName) {
         // create dictionary from event file
-        System.out.println("\nCreating dictionary from file: " + inputFileName);
+        LOGGER.debug("\nCreating dictionary from file: " + inputFileName);
         Map<ArrayList<Integer>, Particle> newDictionary = new HashMap<>();
         HipoDataSource reader = new HipoDataSource();
         reader.open(inputFileName);
@@ -59,7 +62,7 @@ public class TrackDictionaryValidation {
         while(reader.hasEvent() == true) {
             DataEvent event = reader.getNextEvent();
             nevent++;
-            if(nevent%10000 == 0) System.out.println("Analyzed " + nevent + " events");
+            if(nevent%10000 == 0) LOGGER.debug("Analyzed " + nevent + " events");
             DataBank recTrack = null;
             DataBank recHits = null;
             if (event.hasBank("TimeBasedTrkg::TBTracks")) {
@@ -315,14 +318,14 @@ public class TrackDictionaryValidation {
                 ArrayList<Integer> wires = entry.getKey();
                 Particle road = entry.getValue();
                 for(int wire: wires) System.out.print(wire + " ");
-                System.out.println(road.charge() + " " + road.p() + " " + Math.toDegrees(road.theta()) + " " + Math.toDegrees(road.phi()) + " " + road.vz());
+                LOGGER.debug(road.charge() + " " + road.p() + " " + Math.toDegrees(road.theta()) + " " + Math.toDegrees(road.phi()) + " " + road.vz());
             }
         }
     }
     public void processFile(String fileName, int wireSmear, int maxEvents) {
         // testing dictionary on event file
         
-        System.out.println("\nTesting dictionary on file " + fileName);
+        LOGGER.debug("\nTesting dictionary on file " + fileName);
 
         HipoDataSource reader = new HipoDataSource();
         reader.open(fileName);
@@ -333,7 +336,7 @@ public class TrackDictionaryValidation {
             }
             DataEvent event = reader.getNextEvent();
             nevent++;
-            if(nevent%10000 == 0) System.out.println("Analyzed " + nevent + " events");
+            if(nevent%10000 == 0) LOGGER.debug("Analyzed " + nevent + " events");
             DataBank recTrack = null;
             DataBank recHits = null;
             DataBank recFtof = null;
@@ -454,7 +457,7 @@ public class TrackDictionaryValidation {
         
         this.dictionary = new HashMap<>();
         
-        System.out.println("\nReading dictionary from file " + fileName);
+        LOGGER.debug("\nReading dictionary from file " + fileName);
         int nLines = 0;
         int nFull  = 0;
         int nDupli = 0;
@@ -466,15 +469,15 @@ public class TrackDictionaryValidation {
             String line = null;
             while ((line = txtreader.readLine()) != null) {
                 nLines++;
-                if(nLines % 1000000 == 0) System.out.println("Read " + nLines + " roads");
+                if(nLines % 1000000 == 0) LOGGER.debug("Read " + nLines + " roads");
                 String[] lineValues;
                 lineValues  = line.split("\t");
                 ArrayList<Integer> wires = new ArrayList<Integer>();
                 if(lineValues.length < 42) {
-                    System.out.println("WARNING: dictionary line " + nLines + " incomplete: skipping");
+                    LOGGER.debug("WARNING: dictionary line " + nLines + " incomplete: skipping");
                 }
                 else {
-//                    System.out.println(line);
+//                    LOGGER.debug(line);
                     int charge   = Integer.parseInt(lineValues[0]);
                     double p     = Double.parseDouble(lineValues[1]);
                     double theta = Double.parseDouble(lineValues[2]);
@@ -499,8 +502,8 @@ public class TrackDictionaryValidation {
                     nFull++;
                     if(this.dictionary.containsKey(wires)) {
                         nDupli++;
-                        if(nDupli<10) System.out.println("WARNING: found duplicate road");
-                        else if(nDupli==10) System.out.println("WARNING: reached maximum number of warnings, switching to silent mode");
+                        if(nDupli<10) LOGGER.debug("WARNING: found duplicate road");
+                        else if(nDupli==10) LOGGER.debug("WARNING: reached maximum number of warnings, switching to silent mode");
                     }
                     else {
                         this.dictionary.put(wires, road);
@@ -520,7 +523,7 @@ public class TrackDictionaryValidation {
                     }
                 }
             }
-            System.out.println("Found " + nLines + " roads with " + nFull + " full ones, " + nDupli + " duplicates and " + this.dictionary.keySet().size() + " good ones");
+            LOGGER.debug("Found " + nLines + " roads with " + nFull + " full ones, " + nDupli + " duplicates and " + this.dictionary.keySet().size() + " good ones");
         } 
         catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -594,7 +597,7 @@ public class TrackDictionaryValidation {
         }
         else {
             parser.printUsage();
-            System.out.println("\n >>>> error : no dictionary specified: specify the road dictionary or choose to create it from file\n");
+            LOGGER.debug("\n >>>> error : no dictionary specified: specify the road dictionary or choose to create it from file\n");
             System.exit(0);       
         }
 

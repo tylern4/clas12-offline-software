@@ -6,6 +6,9 @@
 package org.jlab.io.ui;
 
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
@@ -29,8 +32,8 @@ import javax.swing.JPanel;
  * @author gavalian
  */
 public class BasicDialog extends JDialog implements ActionListener {
-    
-    	protected Component northComponent;
+	public static Logger LOGGER = LogManager.getLogger(BasicDialog.class.getName());
+	protected Component northComponent;
 	protected Component southComponent;
 	protected Component eastComponent;
 	protected Component westComponent;

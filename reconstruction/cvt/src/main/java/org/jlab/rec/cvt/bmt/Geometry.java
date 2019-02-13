@@ -1,9 +1,12 @@
 package org.jlab.rec.cvt.bmt;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.Random;
 
 public class Geometry {
-
+    public static Logger LOGGER = LogManager.getLogger(Geometry.class.getName());
     public Geometry() {
 
     }
@@ -503,11 +506,11 @@ public class Geometry {
     */
     public boolean checkIsInSector( double angle, int sector, int layer, double jitter ) {
     	if( layer < 1 || layer > 6 ) {
-    		System.err.println(" BMT layer has to be 1 <= layer <= 6");
+    		LOGGER.warn(" BMT layer has to be 1 <= layer <= 6");
     		return false;
     	}
     	if( sector < 1 || sector > 3 ) {
-    		System.err.println(" BMT sector has to be 1 <= layer <= 3");
+    		LOGGER.warn(" BMT sector has to be 1 <= layer <= 3");
     		return false;
     	}
     	
@@ -569,12 +572,12 @@ public class Geometry {
         double trk_z = 0;
 
         int layer = 5;
-        System.out.println(geo.CRCStrip_GetZ(6, 267) + " strip " + geo.getCStrip(6, -65.));
+        LOGGER.debug(geo.CRCStrip_GetZ(6, 267) + " strip " + geo.getCStrip(6, -65.));
         /*
 		int num_region = (int) (layer+1)/2 - 1; // region index (0...2) 0=layers 1&2, 1=layers 3&4, 2=layers 5&6
 		int strip_group = 0;
 		int ClosestStrip =-1;
-		System.out.println((""+1*1+""+1*0+""));
+		LOGGER.debug((""+1*1+""+1*0+""));
 		// get group
 		int len = Constants.CRCGROUP[num_region].length;
 		double[] Z_lowBound = new double[len];
@@ -603,27 +606,27 @@ public class Geometry {
 			} 
 		}
 		 double[] X = geo.smearedPosition(5, 0 , Constants.CRZRADIUS[2] , 0);
-		 System.out.println(0+", "+(0.3+Constants.CRZRADIUS[2])+" , "+0+"  smeared "+X[0]+", "+X[1]+" , "+X[2]);
-		 System.out.println(geo.getZStrip(5, Math.atan2(Constants.CRZRADIUS[2],0 )));
-		 System.out.println(geo.getZStrip(5, Math.atan2(X[1],X[0])));
-		 System.out.println(Math.toDegrees( geo.CRZStrip_GetPhi(1,6, geo.getZStrip(5, Math.atan2(X[1],X[0]))) ));	
+		 LOGGER.debug(0+", "+(0.3+Constants.CRZRADIUS[2])+" , "+0+"  smeared "+X[0]+", "+X[1]+" , "+X[2]);
+		 LOGGER.debug(geo.getZStrip(5, Math.atan2(Constants.CRZRADIUS[2],0 )));
+		 LOGGER.debug(geo.getZStrip(5, Math.atan2(X[1],X[0])));
+		 LOGGER.debug(Math.toDegrees( geo.CRZStrip_GetPhi(1,6, geo.getZStrip(5, Math.atan2(X[1],X[0]))) ));	
 		 int theMeasuredZStrip = geo.getZStrip(5, Math.atan2(X[1],X[0])); // start reco
 		 double theMeasuredPhi = geo.CRZStrip_GetPhi(1,6,theMeasuredZStrip);
 		 double theLorentzCorrectedAngle = geo.LorentzAngleCorr( theMeasuredPhi, 6);
-		 System.out.println(" corrected phi = "+Math.toDegrees(theLorentzCorrectedAngle));
+		 LOGGER.debug(" corrected phi = "+Math.toDegrees(theLorentzCorrectedAngle));
 		 int theLorentzCorrectedStrip = geo.getZStrip(5, theLorentzCorrectedAngle);
-		 System.out.println(theMeasuredZStrip+" "+theLorentzCorrectedStrip); */
+		 LOGGER.debug(theMeasuredZStrip+" "+theLorentzCorrectedStrip); */
  /*
 		 double phiC = geo.CRZStrip_GetPhi(3,6,216);
 		 double x = Constants.CRCRADIUS[2]*Math.cos(phiC);
 		 double y = Constants.CRCRADIUS[2]*Math.sin(phiC);
 		 int theMeasuredCStrip = geo.getCStrip(6,X[2]);
 		 double z = geo.CRCStrip_GetZ(6,309);
-		 System.out.println(x+", "+y+", "+z);*/
+		 LOGGER.debug(x+", "+y+", "+z);*/
         //List<double[]> Hits = geo.GEMCBMTHits(layer, sector, -199.89230321711165 , 93.78543124898611 , -164.52000000000007, .1);
-        //System.out.println("There are "+Hits.size()+" hits in this cluster");
+        //LOGGER.debug("There are "+Hits.size()+" hits in this cluster");
         //for(int i =0; i<Hits.size(); i++) {
-        //	System.out.println(" strip "+(int)Hits.get(i)[0]+" Edep "+Hits.get(i)[1]);
+        //	LOGGER.debug(" strip "+(int)Hits.get(i)[0]+" Edep "+Hits.get(i)[1]);
         //}
     }
 

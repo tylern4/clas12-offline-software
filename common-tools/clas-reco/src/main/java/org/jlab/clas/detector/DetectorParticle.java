@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.clas.physics.Particle;
 import org.jlab.clas.physics.Vector3;
 import org.jlab.detector.base.DetectorType;
@@ -26,7 +28,7 @@ import org.jlab.clas.pdg.PhysicsConstants;
  * @author baltzell
  */
 public class DetectorParticle implements Comparable {
-  
+    public static Logger LOGGER = LogManager.getLogger(DetectorParticle.class.getName());
     public static final Double DEFAULTQUALITY=99.0;
 
     private boolean isTriggerParticle = false;
@@ -289,7 +291,7 @@ public class DetectorParticle implements Comparable {
         if(hits>1 && type!=DetectorType.CTOF && type!=DetectorType.ECAL){
             // don't warn for CTOF, since it currently doesn't do clustering
             // don't warn for ECAL, since it has multiple layers
-            System.out.println("[Warning] DetectorParticle.hasHit(type): Too many hits for detector type = " + type);
+            LOGGER.debug("[Warning] DetectorParticle.hasHit(type): Too many hits for detector type = " + type);
         }
         return true;
     }
@@ -302,7 +304,7 @@ public class DetectorParticle implements Comparable {
         if(hits==0) return false;
         if(hits>1 && type!=DetectorType.CTOF){
             // don't warn for CTOF, since it currently doesn't do clustering
-            System.out.println("[Warning] DetectorParticle.hasHit(type,layer): Too many hits for detector type = " + type);
+            LOGGER.debug("[Warning] DetectorParticle.hasHit(type,layer): Too many hits for detector type = " + type);
         }
         return true;
     }
@@ -716,7 +718,7 @@ public class DetectorParticle implements Comparable {
     
     public int compareTo(Object o) {
 
-        System.err.println("DetectorParticle:  Not ready for sorting!!!!!!!!!!!!!!!");
+        LOGGER.warn("DetectorParticle:  Not ready for sorting!!!!!!!!!!!!!!!");
 
         DetectorParticle other = (DetectorParticle) o;
 

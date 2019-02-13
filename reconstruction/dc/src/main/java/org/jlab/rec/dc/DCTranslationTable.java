@@ -88,7 +88,7 @@ public class DCTranslationTable {
      */
     public Integer getLayer(int crate, int slot, int channel) {
 
-//	System.out.println( " crate " + crate + " slot " + slot + " channel " + channel);
+//	LOGGER.debug( " crate " + crate + " slot " + slot + " channel " + channel);
         int slotIdx = slot - 1;
         int crateIdx = crate - 41;
         int channelIdx = channel; // channel runs from 0 to 95
@@ -99,7 +99,7 @@ public class DCTranslationTable {
         int suplayer = (region - 1) * 2 + locsuplayer;
         int layer = (suplayer - 1) * 6 + loclayer;
 
-        // System.out.println("   -->    region "+region + " loclayer " + loclayer + " locsuplayer " + locsuplayer + " suplayer " + suplayer+" layer "+layer);
+        // LOGGER.debug("   -->    region "+region + " loclayer " + loclayer + " locsuplayer " + locsuplayer + " suplayer " + suplayer+" layer "+layer);
         return layer;
         //return 1;
     }
@@ -161,7 +161,7 @@ public class DCTranslationTable {
                         continue;
                     }
 
-                    // System.out.println((crate)+"  "+(slot)+"  "+(channel)+" sector "+sector
+                    // LOGGER.debug((crate)+"  "+(slot)+"  "+(channel)+" sector "+sector
                     //		  +" region "+region+" layer "+layer+" wire "+wire+" connector "+connector);
                 }
             }

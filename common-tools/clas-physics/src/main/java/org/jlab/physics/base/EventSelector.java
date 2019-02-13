@@ -48,7 +48,7 @@ public class EventSelector {
             ParticleSelector  psel = new ParticleSelector();
             psel.parse(selectorFormat.substring(lastposition, position+1));
             pSelectors.add(psel);
-            //System.err.println("SELECTOR : " + selectorFormat.substring(lastposition, position+1));
+            //LOGGER.warn("SELECTOR : " + selectorFormat.substring(lastposition, position+1));
             lastposition = position+1;
             position = selectorFormat.indexOf(this.closeBracket, position+1);
         }*/
@@ -82,7 +82,7 @@ public class EventSelector {
             if(status==false){
                 throw new ParticleNotFoundException("[EventSelector::ERROR] event does no contain "
                 + "particle for selector \n" + sel.toString());
-                /*System.err.println("[EventSelector::ERROR] event does no contain "
+                /*LOGGER.warn("[EventSelector::ERROR] event does no contain "
                 + "particle for selector \n" + sel.toString());*/
             } else {
                 plist.add(part);

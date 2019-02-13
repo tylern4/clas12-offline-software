@@ -13,8 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-//import java.util.logging.Level;
-//import java.util.logging.Logger;
+
 import org.jlab.clara.base.ClaraUtil;
 import org.jlab.clara.engine.Engine;
 import org.jlab.clara.engine.EngineData;
@@ -62,7 +61,7 @@ public abstract class ReconstructionEngine implements Engine {
         engineDictionary  = new SchemaFactory();
         engineConfigMap   = new ConcurrentHashMap<String,String>();
         engineDictionary.initFromDirectory("CLAS12DIR", "etc/bankdefs/hipo");
-        //System.out.println("[Engine] >>>>> constants manager : " + getConstantsManager().toString());
+        //LOGGER.debug("[Engine] >>>>> constants manager : " + getConstantsManager().toString());
     }
 
     abstract public boolean processDataEvent(DataEvent event);
@@ -229,7 +228,7 @@ public abstract class ReconstructionEngine implements Engine {
         //return output;
 
         String mt = input.getMimeType();
-        //System.out.println(" DATA TYPE = [" + mt + "]");
+        //LOGGER.debug(" DATA TYPE = [" + mt + "]");
         HipoDataEvent dataEventHipo = null;
         if(mt.compareTo("binary/data-hipo")==0){
             try {

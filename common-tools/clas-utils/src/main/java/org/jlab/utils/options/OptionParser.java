@@ -5,6 +5,7 @@
  */
 package org.jlab.utils.options;
 
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +16,6 @@ import java.util.TreeMap;
  * @author gavalian
  */
 public class OptionParser {
-    
     private Map<String,OptionValue> optionsDescriptors = new TreeMap<String,OptionValue>();    
     private Map<String,OptionValue>    requiredOptions = new TreeMap<String,OptionValue>();
     private Map<String,OptionValue>      parsedOptions = new TreeMap<String,OptionValue>();
@@ -136,7 +136,7 @@ public class OptionParser {
             if(status==false) { 
                 this.parsedOptions.clear();
                 this.printUsage();
-                System.out.println(" \n*** ERROR *** Missing argument : " + entry.getValue().getOption());
+                System.err.println(" \n*** ERROR *** Missing argument : " + entry.getValue().getOption());
                 System.exit(0);
                 return;
             }

@@ -180,7 +180,7 @@ public class MeasVecs {
             meas.wireLen = hOTS.get(i)._wireLen;
             meas.wireMaxSag = hOTS.get(i)._wireMaxSag;
             this.measurements.add(i, meas);
-            //System.out.println(" measurement "+i+" = "+meas.x+" at "+meas.z);
+            //LOGGER.debug(" measurement "+i+" = "+meas.x+" at "+meas.z);
         }
     }
     

@@ -8,6 +8,9 @@ package org.jlab.geom.gui;
 
 import java.awt.Dimension;
 import javax.swing.JFrame;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.geom.component.ScintillatorPaddle;
 import org.jlab.geom.detector.ec.ECFactory;
 import org.jlab.geom.prim.Line3D;
@@ -19,6 +22,7 @@ import org.jlab.geom.prim.Point3D;
  * @author gavalian
  */
 public class GeometryFrame extends JFrame {
+    public static Logger LOGGER = LogManager.getLogger(GeometryFrame.class.getName());
 //    private double xmin = -100;
 //    private double xmax =  100;
 //    private double ymin = -100;
@@ -59,7 +63,7 @@ public class GeometryFrame extends JFrame {
     public static void main(String[] args){
         GeometryFrame frame = new GeometryFrame(800,800,600,600);
         frame.setVisible(true);
-        System.err.println("adding lines");
+        LOGGER.warn("adding lines");
         //ConstantProvider data = DataBaseLoader.
         //ECFactory factory = new ECFactory();
         //ECLayer   layerU = factory
@@ -92,7 +96,7 @@ public class GeometryFrame extends JFrame {
 //            path.generateRandom(0, 0, 0, 0, 90, 0, 360, 1000, 2);
 //            
 //            List<DetectorHit> hits = detector.getHits(path);
-//            System.out.println(hits.size());
+//            LOGGER.debug(hits.size());
 //        }
         
 //        Path3D path = new Path3D();
@@ -110,10 +114,10 @@ public class GeometryFrame extends JFrame {
 ////        boolean b = paddle.getLayerIntersection(path.getLine(0), pt);
 //        
 ////        boolean b = face.intersection(path.getLine(0), pt);
-//        System.out.println(path);
-//        System.out.println(path.getLine(0));
-////        System.out.println(face);
-//        System.out.println(b+" "+pt);
+//        LOGGER.debug(path);
+//        LOGGER.debug(path.getLine(0));
+////        LOGGER.debug(face);
+//        LOGGER.debug(b+" "+pt);
         
         
         

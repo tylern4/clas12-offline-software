@@ -30,14 +30,14 @@ public class EvioSource implements DataSource {
 		String CLAS12DIRPROP = System.getProperty("CLAS12DIR");
 
 		if (CLAS12DIR == null) {
-			System.out.println("---> Warning the CLAS12DIR environment is not defined.");
+			LOGGER.debug("---> Warning the CLAS12DIR environment is not defined.");
 			// return;
 		} else {
 			dictionaryPath = CLAS12DIR + "/etc/bankdefs/clas12";
 		}
 
 		if (CLAS12DIRPROP == null) {
-			System.out.println("---> Warning the CLAS12DIR property is not defined.");
+			LOGGER.debug("---> Warning the CLAS12DIR property is not defined.");
 		} else {
 			dictionaryPath = CLAS12DIRPROP + "/etc/bankdefs/clas12";
 		}
@@ -46,14 +46,14 @@ public class EvioSource implements DataSource {
 			return;
 		}
 		// dictionary.initWithDir(dictionaryPath);
-		// System.err.println("[EvioSource] ---> Loaded bank Descriptors from : " +
+		// LOGGER.warn("[EvioSource] ---> Loaded bank Descriptors from : " +
 		// dictionaryPath);
-		// System.err.println("[EvioSource] ---> Factory loaded descriptor count : "
+		// LOGGER.warn("[EvioSource] ---> Factory loaded descriptor count : "
 		// + dictionary.getDescriptorList().length);
 
 		EvioFactory.loadDictionary(dictionaryPath);
 		dictionary = EvioFactory.getDictionary();
-		System.err.println("[EvioSource] ---> Factory loaded descriptor count : " + dictionary.getDescriptorList().length);
+		LOGGER.warn("[EvioSource] ---> Factory loaded descriptor count : " + dictionary.getDescriptorList().length);
 		// dictionary.show();
 	}
 
@@ -62,14 +62,14 @@ public class EvioSource implements DataSource {
 		String CLAS12DIRPROP = System.getProperty("CLAS12DIR");
 
 		if (CLAS12DIR == null) {
-			System.out.println("---> Warning the CLAS12DIR environment is not defined.");
+			LOGGER.debug("---> Warning the CLAS12DIR environment is not defined.");
 			// return;
 		} else {
 			dictionaryPath = CLAS12DIR + "/etc/bankdefs/clas12";
 		}
 
 		if (CLAS12DIRPROP == null) {
-			System.out.println("---> Warning the CLAS12DIR property is not defined.");
+			LOGGER.debug("---> Warning the CLAS12DIR property is not defined.");
 		} else {
 			dictionaryPath = CLAS12DIRPROP + "/etc/bankdefs/clas12";
 		}
@@ -78,14 +78,14 @@ public class EvioSource implements DataSource {
 			return;
 		}
 		// dictionary.initWithDir(dictionaryPath);
-		// System.err.println("[EvioSource] ---> Loaded bank Descriptors from : " +
+		// LOGGER.warn("[EvioSource] ---> Loaded bank Descriptors from : " +
 		// dictionaryPath);
-		// System.err.println("[EvioSource] ---> Factory loaded descriptor count : "
+		// LOGGER.warn("[EvioSource] ---> Factory loaded descriptor count : "
 		// + dictionary.getDescriptorList().length);
 
 		EvioFactory.loadDictionary(dictionaryPath);
 		dictionary = EvioFactory.getDictionary();
-		System.err.println("[EvioSource] ---> Factory loaded descriptor count : " + dictionary.getDescriptorList().length);
+		LOGGER.warn("[EvioSource] ---> Factory loaded descriptor count : " + dictionary.getDescriptorList().length);
 		dictionary.show();
 		this.open(filename);
 	}
@@ -100,12 +100,12 @@ public class EvioSource implements DataSource {
 			currentEvent = 1;
 			currentFileEntries = evioReader.getEventCount();
 			storeByteOrder = evioReader.getFileByteOrder();
-			System.out.println("****** opened FILE [] ** NEVENTS = " + currentFileEntries + " *******");
+			LOGGER.debug("****** opened FILE [] ** NEVENTS = " + currentFileEntries + " *******");
 			// TODO Auto-generated method stub
 		} catch (EvioException ex) {
-			Logger.getLogger(EvioSource.class.getName()).log(Level.SEVERE, null, ex);
+			LOGGER.error(ex);
 		} catch (IOException ex) {
-			Logger.getLogger(EvioSource.class.getName()).log(Level.SEVERE, null, ex);
+			LOGGER.error(ex);
 		}
 	}
 
@@ -115,9 +115,9 @@ public class EvioSource implements DataSource {
 			currentEvent = 1;
 			currentFileEntries = evioReader.getEventCount()+1;
 			storeByteOrder = evioReader.getFileByteOrder();
-			// System.out.println("****** opened BUFFER [] ** NEVENTS = " + currentFileEntries + " *******");
+			// LOGGER.debug("****** opened BUFFER [] ** NEVENTS = " + currentFileEntries + " *******");
 		} catch (EvioException ex) {
-			Logger.getLogger(EvioSource.class.getName()).log(Level.SEVERE, null, ex);
+			LOGGER.error(ex);
 		}
 	}
 
@@ -161,7 +161,7 @@ public class EvioSource implements DataSource {
 			currentEvent++;
 			return event;
 		} catch (EvioException ex) {
-			Logger.getLogger(EvioSource.class.getName()).log(Level.SEVERE, null, ex);
+			LOGGER.error(ex);
 		}
 		return null;
 	}
@@ -175,7 +175,7 @@ public class EvioSource implements DataSource {
 			currentEvent = index + 1;
 			return event;
 		} catch (EvioException ex) {
-			Logger.getLogger(EvioSource.class.getName()).log(Level.SEVERE, null, ex);
+			LOGGER.error(ex);
 		}
 		return null;
 	}
@@ -189,7 +189,7 @@ public class EvioSource implements DataSource {
 			currentEvent++;
 			return event;
 		} catch (EvioException ex) {
-			Logger.getLogger(EvioSource.class.getName()).log(Level.SEVERE, null, ex);
+			LOGGER.error(ex);
 		}
 		return null;
 	}
@@ -203,18 +203,18 @@ public class EvioSource implements DataSource {
 			currentEvent++;
 			return event;
 		} catch (EvioException ex) {
-			Logger.getLogger(EvioSource.class.getName()).log(Level.SEVERE, null, ex);
+			LOGGER.error(ex);
 		}
 		return null;
 	}
 	/*
 	 * public Histogram1D scanTree(String path, int maxevents){ currentEvent = 1; int maxestimate = 5000; if(maxestimate>=maxevents){ maxestimate = maxevents-2; }
-	 * 
+	 *
 	 * DataRangeEstimator datae = new DataRangeEstimator(path,100,maxestimate);
-	 * 
+	 *
 	 * for(int loop = 0; loop < maxevents; loop++){ DataEvent event = this.getNextEvent(); double[] darray = event.getDouble(path); if(darray!=null){ for(int ndata =
-	 * 0; ndata < darray.length; ndata++){ datae.fill(darray[ndata]); //System.out.println("--> " + darray[ndata]); } } } //= new Histogram1D();
-	 * System.out.println("----> bins  = " + datae.getHistogram().getAxis().getNbins()); return datae.getHistogram(); }
+	 * 0; ndata < darray.length; ndata++){ datae.fill(darray[ndata]); //LOGGER.debug("--> " + darray[ndata]); } } } //= new Histogram1D();
+	 * LOGGER.debug("----> bins  = " + datae.getHistogram().getAxis().getNbins()); return datae.getHistogram(); }
 	 */
 
 	public boolean hasEvent() {

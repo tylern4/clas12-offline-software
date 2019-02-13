@@ -70,7 +70,7 @@ public class FMTReconstruction extends ReconstructionEngine {
     @Override
     public boolean processDataEvent(DataEvent event) {
 //        if(event.hasBank("RUN::config")==false ) {
-//		System.err.println("RUN CONDITIONS NOT READ!");
+//		LOGGER.warn("RUN CONDITIONS NOT READ!");
 //		return true;
 //	}
 //		
@@ -120,7 +120,7 @@ public class FMTReconstruction extends ReconstructionEngine {
                     
                     //if(crosses!=null && crosses.size()>=2) 
                         //crossLister.findCandidateCrossLists(crosses);
-               // System.out.println(" number of crosses "+crosses.size());
+               // LOGGER.debug(" number of crosses "+crosses.size());
             }
             
             rbc.appendFMTBanks(event, FMThits, clusters, crosses);
@@ -169,7 +169,7 @@ public class FMTReconstruction extends ReconstructionEngine {
         while (reader.hasEvent()) {
             
             counter++;
-            System.out.println("************************************************************* ");
+            LOGGER.debug("************************************************************* ");
             DataEvent event = reader.getNextEvent();
             if (counter > 0) {
                 t1 = System.currentTimeMillis();
@@ -180,7 +180,7 @@ public class FMTReconstruction extends ReconstructionEngine {
             //event.show();
             
             writer.writeEvent(event);
-            System.out.println("PROCESSED  EVENT "+event.getBank("RUN::config").getInt("event", 0));
+            LOGGER.debug("PROCESSED  EVENT "+event.getBank("RUN::config").getInt("event", 0));
            // event.show();
             //if (event.getBank("RUN::config").getInt("event", 0) > 11) {
             //    break;
@@ -197,6 +197,6 @@ public class FMTReconstruction extends ReconstructionEngine {
         }
         writer.close();
         double t = System.currentTimeMillis() - t1;
-        System.out.println(t1 + " TOTAL  PROCESSING TIME = " + (t / (float) counter));
+        LOGGER.debug(t1 + " TOTAL  PROCESSING TIME = " + (t / (float) counter));
     }
 }

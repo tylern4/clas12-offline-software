@@ -12,9 +12,11 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.coda.jevio.DataType;
 import org.jlab.coda.jevio.EventBuilder;
 import org.jlab.coda.jevio.EvioBank;
@@ -30,9 +32,9 @@ import org.xml.sax.SAXException;
  * @author gavalian
  */
 public class EvioFactory {
-    
+    public static Logger LOGGER = LogManager.getLogger(EvioFactory.class.getName());
     private final static EvioDataDictionary factoryDict = EvioFactory.readDefaultDictionary();
-                
+
     public static EvioDataDictionary readDefaultDictionary(){
 
         EvioDataDictionary dict = new EvioDataDictionary();
@@ -43,28 +45,28 @@ public class EvioFactory {
         }
         return dict;
     }
-    
+
     public static void resetDictionary(){
         EvioFactory.factoryDict.clear();
     }
-    
+
     public static EvioDataDictionary getDictionary(){
         return factoryDict;
     }
-    
+
     public static EvioDataDictionary createDictionary(String path){
         EvioDataDictionary dict = new EvioDataDictionary(path);
         return dict;
     }
-    
+
     public static void loadDictionary(String path){
         factoryDict.initWithDir(path);
     }
-    
+
     public static EvioDataBank createBank(String name, int rows){
         EvioDataDescriptor desc = (EvioDataDescriptor) EvioFactory.getDictionary().getDescriptor(name);
         if(desc==null){
-            System.err.println("[EvioFactory::createBank]---> ERROR. bank with name " +
+            LOGGER.warn("[EvioFactory::createBank]---> ERROR. bank with name " +
                     name + " does not exist in descriptor list.");
             return null;
         }
@@ -72,20 +74,20 @@ public class EvioFactory {
         bank.allocate(rows);
         return bank;
     }
-    
+
     public static void loadDictionary(){
         //factoryDict = EvioFactory.readDefaultDictionary();
     }
-    
+
     public static EvioDataBank createEvioBank(String name){
         EvioDataDescriptor desc = (EvioDataDescriptor) EvioFactory.getDictionary().getDescriptor(name);
         return new EvioDataBank(desc);
     }
-    
+
     public static EvioDataBank createEvioBank(String name,int rows){
         EvioDataDescriptor desc = (EvioDataDescriptor) EvioFactory.getDictionary().getDescriptor(name);
         if(desc==null){
-            System.err.println("-----------> error descriptor is null...");
+            LOGGER.warn("-----------> error descriptor is null...");
             return null;
         }
         EvioDataBank bank = new EvioDataBank(desc);
@@ -110,32 +112,32 @@ public class EvioFactory {
         }
         return bank;
     }
-    
+
     public static EvioDataEvent  createEvioEvent(){
         try {
             //EvioEvent baseBank = new EvioEvent(1, DataType.BANK, 0);
             EventBuilder builder = new EventBuilder(1,DataType.BANK,0);
             EvioEvent event = builder.getEvent();
             EvioBank baseBank = new EvioBank(10, DataType.ALSOBANK, 0);
-            
+
             builder.addChild(event, baseBank);
-            
+
             ByteOrder byteOrder = ByteOrder.LITTLE_ENDIAN;
-            
+
             int byteSize = event.getTotalBytes();
-            //System.out.println("base bank size = " + byteSize);
+            //LOGGER.debug("base bank size = " + byteSize);
             ByteBuffer bb = ByteBuffer.allocate(byteSize);
             bb.order(byteOrder);
             event.write(bb);
             bb.flip();
-         
+
             return new EvioDataEvent(bb,EvioFactory.getDictionary());
         } catch (EvioException ex) {
-            Logger.getLogger(EvioDataSync.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex);
         }
         return null;
     }
-    
+
     public static EvioDataBank createEvioBank(String name,DataDescriptor desc,int rows){
         //EvioDataDescriptor desc = (EvioDataDescriptor) EvioFactory.getDictionary().getDescriptor(name);
         EvioDataBank bank = new EvioDataBank(desc);

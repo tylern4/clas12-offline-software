@@ -10,7 +10,9 @@ import java.nio.ByteOrder;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.coda.jevio.ByteDataTransformer;
 import org.jlab.coda.jevio.DataType;
 import org.jlab.coda.jevio.EvioCompactStructureHandler;
@@ -22,11 +24,11 @@ import org.jlab.coda.jevio.EvioNode;
  * @author gavalian
  */
 public class EvioDataEventHandler {
-    
+    public static Logger LOGGER = LogManager.getLogger(EvioDataEventHandler.class.getName());
     private EvioCompactStructureHandler structure = null;
-    private ByteBuffer evioBuffer;     
+    private ByteBuffer evioBuffer;
     private List<EvioNode> eventNodes  = null;
-   
+
     public EvioDataEventHandler(byte[] buffer, ByteOrder b_order){
         evioBuffer = ByteBuffer.wrap(buffer);
         evioBuffer.order(b_order);
@@ -35,43 +37,43 @@ public class EvioDataEventHandler {
             //eventNodes = structure.getChildNodes();
             eventNodes = structure.getNodes();
         } catch (EvioException ex) {
-            Logger.getLogger(EvioDataEvent.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex);
         }
          //this.list();
     }
-    
+
     public EvioDataEventHandler(ByteBuffer buff){
         evioBuffer = buff;
         try {
             structure = new EvioCompactStructureHandler(evioBuffer,DataType.BANK);
             eventNodes = structure.getChildNodes();
         } catch (EvioException ex) {
-            Logger.getLogger(EvioDataEvent.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex);
         }
         //this.list();
     }
-    
+
     public EvioNode getRootNode(int tag, int num, DataType type){
         for(EvioNode node : eventNodes){
-            //System.out.println(" LOOKING for tag = " + tag + " num =  "   + num +  " type = " + type);
+            //LOGGER.debug(" LOOKING for tag = " + tag + " num =  "   + num +  " type = " + type);
             if(node.getTag()==tag&&node.getNum()==num&&node.getDataTypeObj()==type){
                 return node;
             }
         }
         return null;
     }
-    
+
     public EvioCompactStructureHandler getStructure(){return this.structure;}
-    
-    public void setStructure(EvioCompactStructureHandler struct){ 
+
+    public void setStructure(EvioCompactStructureHandler struct){
         this.structure = struct;
         try {
             this.eventNodes = this.structure.getNodes();
         } catch (EvioException ex) {
-            Logger.getLogger(EvioDataEventHandler.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex);
         }
     }
-    
+
     public EvioNode getChildNode(EvioNode rootNode, int tag, int num, DataType type){
         List<EvioNode>  leafs = rootNode.getChildNodes();
         for(EvioNode node : leafs){
@@ -81,11 +83,11 @@ public class EvioDataEventHandler {
         }
         return null;
     }
-    
+
     public TreeMap<Integer,Object>  getNodeData(EvioNode nodeBank){
         TreeMap<Integer,Object>  nodeData = new TreeMap<Integer,Object>();
         List<EvioNode>  nodeList = nodeBank.getChildNodes();
-        for(EvioNode  node : nodeList){            
+        for(EvioNode  node : nodeList){
             /*
             * Adding integer entries to the tree
             */
@@ -95,7 +97,7 @@ public class EvioDataEventHandler {
                     int[] nodedata = ByteDataTransformer.toIntArray(buffer);
                     nodeData.put(node.getNum(), nodedata);
                 } catch (EvioException ex) {
-                    Logger.getLogger(EvioDataEventHandler.class.getName()).log(Level.SEVERE, null, ex);
+                    LOGGER.error(ex);
                 }
             }
             /*
@@ -107,7 +109,7 @@ public class EvioDataEventHandler {
                     short[] nodedata = ByteDataTransformer.toShortArray(buffer);
                     nodeData.put(node.getNum(), nodedata);
                 } catch (EvioException ex) {
-                    Logger.getLogger(EvioDataEventHandler.class.getName()).log(Level.SEVERE, null, ex);
+                    LOGGER.error(ex);
                 }
             }
              /*
@@ -119,7 +121,7 @@ public class EvioDataEventHandler {
                     byte[] nodedata = ByteDataTransformer.toByteArray(buffer);
                     nodeData.put(node.getNum(), nodedata);
                 } catch (EvioException ex) {
-                    Logger.getLogger(EvioDataEventHandler.class.getName()).log(Level.SEVERE, null, ex);
+                    LOGGER.error(ex);
                 }
             }
              /*
@@ -131,10 +133,10 @@ public class EvioDataEventHandler {
                     float[] nodedata = ByteDataTransformer.toFloatArray(buffer);
                     nodeData.put(node.getNum(), nodedata);
                 } catch (EvioException ex) {
-                    Logger.getLogger(EvioDataEventHandler.class.getName()).log(Level.SEVERE, null, ex);
+                    LOGGER.error(ex);
                 }
             }
-            
+
              /*
             * Adding float32 entries to the tree
             */
@@ -144,25 +146,25 @@ public class EvioDataEventHandler {
                     double[] nodedata = ByteDataTransformer.toDoubleArray(buffer);
                     nodeData.put(node.getNum(), nodedata);
                 } catch (EvioException ex) {
-                    Logger.getLogger(EvioDataEventHandler.class.getName()).log(Level.SEVERE, null, ex);
+                    LOGGER.error(ex);
                 }
             }
         }
         return nodeData;
     }
-    
+
     public void list(){
-        System.out.println("  LIST ========>  EVIO NODES ");
+        LOGGER.debug("  LIST ========>  EVIO NODES ");
         List<EvioNode>  childnodes;
         try {
             childnodes = this.structure.getNodes();
             for(EvioNode node : childnodes){
                 //for(EvioNode node : this.eventNodes){
-                System.out.println(String.format(" tag = %8d  num = %8d  type = %s", 
+                LOGGER.debug(String.format(" tag = %8d  num = %8d  type = %s",
                         node.getTag(),node.getNum(),node.getDataTypeObj()));
             }
         } catch (EvioException ex) {
-            Logger.getLogger(EvioDataEventHandler.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex);
         }
     }
 }

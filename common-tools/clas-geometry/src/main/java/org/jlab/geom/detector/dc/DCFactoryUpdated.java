@@ -135,16 +135,16 @@ public class DCFactoryUpdated implements Factory<DCDetector, DCSector, DCSuperla
         double thster   = -Math.toRadians(cp.getDouble("/geometry/dc/superlayer/thster", superlayerId));
         int numWires    =                cp.getInteger("/geometry/dc/layer/nsensewires", 0);
         
-//        System.out.println("sectorId="+sectorId+" superlayerId="+superlayerId+" layerId="+layerId);
-//        System.out.println("double dist2tgt = "+dist2tgt);
-//        System.out.println("double midgap   = "+midgap  );
-//        System.out.println("double thtilt   = "+thtilt  );
-//        System.out.println("double thopen   = "+thopen  );
-//        System.out.println("double xdist    = "+xdist   );
-//        System.out.println("double d_layer  = "+d_layer );
-//        System.out.println("double thmin    = "+thmin   );
-//        System.out.println("double thster   = "+thster  );
-//        System.out.println("int    numWires = "+numWires);
+//        LOGGER.debug("sectorId="+sectorId+" superlayerId="+superlayerId+" layerId="+layerId);
+//        LOGGER.debug("double dist2tgt = "+dist2tgt);
+//        LOGGER.debug("double midgap   = "+midgap  );
+//        LOGGER.debug("double thtilt   = "+thtilt  );
+//        LOGGER.debug("double thopen   = "+thopen  );
+//        LOGGER.debug("double xdist    = "+xdist   );
+//        LOGGER.debug("double d_layer  = "+d_layer );
+//        LOGGER.debug("double thmin    = "+thmin   );
+//        LOGGER.debug("double thster   = "+thster  );
+//        LOGGER.debug("int    numWires = "+numWires);
         
         // Calculate the midpoint (gx, 0, gz) of the guard wire nearest to the 
         // beam in the first guard wire layer of the current superlayer
@@ -196,7 +196,7 @@ public class DCFactoryUpdated implements Factory<DCDetector, DCSector, DCSuperla
             double wz = mz;
             Point3D wireMid = new Point3D(wx, 0, wz);
             
-//            System.out.println((layer+1)+" "+(wire+1)+" "+wx+"\t"+wz);
+//            LOGGER.debug((layer+1)+" "+(wire+1)+" "+wx+"\t"+wz);
             
             // Find the interesection of the current wire with the end-plate 
             // planes by construciting a long line that pbasses through the
@@ -303,7 +303,7 @@ public class DCFactoryUpdated implements Factory<DCDetector, DCSector, DCSuperla
 
     @Override
     public void show() {
-        System.out.println(this);
+        LOGGER.debug(this);
     }
     
     @Override

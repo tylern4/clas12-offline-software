@@ -100,11 +100,11 @@ public class StraightTrackCrossListFinder {
 
         for (int j_t = 0; j_t < N_t; j_t++) {
             // theta_j in the middle of the bin :
-            //System.out.println(" bin "+j_t);
+            //LOGGER.debug(" bin "+j_t);
             double theta_j = ThetaMin + (0.5 + j_t) * SizeThetaBin;
             cosTheta_Rz_array[j_t] = Math.cos(Math.toRadians(theta_j));
             sinTheta_Rz_array[j_t] = Math.sin(Math.toRadians(theta_j));
-            //System.out.println("             theta "+theta_j+"  cos "+Math.cos(Math.toRadians(theta_j))+" sin "+Math.cos(Math.toRadians(theta_j)));
+            //LOGGER.debug("             theta "+theta_j+"  cos "+Math.cos(Math.toRadians(theta_j))+" sin "+Math.cos(Math.toRadians(theta_j)));
         }
 
         // loop over points to fill the accumulator arrays
@@ -121,11 +121,11 @@ public class StraightTrackCrossListFinder {
                 double r_j = rho * cosTheta_Rz_array[j_t] + z * sinTheta_Rz_array[j_t];
                 // this value of r_j falls into the following bin in the r array:
                 int j_r = (int) Math.floor(N_r * (r_j - RMin) / (float) (RMax - RMin));
-                //System.out.println("check range "+RMin+" [ "+r_j +" --> "+j_r+" ] "+RMax);
+                //LOGGER.debug("check range "+RMin+" [ "+r_j +" --> "+j_r+" ] "+RMax);
                 // increase this accumulator cell:
                 R_Z_Accumul[j_r][j_t]++;
                 //if(R_Z_Accumul[j_r][j_t]>=1)
-                //System.out.println(" accumulator value at (x, y ) = ("+r_j+", "+(ThetaMin + (0.5 + j_t)*SizeThetaBin) +") falls in bin ["+j_r+" ] ["+j_t+" ] = "+R_Z_Accumul[j_r][j_t]);
+                //LOGGER.debug(" accumulator value at (x, y ) = ("+r_j+", "+(ThetaMin + (0.5 + j_t)*SizeThetaBin) +") falls in bin ["+j_r+" ] ["+j_t+" ] = "+R_Z_Accumul[j_r][j_t]);
             }
 
         }

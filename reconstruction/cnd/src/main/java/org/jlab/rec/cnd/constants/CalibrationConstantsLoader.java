@@ -1,5 +1,7 @@
 package org.jlab.rec.cnd.constants;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.detector.calib.utils.DatabaseConstantProvider;
 
 
@@ -10,7 +12,7 @@ import org.jlab.detector.calib.utils.DatabaseConstantProvider;
  *
  */
 public class CalibrationConstantsLoader {
-
+	public static Logger LOGGER = LogManager.getLogger(CalibrationConstantsLoader.class.getName());
 	public CalibrationConstantsLoader() {
 		// TODO Auto-generated constructor stub
 	}
@@ -43,7 +45,7 @@ public class CalibrationConstantsLoader {
 
 	public static synchronized void Load(int runno, String var) {
 
-		System.out.println(" LOADING CONSTANTS ");
+		LOGGER.debug(" LOADING CONSTANTS ");
 		dbprovider = new DatabaseConstantProvider(runno, var); // reset using the new variation
 
 		// load table reads entire table and makes an array of variables for each column in the table.
@@ -74,7 +76,7 @@ public class CalibrationConstantsLoader {
 			double iEL = dbprovider.getDouble("/calibration/cnd/UturnEloss/uturn_eloss", i);
 
 			UTURNELOSS[iSec-1][iLay-1] = iEL;
-			//System.out.println("UturnEloss "+iEL);
+			//LOGGER.debug("UturnEloss "+iEL);
 		}
 		//T-loss
 		for(int i =0; i< dbprovider.length("/calibration/cnd/UturnTloss/sector"); i++) {
@@ -84,7 +86,7 @@ public class CalibrationConstantsLoader {
 			double iTL = dbprovider.getDouble("/calibration/cnd/UturnTloss/uturn_tloss", i);
 
 			UTURNTLOSS[iSec-1][iLay-1] = iTL;
-			//System.out.println("UturnTloss "+iTL);
+			//LOGGER.debug("UturnTloss "+iTL);
 		}
 		// Time offsets
 		for(int i =0; i< dbprovider.length("/calibration/cnd/TimeOffsets_LR/sector"); i++) {
@@ -94,7 +96,7 @@ public class CalibrationConstantsLoader {
 			double iTO = dbprovider.getDouble("/calibration/cnd/TimeOffsets_LR/time_offset_LR", i);
 
 			TIMEOFFSETSLR[iSec-1][iLay-1] = iTO;
-			//System.out.println("time_offset_LR "+iTO);
+			//LOGGER.debug("time_offset_LR "+iTO);
 		}
 		//TDC to time conversion
 		for(int i =0; i< dbprovider.length("/calibration/cnd/TDC_conv/sector"); i++) {
@@ -110,8 +112,8 @@ public class CalibrationConstantsLoader {
 			TDCTOTIMEOFFSET[iSec-1][iLay-1][0] = iOfL;
 			TDCTOTIMESLOPE[iSec-1][iLay-1][1] = iSlR;
 			TDCTOTIMEOFFSET[iSec-1][iLay-1][1] = iOfR;
-			//System.out.println("TDCTOTIMESLOPE "+iSl);
-			//System.out.println("TDCTOTIMEOFFSET "+iOf);
+			//LOGGER.debug("TDCTOTIMESLOPE "+iSl);
+			//LOGGER.debug("TDCTOTIMEOFFSET "+iOf);
 		}
 		// ?Time offsets _layer ... DB entry says time_offset_sector
 		for(int i =0; i< dbprovider.length("/calibration/cnd/TimeOffsets_layer/sector"); i++) {
@@ -169,7 +171,7 @@ public class CalibrationConstantsLoader {
 
 			Status_LR[iSec-1][iLay-1][0] = iStatL;
 			Status_LR[iSec-1][iLay-1][1] = iStatR;
-			//System.out.println("Status_LR "+iStat);
+			//LOGGER.debug("Status_LR "+iStat);
 		}
 		// TDC time jitter
 		JITTER_PERIOD = dbprovider.getDouble("/calibration/cnd/time_jitter/period", 0);
@@ -202,7 +204,7 @@ public class CalibrationConstantsLoader {
 
 		}       
 		CSTLOADED = true;
-		System.out.println("SUCCESSFULLY LOADED CND CALIBRATION CONSTANTS....");
+		LOGGER.debug("SUCCESSFULLY LOADED CND CALIBRATION CONSTANTS....");
 
 		setDB(dbprovider);
 	} 

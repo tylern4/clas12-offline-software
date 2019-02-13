@@ -39,7 +39,7 @@ public class EvioDataDescriptor implements DataDescriptor {
 	public void init(String s) {
 		descriptorEntries.clear();
 		String[] tokens = s.split("/");
-		// System.out.println(" N - tokens = " + tokens.length);
+		// LOGGER.debug(" N - tokens = " + tokens.length);
 		String[] header = tokens[0].split(":");
 		this.descriptorName = header[0] + "::" + header[1];
 		String section_name = header[1];
@@ -88,7 +88,7 @@ public class EvioDataDescriptor implements DataDescriptor {
 	public int getProperty(String property_name, String entry_name) {
 		int ret = -1;
 		if (descriptorEntries.containsKey(entry_name) == false) {
-			System.err.println("[EvioDataDescriptor] ERROR : getProperty requested for " + " unknown filed " + entry_name);
+			LOGGER.warn("[EvioDataDescriptor] ERROR : getProperty requested for " + " unknown filed " + entry_name);
 			return ret;
 		}
 
@@ -118,7 +118,7 @@ public class EvioDataDescriptor implements DataDescriptor {
 	}
 
 	public void show() {
-		System.out.println("\n\n>>> BANK name = " + this.getName() + " tag = " + this.getPropertyString("parent_tag"));
+		LOGGER.debug("\n\n>>> BANK name = " + this.getName() + " tag = " + this.getPropertyString("parent_tag"));
 		String[] entry_names = this.getEntryList();
 		TablePrintout table = new TablePrintout("Column:Tag:Number:Type", "24:8:8:12");
 		for (String item : entry_names) {
@@ -177,7 +177,7 @@ public class EvioDataDescriptor implements DataDescriptor {
 		EvioDataDescriptor desc = new EvioDataDescriptor("DC::true", "120", "0");
 		desc.init("DC:true:1200:1201/sector:1:float64/layer:2:int64/wire:3:int64");
 		desc.show();
-		System.out.println(desc);
+		LOGGER.debug(desc);
 		EvioDataDescriptor desc2 = new EvioDataDescriptor(desc.toString());
 		desc2.show();
 	}

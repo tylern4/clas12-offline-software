@@ -40,7 +40,7 @@ public class KppTrackingTest {
 
 		reader.close();
 
-		System.out.println("Total count: " + totalCount + ". 2 track count: " + twoTrackCount);
+		LOGGER.debug("Total count: " + totalCount + ". 2 track count: " + twoTrackCount);
 
 		assertEquals(twoTrackCount > 30, true); // this should be stricter!
 		

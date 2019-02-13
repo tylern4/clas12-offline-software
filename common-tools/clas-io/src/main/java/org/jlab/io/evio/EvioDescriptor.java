@@ -63,7 +63,7 @@ public class EvioDescriptor implements DataDescriptor {
 	}
 
 	public void show() {
-		System.out.println("-----> DataBankDescriptor NAME = " + this.name);
+		LOGGER.debug("-----> DataBankDescriptor NAME = " + this.name);
 		TablePrintout table = new TablePrintout("Column:Tag:Number:Type", "24:8:8:8");
 		Integer banktag = tag;
 		for (Map.Entry<String, Integer> item : nums.entrySet()) {
@@ -74,7 +74,7 @@ public class EvioDescriptor implements DataDescriptor {
 			tdata[3] = types.get(item.getKey()).toString();
 			table.addData(tdata);
 			/*
-			 * System.out.println(String.format("---------> %12s  tag=%5d  num=%5d  type=%5d", item.getKey(),tag,item.getValue(),types.get(item.getKey())));
+			 * LOGGER.debug(String.format("---------> %12s  tag=%5d  num=%5d  type=%5d", item.getKey(),tag,item.getValue(),types.get(item.getKey())));
 			 */
 		}
 		table.show();

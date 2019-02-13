@@ -19,14 +19,14 @@ public class DummyEngine extends ReconstructionEngine {
 
     public DummyEngine(){
         super("DUMMY","gavalian","1.0");
-        System.out.println(">>>>>> Executing constructor");
+        LOGGER.debug(">>>>>> Executing constructor");
     }
     
     @Override
     public boolean processDataEvent(DataEvent event) {
         EvioDataEvent  evioEvent = (EvioDataEvent) event;
         if(evioEvent.hasBank("FTOF::dgtz")){
-            //System.out.println("----> found your event ::: FTOF bank is present");
+            //LOGGER.debug("----> found your event ::: FTOF bank is present");
         }
         return true;
     }

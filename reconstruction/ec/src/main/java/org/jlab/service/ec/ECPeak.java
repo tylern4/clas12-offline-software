@@ -143,7 +143,7 @@ public class ECPeak {
         }
         
         this.peakDistanceEdge = this.peakDistanceEdge/logSumm;
-        //System.out.println(" LOG SUMM = " + logSumm);
+        //LOGGER.debug(" LOG SUMM = " + logSumm);
         
         this.peakLine.set(
                 pointOrigin.x()/logSumm,
@@ -248,7 +248,7 @@ public class ECPeak {
                 double left  = this.integral(i, 0);
                 double right = this.integral(i, 1);
                 double lf_ratio = left/right;
-                //System.out.println(String.format("\t STRIP %d  %12.5f %12.5f  RATIO %8.5f", 
+                //LOGGER.debug(String.format("\t STRIP %d  %12.5f %12.5f  RATIO %8.5f", 
                 //        i,left,right,left/right));
                 if(left>0.0&&right>0.0&&lf_ratio>ratio){
                     split = i;
@@ -256,7 +256,7 @@ public class ECPeak {
                 }
             }
         }
-        //System.out.println(" I THINK YOU SHOULD SPLIT IT at " + split);
+        //LOGGER.debug(" I THINK YOU SHOULD SPLIT IT at " + split);
         return split;
     }
     

@@ -60,7 +60,7 @@ public class ParticleReconstruction {
             if(gp.pid()==particleId){
                 Particle rp = recEvent.getMatched(i);
                 if(rp.vector().p()>0){
-                    //System.out.println("found event " );
+                    //LOGGER.debug("found event " );
                     double res_p   = (gp.vector().p()-rp.vector().p())/gp.vector().p();
                     double res_t   = (gp.vector().theta()-rp.vector().theta())*57.29;
                     double res_phi = (gp.vector().phi()-rp.vector().phi())*57.29;

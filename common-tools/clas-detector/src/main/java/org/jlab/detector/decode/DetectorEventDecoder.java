@@ -9,6 +9,9 @@ package org.jlab.detector.decode;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.detector.base.DetectorType;
 import org.jlab.detector.calib.utils.ConstantsManager;
 import org.jlab.detector.decode.DetectorDataDgtz.ADCData;
@@ -20,7 +23,7 @@ import org.jlab.utils.groups.IndexedTable;
  * @author gavalian
  */
 public class DetectorEventDecoder {
-    
+    public static Logger LOGGER = LogManager.getLogger(DetectorEventDecoder.class.getName());
     ConstantsManager  translationManager = new ConstantsManager();
     ConstantsManager  fitterManager      = new ConstantsManager();
     
@@ -128,7 +131,7 @@ public class DetectorEventDecoder {
             int slot     = data.getDescriptor().getSlot();
             int channel  = data.getDescriptor().getChannel();
             //if(crate==69){
-	    //System.out.println(" MVT " + crate + " " + slot + 
+	    //LOGGER.debug(" MVT " + crate + " " + slot + 
 	    //  "  " + channel);
 	// }
             boolean hasBeenAssigned = false;
@@ -144,7 +147,7 @@ public class DetectorEventDecoder {
                     int order     = tt.getIntValue("order", crate,slot,channel);
                     
                     /*if(crate>60&&crate<64){
-                        System.out.println(" SVT " + sector + " " + layer + 
+                        LOGGER.debug(" SVT " + sector + " " + layer + 
                                 "  " + component);
                     }*/
                     data.getDescriptor().setSectorLayerComponent(sector, layer, component);
@@ -167,7 +170,7 @@ public class DetectorEventDecoder {
             int crate    = data.getDescriptor().getCrate();
             int slot     = data.getDescriptor().getSlot();
             int channel  = data.getDescriptor().getChannel();
-            //System.out.println(" looking for " + crate + "  " 
+            //LOGGER.debug(" looking for " + crate + "  " 
             //       + slot + " " + channel);
             for(String table : keysFitter){
                 //custom MM fitter
@@ -204,16 +207,16 @@ public class DetectorEventDecoder {
                             for(int i = 0; i < data.getADCSize(); i++){
                                 ADCData adc = data.getADCData(i);
                                 if(adc.getPulseSize()>0){
-                                    //System.out.println("-----");
-                                    //System.out.println(" FITTING PULSE " + 
+                                    //LOGGER.debug("-----");
+                                    //LOGGER.debug(" FITTING PULSE " + 
                                     //        crate + " / " + slot + " / " + channel);
                                     try {
                                         extendedFitter.fit(nsa, nsb, tet, ped, adc.getPulseArray());
                                     } catch (Exception e) {
-                                        System.out.println(">>>> error : fitting pulse "
+                                        LOGGER.debug(">>>> error : fitting pulse "
                                                             +  crate + " / " + slot + " / " + channel);
                                     }
-                                    //System.out.println(" FIT RESULT = " + extendedFitter.adc + " / "
+                                    //LOGGER.debug(" FIT RESULT = " + extendedFitter.adc + " / "
                                     //        + this.extendedFitter.t0 + " / " + this.extendedFitter.ped);
                                     int adc_corrected = extendedFitter.adc + extendedFitter.ped*(nsa+nsb);
                                     adc.setHeight((short) this.extendedFitter.pulsePeakValue);
@@ -221,7 +224,7 @@ public class DetectorEventDecoder {
                                     adc.setTimeWord(this.extendedFitter.t0);
                                     adc.setPedestal((short) this.extendedFitter.ped);  
 //                                    if(table.equals("RF")&&data.getDescriptor().getType().getName().equals("RF")) 
-//                                        System.out.println(" FITTING PULSE " + 
+//                                        LOGGER.debug(" FITTING PULSE " + 
 //                                                        crate + " / " + slot + " / " + channel
 //                                                + " " + nsa + " " + nsb + " " + tet 
 //                                                + " " + extendedFitter.adc + " " + extendedFitter.ped*(nsa+nsb)
@@ -230,7 +233,7 @@ public class DetectorEventDecoder {
                                 }
                             }
                         }
-                        //System.out.println(" apply nsa nsb " + nsa + " " + nsb);
+                        //LOGGER.debug(" apply nsa nsb " + nsa + " " + nsb);
                         if(data.getADCSize()>0){
                             for(int i = 0; i < data.getADCSize(); i++){
                                     data.getADCData(i).setADC(nsa, nsb);

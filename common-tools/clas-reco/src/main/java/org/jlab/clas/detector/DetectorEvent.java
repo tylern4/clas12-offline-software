@@ -3,6 +3,9 @@ package org.jlab.clas.detector;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.clas.physics.Particle;
 import org.jlab.clas.physics.PhysicsEvent;
 import org.jlab.detector.base.DetectorType;
@@ -14,7 +17,7 @@ import org.jlab.io.base.DataEvent;
  * @author gavalian
  */
 public class DetectorEvent {
-    
+    public static Logger LOGGER = LogManager.getLogger(DetectorEvent.class.getName());
     private List<DetectorParticle>  particleList = new ArrayList<DetectorParticle>();
     private PhysicsEvent          generatedEvent = new PhysicsEvent();
     private PhysicsEvent      reconstructedEvent = new PhysicsEvent();
@@ -25,7 +28,7 @@ public class DetectorEvent {
     }
    
     public void sort() {
-        System.err.println("DetectorEvent:  Not ready for sorting!!!!!!!!!");
+        LOGGER.warn("DetectorEvent:  Not ready for sorting!!!!!!!!!");
         Collections.sort(particleList);
         setAssociation();
     }

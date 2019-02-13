@@ -112,7 +112,7 @@ public class EBio {
                         bank.getDouble("c1_uy", i),
                         bank.getDouble("c1_uz", i)
                 );         
-                //   System.out.println(p.getLowerCross());
+                //   LOGGER.debug(p.getLowerCross());
                 p.setPath(bank.getDouble("pathlength", i));
                 p.setCharge(bank.getInt("q", i));
                 dpList.add(p);

@@ -125,7 +125,7 @@ public class ExtendedFADCFitter implements IFADCFitter {
                     int a1 = pulse[s1+1];
                     pulseWidth  = s1 - s0;
                 }
-//                System.out.println(ped + " " + pmax + " " + adc + " " + tcross + " " + ((float) tcourse+tfine/64.) + " " + ppos);
+//                LOGGER.debug(ped + " " + pmax + " " + adc + " " + tcross + " " + ((float) tcourse+tfine/64.) + " " + ppos);
             }
 
     }
@@ -158,7 +158,7 @@ public class ExtendedFADCFitter implements IFADCFitter {
         if(min_bin>=0&&max_bin<data.getPulseSize()){
             
         } else {
-            System.out.println("MIN _ MAX out of range....");            
+            LOGGER.debug("MIN _ MAX out of range....");            
         }
         return 0;
     }

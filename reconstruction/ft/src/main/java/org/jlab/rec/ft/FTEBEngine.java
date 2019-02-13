@@ -71,7 +71,7 @@ public class FTEBEngine extends ReconstructionEngine {
     public int setRunConditionsParameters(DataEvent event) {
         int run = -1;
         if (event.hasBank("RUN::config") == false) {
-            System.err.println("RUN CONDITIONS NOT READ!");
+            LOGGER.warn("RUN CONDITIONS NOT READ!");
         }
         else {
             double fieldScale = 0;

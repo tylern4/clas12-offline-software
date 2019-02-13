@@ -1,5 +1,8 @@
 package org.jlab.rec.cvt.hit;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * A hit characterized by layer, sector, wire number, and Edep. The ADC to time
  * conversion has been done.
@@ -8,6 +11,7 @@ package org.jlab.rec.cvt.hit;
  *
  */
 public class Hit implements Comparable<Hit> {
+    public static Logger LOGGER = LogManager.getLogger(Hit.class.getName());
     // class implements Comparable interface to allow for sorting a collection of hits by wire number values
 
     // constructor
@@ -142,7 +146,7 @@ public class Hit implements Comparable<Hit> {
      */
     public void printInfo() {
         String s = " Hit: Detector " + this.get_Detector() + "ID " + this.get_Id() + " Sector " + this.get_Sector() + " Layer " + this.get_Layer() + " Strip " + this.get_Strip().get_Strip() + " Edep " + this.get_Strip().get_Edep();
-        System.out.println(s);
+        LOGGER.debug(s);
     }
 
     /**

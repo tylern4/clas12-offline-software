@@ -40,7 +40,7 @@ public class BasicFADCFitter  implements IFADCFitter {
     
     public void fit(DetectorDataDgtz.ADCData data) {
         if(data.getPulseSize()==0) {
-            System.out.println("[SimpleFADCFitter] ---> there is no pulse in ADCData..");
+            LOGGER.debug("[SimpleFADCFitter] ---> there is no pulse in ADCData..");
             return;
         }
         

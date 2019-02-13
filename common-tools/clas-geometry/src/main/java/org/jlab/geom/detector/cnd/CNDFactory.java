@@ -192,7 +192,7 @@ public class CNDFactory implements Factory <CNDDetector, CNDSector, CNDSuperlaye
 
     @Override
     public void show() {
-        System.out.println(this);
+        LOGGER.debug(this);
     }
     
     @Override

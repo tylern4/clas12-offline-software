@@ -13,12 +13,15 @@ import org.jlab.clas.physics.EventFilter;
 import org.jlab.clas.physics.Particle;
 import org.jlab.clas.physics.PhysicsEvent;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  *
  * @author gavalian
  */
 public class PhysicsEventProcessor {
-    
+    public static Logger LOGGER = LogManager.getLogger(PhysicsEventProcessor.class.getName());
     private final TreeMap<String,PhysicsEventOperator>  operators = new TreeMap<String,PhysicsEventOperator>();
     private final TreeMap<String,PhysicsParticleDescriptor>  particleDescriptors = 
             new TreeMap<String,PhysicsParticleDescriptor>();
@@ -77,21 +80,21 @@ public class PhysicsEventProcessor {
         String[] tokens = cuts.split("&");
         
         if(this.particleDescriptors.containsKey(var)==false){
-            System.out.println("[PHYS-PROC] --->  warning : adding histogram ["
+            LOGGER.warn("[PHYS-PROC] --->  warning : adding histogram ["
                     + name + "] unsuccessful. no variable [" + var + "] is defined");
             return;
         }
         
         PhysicsHistogramDescriptor  desc = new PhysicsHistogramDescriptor(
                 name,nbins,min,max,var,"");
-        //System.out.println("ADDING CUTS SIZE TOKENS = " + tokens.length);
+        //LOGGER.debug("ADDING CUTS SIZE TOKENS = " + tokens.length);
         desc.getCuts().clear();
         for(String item : tokens){
             if(this.cutDescriptors.containsKey(item)==true){
                 desc.addCut(item);
-                //System.out.println(" adding cut ["+item+"]");
+                //LOGGER.debug(" adding cut ["+item+"]");
             } else {
-                System.out.println("[PHYS-PROC] --->  warning : adding "
+                LOGGER.warn("[PHYS-PROC] --->  warning : adding "
                 + " cut ["+ item+"] to histogram ["+name+"] failed. not cut with that name found");
             }
         }
@@ -154,7 +157,7 @@ public class PhysicsEventProcessor {
             if(this.operators.containsKey(cut)==true){
                 if(this.operators.get(cut).isValid()==false) return false;
             } else {
-                System.out.println("[PhysicsEventProcessor] ERROR : processing operator [" 
+                LOGGER.error("[PhysicsEventProcessor] ERROR : processing operator ["
                         + oper + "]. Could not find cut named [" + cut + "]" );
             }
         }
@@ -172,7 +175,7 @@ public class PhysicsEventProcessor {
                     desc.getValue().getVariable(),
                     desc.getValue().getParticle(),desc.getValue().getValue()));
         }
-        System.out.println(str.toString());
+        LOGGER.debug(str.toString());
     }
     @Override
     public String toString(){

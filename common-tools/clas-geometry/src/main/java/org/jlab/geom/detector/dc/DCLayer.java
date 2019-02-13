@@ -77,19 +77,19 @@ public class DCLayer extends AbstractLayer<DriftChamberWire> {
             if (boundary.hasIntersectionSegment(line)) {
                 int closestComponentId = -1;
                 int icount = boundary.intersection(line, intersections);                
-                //System.err.println("-------> intersections size = " + icount
+                //LOGGER.warn("-------> intersections size = " + icount
                 //+ " " + intersections.size());
                 if(icount>0) hitPosition = intersections.get(0);
                 double closestDist = 1000.0;
                 List<DriftChamberWire> wires = getAllComponents();
                 for (int componentId=0; componentId<wires.size(); componentId++) {
                     double dist = wires.get(componentId).getLine().distance(line).length();
-                    //System.err.println("-----> component " + componentId
+                    //LOGGER.warn("-----> component " + componentId
                     //+ "  dist = " + dist);
                     if(closestDist > dist) {
                         closestDist = dist;
                         closestComponentId = componentId;
-                        //System.err.println("====>>> Component changed " + closestComponentId
+                        //LOGGER.warn("====>>> Component changed " + closestComponentId
                         //+ "  dist = " + closestDist);
                     }
                 }

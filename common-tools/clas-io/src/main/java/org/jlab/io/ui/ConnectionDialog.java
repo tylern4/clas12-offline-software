@@ -126,7 +126,7 @@ public class ConnectionDialog extends BasicDialog {
             //List<String> etFiles = FileUtils.dirListStartsWith("/tmp", "et_sys");
             //List<String> etFiles = FileUtils.dirListStartsWith("/Users/gavalian/Work", "d");
             for(String f : etFiles){
-                System.out.println(" -----> " + f);
+                LOGGER.debug(" -----> " + f);
             }
             String[] etList = new String[etFiles.size()];       
             for(int i = 0; i < etFiles.size(); i++) etList[i] = etFiles.get(i);            
@@ -190,7 +190,7 @@ public class ConnectionDialog extends BasicDialog {
         try {
             port = Integer.parseInt(port_number);
         } catch (Exception e) {
-            System.out.println("ERROR : the string provided is not a number : " + port_number);
+            LOGGER.debug("ERROR : the string provided is not a number : " + port_number);
         }
         return port;
     }
@@ -222,7 +222,7 @@ public class ConnectionDialog extends BasicDialog {
     public static void main(String arg[]) {
         ConnectionDialog dialog = new ConnectionDialog();
         dialog.setVisible(true);
-        System.out.println(" REASON = " + dialog.reason());
+        LOGGER.debug(" REASON = " + dialog.reason());
     }
         
 }

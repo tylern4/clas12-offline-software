@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.detector.base.DetectorType;
 import org.jlab.io.base.DataEvent;
 import org.jlab.clas.detector.DetectorData;
@@ -30,7 +32,7 @@ import org.jlab.rec.eb.SamplingFractions;
  * @author baltzell
  */
 public class EventBuilder {
-
+    public static Logger LOGGER = LogManager.getLogger(EventBuilder.class.getName());
     public EBCCDBConstants ccdb;
     private DetectorEvent               detectorEvent = new DetectorEvent();
     private List<DetectorResponse>  detectorResponses = new ArrayList<DetectorResponse>();
@@ -376,8 +378,8 @@ public class EventBuilder {
     public void show(){
 
         int np = this.detectorEvent.getParticles().size();
-        System.out.println(">>>>>>>>> DETECTOR EVENT WITH PARTICLE COUNT # " + np);
-        System.out.println(this.detectorEvent.toString());
+        LOGGER.debug(">>>>>>>>> DETECTOR EVENT WITH PARTICLE COUNT # " + np);
+        LOGGER.debug(this.detectorEvent.toString());
     }
 }
 

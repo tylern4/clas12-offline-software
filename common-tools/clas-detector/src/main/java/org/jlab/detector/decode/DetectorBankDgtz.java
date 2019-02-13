@@ -7,6 +7,9 @@ package org.jlab.detector.decode;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.detector.base.DetectorCollection;
 import org.jlab.detector.base.DetectorType;
 import org.jlab.detector.decode.DetectorDataDgtz.ADCData;
@@ -24,7 +27,7 @@ import org.jlab.utils.groups.IndexedList;
  * @author gavalian
  */
 public class DetectorBankDgtz {
-    
+    public static Logger LOGGER = LogManager.getLogger(DetectorDataDgtz.class.getName());
     public static final int         BANKTYPE_ADC = 1;
     public static final int         BANKTYPE_TDC = 2;
     public static final int     BANKTYPE_ADC_TDC = 3;
@@ -124,10 +127,10 @@ public class DetectorBankDgtz {
     
     
     public void show(){
-        System.out.println("bank show #### " + bankName);
+        LOGGER.debug("bank show #### " + bankName);
         for(DetectorDataDgtz data : this.dgtzData){
-            System.out.println("-----------");
-            System.out.println(data.toString());
+            LOGGER.debug("-----------");
+            LOGGER.debug(data.toString());
         }
     }
     public static void main(String[] args){
@@ -155,9 +158,9 @@ public class DetectorBankDgtz {
             List<DetectorDataDgtz>  dataSet = decoder.getDataEntries((EvioDataEvent) event);
             detectorDecoder.translate(dataSet);
             //detectorDecoder.fitPulses(dataSet);
-            System.out.println("------------------ ######### ");
+            LOGGER.debug("------------------ ######### ");
             for(DetectorDataDgtz data : dataSet){
-                System.out.println(data);
+                LOGGER.debug(data);
             }
         }
         

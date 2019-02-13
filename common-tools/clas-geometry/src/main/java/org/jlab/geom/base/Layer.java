@@ -1,6 +1,9 @@
 package org.jlab.geom.base;
 
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.geom.DetectorHit;
 import org.jlab.geom.DetectorId;
 import org.jlab.geom.Showable;
@@ -49,6 +52,7 @@ import org.jlab.geom.prim.Transformation3D;
  * the {@code Layer}
  */
 public interface Layer<ComponentType extends Component> extends Showable {
+    Logger LOGGER = LogManager.getLogger(Layer.class.getName());
     /**
      * Returns the id of the detector that this layer is contained in.
      * @return the id of this layer's detector
@@ -165,7 +169,7 @@ public interface Layer<ComponentType extends Component> extends Showable {
      * Point3D point = layer.getComponent(0).getMidpoint();<br>
      * Point3D local = new Point3D(point);<br>
      * inverse.apply(local);<br>
-     * System.out.println("Current Coords:"+point+" Local Coords: "+local);
+     * LOGGER.debug("Current Coords:"+point+" Local Coords: "+local);
      * </code>
      * Example: Applying alignment calibrations<br>
      * <code>
@@ -201,7 +205,7 @@ public interface Layer<ComponentType extends Component> extends Showable {
     String getType();
     
     /**
-     * Invokes {@code System.out.println(this)}.
+     * Invokes {@code LOGGER.debug(this)}.
      */
     void show();
 }

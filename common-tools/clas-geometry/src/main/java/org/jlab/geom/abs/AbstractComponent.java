@@ -76,7 +76,7 @@ public abstract class AbstractComponent implements Component {
     @Override
     public final Point3D getVolumePoint(int pointIndex) {
         if (pointIndex<0 || pointIndex>=getNumVolumePoints()) {
-            System.err.println("AbstractComponent: getVolumePoint(int pointIndex): pointIndex="+pointIndex+" is not in range [0,"+(getNumVolumePoints()-1)+")");
+            LOGGER.warn("AbstractComponent: getVolumePoint(int pointIndex): pointIndex="+pointIndex+" is not in range [0,"+(getNumVolumePoints()-1)+")");
             return new Point3D(0, 0, -100000);
         }
         return volumePoints.get(pointIndex);
@@ -104,7 +104,7 @@ public abstract class AbstractComponent implements Component {
     @Override
     public final Line3D getVolumeEdge(int edgeIndex) {
         if (edgeIndex<0 || edgeIndex>=getNumVolumeEdges()) {
-            System.err.println("AbstractComponent: getVolumeEdge(int edgeIndex): edgeIndex="+edgeIndex+" is not in range [0,"+(getNumVolumeEdges()-1)+"]");
+            LOGGER.warn("AbstractComponent: getVolumeEdge(int edgeIndex): edgeIndex="+edgeIndex+" is not in range [0,"+(getNumVolumeEdges()-1)+"]");
             return new Line3D(0, 0, -100000, 0, 0, -100000);
         }
         
@@ -320,7 +320,7 @@ public abstract class AbstractComponent implements Component {
     
     @Override
     public void show() {
-        System.out.println(this);
+        LOGGER.debug(this);
     }
     
     @Override

@@ -3,6 +3,8 @@ package org.jlab.rec.cnd.hit;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.geom.prim.Point3D;
 import org.jlab.io.base.DataBank;
 import org.jlab.io.base.DataEvent;
@@ -11,7 +13,7 @@ import org.jlab.rec.cnd.constants.Parameters;
 import org.jlab.rec.cvt.trajectory.Helix;
 
 public class CvtGetHTrack { // this class is used to extract helical tracks from the cvt event bank. 
-
+    public static Logger LOGGER = LogManager.getLogger(CvtGetHTrack.class.getName());
     public CvtGetHTrack() {
         helices = new ArrayList<CVTTrack>();
     }
@@ -31,24 +33,24 @@ public class CvtGetHTrack { // this class is used to extract helical tracks from
         helices.clear();
 
         if (event == null) { // check if there is an event
-            //System.out.println(" no event");
+            //LOGGER.debug(" no event");
         }
 
         if (event.hasBank("CVTRec::Tracks") == false) {
 			// check if there are some cvt tracks in the event
-            //System.out.println(" no cvt tracks");
+            //LOGGER.debug(" no cvt tracks");
         }
 
         if (event.hasBank("CVTRec::Tracks") == true) {
 
-            //System.out.println(" cvt tracks present");
+            //LOGGER.debug(" cvt tracks present");
             DataBank bank = event.getBank("CVTRec::Tracks");
             DataBank config = event.getBank("RUN::config");
 
             int nt = bank.rows();   // number of tracks in the cvt event
 
 			//test (check if cvt bank is here)
-            //System.out.println("number of cvt tracks "+nt);
+            //LOGGER.debug("number of cvt tracks "+nt);
             //bank.show();
             //config.show();
             // retrieve the helix parameters
@@ -68,12 +70,12 @@ public class CvtGetHTrack { // this class is used to extract helical tracks from
 
 				//test (check the parameters)
                 //				bank.show();
-                //				System.out.println("p helixi "+bank.getFloat("p", i));
-                //				System.out.println("pt "+bank.getFloat("pt", i));
-                //				System.out.println(config.getFloat("solenoid",0));
-                //				System.out.println(bank.getFloat("tandip", i));
-                //				System.out.println((bank.getFloat("cov_d02", i)));
-                //				System.out.println("R "+ 1./rho);
+                //				LOGGER.debug("p helixi "+bank.getFloat("p", i));
+                //				LOGGER.debug("pt "+bank.getFloat("pt", i));
+                //				LOGGER.debug(config.getFloat("solenoid",0));
+                //				LOGGER.debug(bank.getFloat("tandip", i));
+                //				LOGGER.debug((bank.getFloat("cov_d02", i)));
+                //				LOGGER.debug("R "+ 1./rho);
 				//not used in the code
                 //m.set(0,0, bank.getFloat("cov_d02", i));
                 //m.set(0,1, bank.getFloat("cov_d0phi0", i));
@@ -87,7 +89,7 @@ public class CvtGetHTrack { // this class is used to extract helical tracks from
                 //m.set(3,3, bank.getFloat("cov_z02", i));
                 //m.set(4,4, bank.getFloat("cov_tandip2", i));
 				//Helix helixi = new Helix(dca,phi0,rho,z0,tandip,null); // reconstruct the helix from the cvt track
-                //System.out.println("helix proj "+helixi.getPointAtRadius(CalibrationConstantsLoader.INNERRADIUS[0]).toString());
+                //LOGGER.debug("helix proj "+helixi.getPointAtRadius(CalibrationConstantsLoader.INNERRADIUS[0]).toString());
                 //Track track= new Track(helixi);
                 //track.set_P(p);
                 //track.set_Pt(pt);

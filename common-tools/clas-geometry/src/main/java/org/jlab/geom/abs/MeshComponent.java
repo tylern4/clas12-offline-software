@@ -97,7 +97,7 @@ public class MeshComponent implements Component {
 
     @Override
     public void show() {
-        System.out.println("Mesh3D component");
+        LOGGER.debug("Mesh3D component");
     }
 
     @Override

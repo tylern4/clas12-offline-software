@@ -5,6 +5,8 @@
  */
 package org.jlab.detector.volume;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.detector.units.Measurement;
 
 import eu.mihosoft.vrl.v3d.CSG;
@@ -25,7 +27,7 @@ import org.jlab.geometry.prim.Line3d;
  * @author kenjo
  */
 public abstract class Geant4Basic {
-
+    Logger LOGGER = LogManager.getLogger(Geant4Basic.class.getName());
     protected String volumeName;
     protected String volumeType;
     protected int[] rgb = {0x00, 0x00, 0xff};
@@ -194,7 +196,7 @@ public abstract class Geant4Basic {
                 volumeRotation.rotX(r3).rotY(r2).rotZ(r1);
                 break;
             default:
-                System.out.println("[GEANT4VOLUME]---> unknown rotation " + order);
+                LOGGER.debug("[GEANT4VOLUME]---> unknown rotation " + order);
                 break;
         }
 

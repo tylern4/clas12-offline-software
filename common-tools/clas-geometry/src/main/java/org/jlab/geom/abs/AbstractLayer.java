@@ -1,5 +1,7 @@
 package org.jlab.geom.abs;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.geom.base.Component;
 import org.jlab.geom.base.Layer;
 import java.util.ArrayList;
@@ -158,7 +160,7 @@ public abstract class AbstractLayer<ComponentType extends Component> implements 
     public final ComponentType getComponent(int componentId) {
         ComponentType component = componentMap.get(componentId);
         if (component == null)
-            System.err.println("AbstractLayer: getComponent(int componentId): no such component: componentId="+componentId);
+            LOGGER.warn("AbstractLayer: getComponent(int componentId): no such component: componentId="+componentId);
         return component;
     }
     
@@ -185,7 +187,7 @@ public abstract class AbstractLayer<ComponentType extends Component> implements 
     @Override
     public final void setTransformation(Transformation3D transform) {
         if (transform == null) {
-            System.out.println("AbstractLayer: setTransformation(Transformation3D transform): transform is null");
+            LOGGER.debug("AbstractLayer: setTransformation(Transformation3D transform): transform is null");
             return;
         }
         Transformation3D xform = this.transform.inverse();

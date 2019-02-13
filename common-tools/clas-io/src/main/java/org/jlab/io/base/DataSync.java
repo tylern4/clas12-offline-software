@@ -6,12 +6,15 @@
 
 package org.jlab.io.base;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  *
  * @author gavalian
  */
 public interface DataSync {
-    
+    Logger LOGGER = LogManager.getLogger(DataBank.class.getName());
     void open(String file);
     void writeEvent(DataEvent event);
     void close();

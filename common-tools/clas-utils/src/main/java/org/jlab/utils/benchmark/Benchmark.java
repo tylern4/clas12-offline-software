@@ -6,6 +6,9 @@
 
 package org.jlab.utils.benchmark;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -19,7 +22,7 @@ import java.util.TreeMap;
  * @author gavalian
  */
 public class Benchmark {
-    
+    public static Logger LOGGER = LogManager.getLogger(ProgressPrintout.class.getName());
     private static Benchmark  benchmarkInstance = new Benchmark();
     
     private final Map<String,BenchmarkTimer> timerStore = new HashMap<String,BenchmarkTimer>();
@@ -36,7 +39,7 @@ public class Benchmark {
                 public void run()
                 {
                     //what to do at each excecution
-                    System.out.println(benchmarkStringValue());
+                    LOGGER.debug(benchmarkStringValue());
                 }
             };
         updateTimer = new Timer("Benchmark");
@@ -56,7 +59,7 @@ public class Benchmark {
     
     public void addTimer(String name){
         if(timerStore.containsKey(name)==true){
-            System.err.println("[Benchmark] -----> error. timer with name ("
+            LOGGER.warn("[Benchmark] -----> error. timer with name ("
             + name + ") already exists");
         } else {
             BenchmarkTimer timer = new BenchmarkTimer(name);
@@ -66,7 +69,7 @@ public class Benchmark {
     
     public void pause(String name){
         if(timerStore.containsKey(name)==false){
-            System.err.println("[Benchmark] -----> error. no timer defined with name ("
+            LOGGER.warn("[Benchmark] -----> error. no timer defined with name ("
             + name + ")");
         } else {
             timerStore.get(name).pause();
@@ -75,7 +78,7 @@ public class Benchmark {
     
     public void resume(String name){
         if(timerStore.containsKey(name)==false){
-            //System.err.println("[Benchmark] -----> error. no timer defined with name ("
+            //LOGGER.warn("[Benchmark] -----> error. no timer defined with name ("
             //+ name + ")");
             addTimer(name);
             timerStore.get(name).resume();

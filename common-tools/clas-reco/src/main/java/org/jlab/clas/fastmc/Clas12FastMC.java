@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.clas.physics.Particle;
 import org.jlab.clas.physics.PhysicsEvent;
 import org.jlab.geom.DetectorHit;
@@ -22,7 +24,7 @@ import org.jlab.geom.prim.Path3D;
  * @author gavalian
  */
 public class Clas12FastMC {
-
+	public static Logger LOGGER = LogManager.getLogger(Clas12FastMC.class.getName());
 	private ParticleSwimmer particleSwimmer = null;
 	List<DetectorSensitivity> mcSensitivity = new ArrayList<DetectorSensitivity>();
 	Map<String, Detector> mcDetectors = new LinkedHashMap<String, Detector>();
@@ -125,11 +127,11 @@ public class Clas12FastMC {
 	 */
 	public boolean checkParticle(Particle part) {
 		/*
-		 * Path3D particlePath = particleSwimmer.getParticlePath(part); if(this.debugMode>0){ System.out.println("[check-particle] --> PART : " +
+		 * Path3D particlePath = particleSwimmer.getParticlePath(part); if(this.debugMode>0){ LOGGER.debug("[check-particle] --> PART : " +
 		 * part.toLundString()); } for(DetectorSensitivity ds : fastMCDetectors){
 		 * 
 		 * List<DetectorHit> hits = ds.getDetector().getLayerHits(particlePath); int nhits = 0; if(hits!=null){ nhits = hits.size(); } if(this.debugMode>0){
-		 * System.out.println( String.format("\t DET : %12s :  N hits = %8d", ds.getDetector().getType(),nhits)); }
+		 * LOGGER.debug( String.format("\t DET : %12s :  N hits = %8d", ds.getDetector().getType(),nhits)); }
 		 * 
 		 * if(part.charge()==0){ if(nhits<ds.requiredLayersNeutral) return false; } else { if(nhits<ds.requiredLayersCharged) return false; } }
 		 */
@@ -193,20 +195,20 @@ public class Clas12FastMC {
 
 	public void showDetectorResponses(Particle part) {
 		Map<String, Integer> detectors = this.getDetectorResponses(part);
-		System.out.println("[RESPONSES] --> PARTICLE : " + part.toLundString());
+		LOGGER.debug("[RESPONSES] --> PARTICLE : " + part.toLundString());
 		for (Map.Entry<String, Integer> entry : detectors.entrySet()) {
-			System.out.println(String.format("\t DETECTOR [%8s] :  N hits = %12d", entry.getKey(), entry.getValue()));
+			LOGGER.debug(String.format("\t DETECTOR [%8s] :  N hits = %12d", entry.getKey(), entry.getValue()));
 		}
 	}
 
 	public void show() {
-		System.out.println(" DETECTORS LOADED");
+		LOGGER.debug(" DETECTORS LOADED");
 		for (Map.Entry<String, Detector> entry : this.mcDetectors.entrySet()) {
-			System.out.println(String.format("\t Detector : %8s : SECTORS = %4d", entry.getKey(), entry.getValue().getNumSectors()));
+			LOGGER.debug(String.format("\t Detector : %8s : SECTORS = %4d", entry.getKey(), entry.getValue().getNumSectors()));
 		}
-		System.out.println(" PARTICLE SELECTION FILTERS");
+		LOGGER.debug(" PARTICLE SELECTION FILTERS");
 		for (DetectorSensitivity filter : this.mcSensitivity) {
-			System.out.println("\t" + filter.toString());
+			LOGGER.debug("\t" + filter.toString());
 		}
 	}
 
@@ -221,7 +223,7 @@ public class Clas12FastMC {
 		public DetectorSensitivity(int pch, String[] dnames, int[] hits) {
 			charge = pch;
 			if (dnames.length != hits.length) {
-				System.out.println("[DetectorSensitivity] ERROR : " + "number of detector names doe not match number of hits"
+				LOGGER.debug("[DetectorSensitivity] ERROR : " + "number of detector names doe not match number of hits"
 				        + dnames.length + " " + hits.length);
 			} else {
 				for (int i = 0; i < dnames.length; i++) {

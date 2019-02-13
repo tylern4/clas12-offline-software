@@ -1,6 +1,9 @@
 package org.jlab.rec.dc.trajectory;
 
 import Jama.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * A StateVec describes a cross measurement in the DC.  It is characterized by a point in the DC
  * tilted coordinate system at each wire plane (i.e. constant z) and by unit tangent vectors in the x and y 
@@ -10,6 +13,7 @@ import Jama.*;
  *
  */
 public class StateVec extends Matrix {
+    public static Logger LOGGER = LogManager.getLogger(StateVec.class.getName());
 	
     /**
      * serialVersionUID
@@ -193,7 +197,7 @@ public class StateVec extends Matrix {
 
 
     public void printInfo() {
-            System.out.println("StateVec [ "+this.x()+", "+this.y()+", "+this.tanThetaX()+", "+this.tanThetaY()+" ] ");
+            LOGGER.debug("StateVec [ "+this.x()+", "+this.y()+", "+this.tanThetaX()+", "+this.tanThetaY()+" ] ");
     }
 
 }

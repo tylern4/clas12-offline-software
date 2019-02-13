@@ -6,25 +6,28 @@
 
 package org.jlab.utils;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  *
  * @author gavalian
  * @author kenjo
  */
 public class CLASResources {
-    
+    public static Logger LOGGER = LogManager.getLogger(CLASResources.class.getName());
     public static String getResourcePath(String resource){
         String CLAS12DIR = System.getenv("CLAS12DIR");
         String CLAS12DIRPROP = System.getProperty("CLAS12DIR");
         if(CLAS12DIR!=null){
             return CLAS12DIR + "/" + resource;
         } else {
-            System.err.println("[getResourcePath]---> warning the system "
+            LOGGER.warn("[getResourcePath]---> warning the system "
                 + " environment CLAS12DIR is not set.");
             if(CLAS12DIRPROP!=null){
                 return CLAS12DIRPROP + "/" + resource;
             } else {
-                System.err.println("[getResourcePath]---> warning the system "
+                LOGGER.warn("[getResourcePath]---> warning the system "
                 + " property CLAS12DIR is not set.");
             }
         }
@@ -37,13 +40,13 @@ public class CLASResources {
         if(envvar!=null){
             return envvar;
         } else {
-            System.err.println("[getEnvironmentVariable]---> warning the system "
+            LOGGER.warn("[getEnvironmentVariable]---> warning the system "
                 + " environment " + envvarname + " is not set.");
         	  envvar = System.getProperty(envvarname);
             if(envvar!=null){
                 return envvar;
             } else {
-                System.err.println("[getEnvironmentVariable]---> warning the system "
+                LOGGER.warn("[getEnvironmentVariable]---> warning the system "
                 + " property " + envvarname + " is not set.");
             }
         }

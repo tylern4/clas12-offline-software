@@ -41,11 +41,11 @@ public class DataAnalysis {
             DataEvent event = reader.getNextEvent();
             DetectorEvent detEvent = DetectorData.readDetectorEvent(event);
             if(filter.isValid(detEvent.getPhysicsEvent())==true){
-                //System.out.println(detEvent.getPhysicsEvent().toLundString());
+                //LOGGER.debug(detEvent.getPhysicsEvent().toLundString());
                 Particle part = detEvent.getPhysicsEvent().getParticle(parser.getOption("-part").stringValue());
                 double var = part.get(parser.getOption("-var").stringValue());
-                //System.out.println(" getting particle " + parser.getOption("-part").stringValue());
-                //System.out.println(" " + part.get(parser.getOption("-var").stringValue()));
+                //LOGGER.debug(" getting particle " + parser.getOption("-part").stringValue());
+                //LOGGER.debug(" " + part.get(parser.getOption("-var").stringValue()));
                 h1.fill(var);
             }
         }

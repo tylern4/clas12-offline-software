@@ -3,6 +3,8 @@ package org.jlab.rec.tof.cluster;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.geom.prim.Point3D;
 import org.jlab.rec.ftof.Constants;
 import org.jlab.rec.tof.hit.AHit;
@@ -13,7 +15,7 @@ import org.jlab.rec.tof.hit.AHit;
  *
  */
 public class Cluster extends ArrayList<AHit> implements Comparable<Cluster> {
-
+    public static Logger LOGGER = LogManager.getLogger(Cluster.class.getName());
     /**
      *
      */
@@ -305,7 +307,7 @@ public class Cluster extends ArrayList<AHit> implements Comparable<Cluster> {
                 + " xPos =  " + form.format(_x) + " yPos =  " + form.format(_y)
                 + " zPos =  " + form.format(_z);
 
-        System.out.println(s);
+        LOGGER.debug(s);
     }
 
     public int[] indexesClusHitsMatchedToTrk;

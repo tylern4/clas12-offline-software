@@ -12,6 +12,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.clas.swimtools.MagFieldsEngine;
 import org.jlab.clas.swimtools.Swim;
 
@@ -40,8 +42,7 @@ import org.jlab.rec.dc.timetodistance.TimeToDistanceEstimator;
 import org.jlab.rec.dc.trajectory.SegmentTrajectory;
 
 public class LayerEfficiencyAnalyzer extends DCEngine implements IDataEventListener{
-    
-
+    public static Logger LOGGER = LogManager.getLogger(LayerEfficiencyAnalyzer.class.getName());
     public LayerEfficiencyAnalyzer(){
         super("LE");
         tde = new TimeToDistanceEstimator();
@@ -277,7 +278,7 @@ public class LayerEfficiencyAnalyzer extends DCEngine implements IDataEventListe
     public boolean processDataEvent(DataEvent event) {
         //setRunConditionsParameters( event) ;
         if(event.hasBank("RUN::config")==false) {
-            System.err.println("RUN CONDITIONS NOT READ AT TIMEBASED LEVEL!");
+            LOGGER.warn("RUN CONDITIONS NOT READ AT TIMEBASED LEVEL!");
             return true;
         }
         //if(event.getBank("RECHB::Event").getFloat("STTime", 0)<0)
@@ -303,7 +304,7 @@ public class LayerEfficiencyAnalyzer extends DCEngine implements IDataEventListe
         }
         // get Field
         Swim dcSwim = new Swim();        
-        //System.out.println(" RUNNING TIME BASED....................................");
+        //LOGGER.debug(" RUNNING TIME BASED....................................");
         ClusterFitter cf = new ClusterFitter();
         ClusterCleanerUtilities ct = new ClusterCleanerUtilities();
 
@@ -387,15 +388,15 @@ public class LayerEfficiencyAnalyzer extends DCEngine implements IDataEventListe
                     return;
 		DataBank Bank = event.getBank("TimeBasedTrkg::TBSegmentTrajectory") ;
 		int nrows =  Bank.rows();
-		//Bank.show(); System.out.println(" NUMBER OF ENTRIES IN BANK = "+nrows);
+		//Bank.show(); LOGGER.debug(" NUMBER OF ENTRIES IN BANK = "+nrows);
 		for (int i = 0; i < nrows; i++) {
 			totLay[Bank.getByte("sector", i)-1][Bank.getByte("superlayer", i)-1][Bank.getByte("layer", i)-1]++;
 			
-			//System.out.println(" Layer eff denom for ["+Bank.getByte("sector", i)+"]["+ Bank.getByte("superlayer", i)+"]["+Bank.getByte("layer", i)+"] = "+totLay[Bank.getByte("sector", i)-1][Bank.getByte("superlayer", i)-1][Bank.getByte("layer", i)-1]);
+			//LOGGER.debug(" Layer eff denom for ["+Bank.getByte("sector", i)+"]["+ Bank.getByte("superlayer", i)+"]["+Bank.getByte("layer", i)+"] = "+totLay[Bank.getByte("sector", i)-1][Bank.getByte("superlayer", i)-1][Bank.getByte("layer", i)-1]);
 			if(Bank.getShort("matchedHitID", i)!=-1) {
 				effLay[Bank.getByte("sector", i)-1][Bank.getByte("superlayer", i)-1][Bank.getByte("layer", i)-1]++;
 			}
-			//System.out.println(" Layer eff num for ["+Bank.getByte("sector", i)+"]["+ Bank.getByte("superlayer", i)+"]["+Bank.getByte("layer", i)+"] = "+effLay[Bank.getByte("sector", i)-1][Bank.getByte("superlayer", i)-1][Bank.getByte("layer", i)-1]);
+			//LOGGER.debug(" Layer eff num for ["+Bank.getByte("sector", i)+"]["+ Bank.getByte("superlayer", i)+"]["+Bank.getByte("layer", i)+"] = "+effLay[Bank.getByte("sector", i)-1][Bank.getByte("superlayer", i)-1][Bank.getByte("layer", i)-1]);
 			
 			if(Math.abs(Bank.getFloat("trkDoca", i))<4.0) {
 				totLayA[Bank.getByte("sector", i)-1][Bank.getByte("superlayer", i)-1][(int)((Math.floor(Math.abs(Bank.getFloat("trkDoca", i))/trkDBinning)))]++;
@@ -626,7 +627,7 @@ public class LayerEfficiencyAnalyzer extends DCEngine implements IDataEventListe
             dir.addDataSet(LayerEffsTrkD5.get(new Coordinate(i)));
             dir.addDataSet(LayerEffsTrkD6.get(new Coordinate(i)));
         }
-        System.out.println("Saving histograms to file " + fileName);
+        LOGGER.debug("Saving histograms to file " + fileName);
         dir.writeFile(fileName);
     }
    

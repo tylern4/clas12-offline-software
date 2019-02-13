@@ -20,6 +20,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.JPanel;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.detector.base.DetectorDescriptor;
 import org.jlab.detector.base.DetectorType;
 import org.jlab.detector.decode.DetectorDataDgtz;
@@ -34,7 +37,7 @@ import org.jlab.utils.groups.IndexedList;
  * @author gavalian
  */
 public class DetectorView2D extends JPanel implements MouseMotionListener, MouseListener {
-    
+    public static Logger LOGGER = LogManager.getLogger(DetectorView2D.class.getName());
     
     Map<String,DetectorViewLayer2D>  viewLayers = new LinkedHashMap<String,DetectorViewLayer2D>();
     Dimension2D                      viewBounds = new Dimension2D();
@@ -143,7 +146,7 @@ public class DetectorView2D extends JPanel implements MouseMotionListener, Mouse
         Dimension2D  commonDimension = new Dimension2D();        
         
         for(Map.Entry<String,DetectorViewLayer2D> entry : this.viewLayers.entrySet()){
-            //System.out.println("[Drawing] ---> layer : " + entry.getKey() + " " + 
+            //LOGGER.debug("[Drawing] ---> layer : " + entry.getKey() + " " + 
             //        entry.getValue().getBounds());
             
             commonDimension.copy(entry.getValue().getBounds());
@@ -162,7 +165,7 @@ public class DetectorView2D extends JPanel implements MouseMotionListener, Mouse
     }
     
     public void changeBackground(Color bkg){
-        System.out.println("background color change ");
+        LOGGER.debug("background color change ");
         this.backgroundColor = bkg;
     }
     
@@ -223,7 +226,7 @@ public class DetectorView2D extends JPanel implements MouseMotionListener, Mouse
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        //System.out.println("mouse moved = " + e.getX() + " " + e.getY());
+        //LOGGER.debug("mouse moved = " + e.getX() + " " + e.getY());
         /*
         if(this.isMouseMotionListener==true) {
             double x = world.getViewX(e.getX());
@@ -241,10 +244,10 @@ public class DetectorView2D extends JPanel implements MouseMotionListener, Mouse
             } 
             if(selection!=null){
                 if(activeShape!=null){
-                    //System.out.println(" compare = " + activeShape.getDescriptor().compare(selection.getDescriptor()));
-                    //System.out.println(" active shape = " + selection.getDescriptor());
+                    //LOGGER.debug(" compare = " + activeShape.getDescriptor().compare(selection.getDescriptor()));
+                    //LOGGER.debug(" active shape = " + selection.getDescriptor());
                 }
-                //System.out.println(" SELECTION = " + selection.getDescriptor());
+                //LOGGER.debug(" SELECTION = " + selection.getDescriptor());
                 activeShape = selection;
                 repaint();
             }
@@ -254,7 +257,7 @@ public class DetectorView2D extends JPanel implements MouseMotionListener, Mouse
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        //System.out.println("You clicked me at " + e.getX() + " " + e.getY());
+        //LOGGER.debug("You clicked me at " + e.getX() + " " + e.getY());
         double x = world.getViewX(e.getX());
         double y = world.getViewY(e.getY());
         DetectorShape2D selection = null;
@@ -270,10 +273,10 @@ public class DetectorView2D extends JPanel implements MouseMotionListener, Mouse
             }
             if(selection!=null){
                 if(activeShape!=null){
-                    //System.out.println(" compare = " + activeShape.getDescriptor().compare(selection.getDescriptor()));
-                    //System.out.println(" active shape = " + selection.getDescriptor());
+                    //LOGGER.debug(" compare = " + activeShape.getDescriptor().compare(selection.getDescriptor()));
+                    //LOGGER.debug(" active shape = " + selection.getDescriptor());
                 }
-                //System.out.println(" SELECTION = " + selection.getDescriptor());
+                //LOGGER.debug(" SELECTION = " + selection.getDescriptor());
                 activeShape = selection;
                 for(DetectorListener listener : this.detectorListeners){
                     listener.processShape(activeShape);
@@ -421,7 +424,7 @@ public class DetectorView2D extends JPanel implements MouseMotionListener, Mouse
                     if(dd.getType()==dm.getType()&dd.getSector()==dm.getSector()&
                             dd.getLayer()==dm.getLayer()&dd.getComponent()==dm.getComponent()
                             ){                            
-                        //System.out.println("COLORING COMPONENT " + shape.getValue().getDescriptor());
+                        //LOGGER.debug("COLORING COMPONENT " + shape.getValue().getDescriptor());
                         int cv = shape.getValue().getCounter();
                         shape.getValue().setCounter(cv+1);
                     }
@@ -430,8 +433,8 @@ public class DetectorView2D extends JPanel implements MouseMotionListener, Mouse
         }
         
         public void drawLayer(Graphics2D g2d, ViewWorld world){
-            //System.out.println(" WORLD      = " + d2d);
-            //System.out.println(" Layer Boundaries = " + this.boundaries);
+            //LOGGER.debug(" WORLD      = " + d2d);
+            //LOGGER.debug(" Layer Boundaries = " + this.boundaries);
             
             //if(this.showHitMap==true){
             //    this.getAxisRange();
@@ -441,7 +444,7 @@ public class DetectorView2D extends JPanel implements MouseMotionListener, Mouse
             
             for(Map.Entry<Long,DetectorShape2D> entry : this.shapes.getMap().entrySet()){
                 DetectorShape2D shape = entry.getValue();
-                //System.out.println(" drating shape ----> " + entry.getKey());
+                //LOGGER.debug(" drating shape ----> " + entry.getKey());
                 //double x = world.getPointX(shape.getShapePath().point(0).x());
                 //double y = world.getPointY(shape.getShapePath().point(0).y());
                 //g2d.drawOval( (int) x, (int) y,5,5);
@@ -456,7 +459,7 @@ public class DetectorView2D extends JPanel implements MouseMotionListener, Mouse
                     //Color mapColor = ;//ColorPalette.gaxisRange.getMax();
                     shapeColor = palette.getColor3D(shape.getCounter(),axisRange.getMax(), false);
                     
-                    //System.out.println(" AXIS MAX = " + axisRange.getMax() + "  VALUE = " + shape.getCounter());
+                    //LOGGER.debug(" AXIS MAX = " + axisRange.getMax() + "  VALUE = " + shape.getCounter());
                 }
 
                 if(this.selectedDescriptor.compare(shape.getDescriptor())==true){
@@ -466,7 +469,7 @@ public class DetectorView2D extends JPanel implements MouseMotionListener, Mouse
                 }
                 
                 //if(this.showHitMap==true){
-                   // System.out.println("Counters Zero = " + counterZero + "  One = "
+                   // LOGGER.debug("Counters Zero = " + counterZero + "  One = "
                    //         + counterOne);
                 //}
             }

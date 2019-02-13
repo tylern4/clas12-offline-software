@@ -5,6 +5,9 @@
  */
 package org.jlab.geom.gui;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -18,6 +21,7 @@ import javax.swing.JPanel;
  * @author gavalian
  */
 public class DetectorLayerPanel extends JPanel implements MouseListener , MouseMotionListener {
+    public static Logger LOGGER = LogManager.getLogger(DetectorLayerPanel.class.getName());
     public  DetectorLayerUI layerUI = new DetectorLayerUI();
     public  IDetectorComponentSelection  selectionListener = null;
     public  Boolean MOUSEOVER_CALLBACK = true;
@@ -43,15 +47,15 @@ public class DetectorLayerPanel extends JPanel implements MouseListener , MouseM
     }
     
     public void mouseClicked(MouseEvent e) {
-        System.out.println("\n\n==================================>");
-        System.out.println("Mouse clicked (# of clicks: "
+        LOGGER.debug("\n\n==================================>");
+        LOGGER.debug("Mouse clicked (# of clicks: "
                     + e.getClickCount() + ")" + e.getX() + "  " + e.getY());
         DetectorComponentUI cui = this.layerUI.getClickedComponent(e.getX(),e.getY(),
                 this.getSize().width, this.getSize().height);
         this.repaint();
-        System.out.println(" REGION = " + this.layerUI.drawRegion);
+        LOGGER.debug(" REGION = " + this.layerUI.drawRegion);
         if(cui!=null){
-            System.out.println("FOUND A HIT " + cui.COMPONENT);
+            LOGGER.debug("FOUND A HIT " + cui.COMPONENT);
             if(this.selectionListener!=null){
                 this.selectionListener.detectorSelected(cui.SECTOR,cui.LAYER,cui.COMPONENT);
             }
@@ -60,7 +64,7 @@ public class DetectorLayerPanel extends JPanel implements MouseListener , MouseM
 
     public void mousePressed(MouseEvent e) {
         /*
-        System.out.println("Mouse PRESSED (# of clicks: "
+        LOGGER.debug("Mouse PRESSED (# of clicks: "
                     + e.getClickCount() + ")" + e);
                 */
     }
@@ -82,13 +86,13 @@ public class DetectorLayerPanel extends JPanel implements MouseListener , MouseM
     }
 
     public void mouseMoved(MouseEvent e) {
-        System.out.println("MOUSE MOVED");
+        LOGGER.debug("MOUSE MOVED");
         if(this.MOUSEOVER_CALLBACK==true){
             DetectorComponentUI cui = this.layerUI.getClickedComponent(e.getX(),e.getY(),
                 this.getSize().width, this.getSize().height);
             this.repaint();
             if(cui!=null){
-            //System.out.println("FOUND A HIT " + cui.COMPONENT);
+            //LOGGER.debug("FOUND A HIT " + cui.COMPONENT);
             if(this.selectionListener!=null){
                 this.selectionListener.detectorSelected(cui.SECTOR,cui.LAYER,cui.COMPONENT);
             }

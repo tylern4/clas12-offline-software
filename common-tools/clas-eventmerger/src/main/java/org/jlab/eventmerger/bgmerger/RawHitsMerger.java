@@ -26,7 +26,7 @@ public class RawHitsMerger extends ReconstructionEngine {
         String inputFile2="/Users/ziegler/Desktop/Work/Files/Data/skimrandomnotracks.700_899.hipo";
         String inputFile="/Users/ziegler/Desktop/Work/Files/Data/out_clas_004150.evio.10_19_filt.hipo";
         
-        //System.err.println(" \n[PROCESSING FILE] : " + inputFile);
+        //LOGGER.warn(" \n[PROCESSING FILE] : " + inputFile);
         
         RawHitsMerger en = new RawHitsMerger();
         en.init();
@@ -51,7 +51,7 @@ public class RawHitsMerger extends ReconstructionEngine {
         long t1 = 0;
         while (reader.hasEvent() && reader2.hasEvent()) {
             
-            //System.out.println("************************************************************* ");
+            //LOGGER.debug("************************************************************* ");
             DataEvent event = reader.getNextEvent();
             DataEvent event2 = reader2.getNextEvent();
             if(event2.hasBank("TimeBasedTrkg::TBTracks"))
@@ -68,7 +68,7 @@ public class RawHitsMerger extends ReconstructionEngine {
                 //event2.getBank("BMT::adc").show();
                 counter++;
                 //event.show();
-                //System.out.println("********************** ");
+                //LOGGER.debug("********************** ");
                 writer0.writeEvent(event);
                 aDCTDCMerge.updateEventWithMergedBanks(event, event2);
                 writer.writeEvent(event);
@@ -85,7 +85,7 @@ public class RawHitsMerger extends ReconstructionEngine {
         writer0.close();
         writer.close();
         double t = System.currentTimeMillis() - t1;
-        System.out.println(t1 + " TOTAL  PROCESSING TIME = " + (t / (float) counter));
+        LOGGER.debug(t1 + " TOTAL  PROCESSING TIME = " + (t / (float) counter));
     }
 
     @Override

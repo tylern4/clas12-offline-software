@@ -10,10 +10,12 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.io.evio.EvioDataDescriptor;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -26,16 +28,16 @@ import org.xml.sax.SAXException;
  * @author gavalian
  */
 public class DictionaryLoader {
-    
-    
+    public static Logger LOGGER = LogManager.getLogger(DictionaryLoader.class.getName());
+
     public static ArrayList<EvioDataDescriptor> getDescriptorsFromFile(String xmlfile){
         ArrayList<EvioDataDescriptor> list = new ArrayList<EvioDataDescriptor>();
-        
+
         try {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder docBuilder = dbFactory.newDocumentBuilder();            
+            DocumentBuilder docBuilder = dbFactory.newDocumentBuilder();
             Document doc = docBuilder.parse(xmlfile);
-            
+
             NodeList evio_dict_nodelist = doc.getElementsByTagName("evio_dictionary");
             for (int b = 0; b < evio_dict_nodelist.getLength(); b++) {
                 Element evio_nodes = (Element) evio_dict_nodelist.item(b);
@@ -53,31 +55,31 @@ public class DictionaryLoader {
             }
             return list;
         } catch (ParserConfigurationException ex) {
-            Logger.getLogger(DictionaryLoader.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex);
         } catch (SAXException ex) {
-                Logger.getLogger(DictionaryLoader.class.getName()).log(Level.SEVERE, null, ex);
+                LOGGER.error(ex);
         } catch (IOException ex) {
-            Logger.getLogger(DictionaryLoader.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex);
         }
-        
+
         return null;
     }
-    
-    
+
+
     public static ArrayList<String> descriptorParseXMLtoString(String xmlfile) {
 
         ArrayList<String> dictionary_list = new ArrayList<String>();
         try {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder docBuilder = dbFactory.newDocumentBuilder();            
+            DocumentBuilder docBuilder = dbFactory.newDocumentBuilder();
             Document doc = docBuilder.parse(xmlfile);
-            
+
             NodeList evio_dict_nodelist = doc.getElementsByTagName("evio_dictionary");
             for (int b = 0; b < evio_dict_nodelist.getLength(); b++) {
                 Element evio_nodes = (Element) evio_dict_nodelist.item(b);
                 NodeList evio_bank_nodes = evio_nodes.getElementsByTagName("bank");
                 for (int s = 0; s < evio_bank_nodes.getLength(); s++) {
-                    
+
                    Element evio_bank = (Element) evio_bank_nodes.item(s);
                    String oneBank = DictionaryLoader.parseBankXMLtoString(evio_bank);
                    dictionary_list.add(oneBank);
@@ -85,19 +87,19 @@ public class DictionaryLoader {
 
             }
         } catch (ParserConfigurationException ex) {
-            Logger.getLogger(DictionaryLoader.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex);
         } catch (SAXException ex) {
-                Logger.getLogger(DictionaryLoader.class.getName()).log(Level.SEVERE, null, ex);
+                LOGGER.error(ex);
         } catch (IOException ex) {
-            Logger.getLogger(DictionaryLoader.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex);
         }
-        
+
         return dictionary_list;
     }
     /**
      * Parse an XML string into a descriptors.
      * @param xmlstring
-     * @return 
+     * @return
      */
     public static ArrayList<String> parseXMLString(String xmlstring){
         try {
@@ -107,18 +109,18 @@ public class DictionaryLoader {
             Document doc = docBuilder.parse(is);
             return DictionaryLoader.parseDocumentXMLtoString(doc);
         } catch (ParserConfigurationException ex) {
-            Logger.getLogger(DictionaryLoader.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex);
         } catch (SAXException ex) {
-            Logger.getLogger(DictionaryLoader.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex);
         } catch (IOException ex) {
-            Logger.getLogger(DictionaryLoader.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex);
         }
         return null;
     }
     /**
-     * 
+     *
      * @param doc
-     * @return 
+     * @return
      */
     public static ArrayList<String> parseDocumentXMLtoString(Document doc){
         ArrayList<String> dictionary_list = new ArrayList<String>();
@@ -130,17 +132,17 @@ public class DictionaryLoader {
         }
         return dictionary_list;
     }
-    
+
     public static String parseBankXMLtoString(Element bankElement){
         StringBuilder str = new StringBuilder();
         String bank_name = bankElement.getAttribute("name");
-        String bank_tag  = bankElement.getAttribute("tag");                    
+        String bank_tag  = bankElement.getAttribute("tag");
         str.append(bank_name);
         str.append(":");
         str.append(bank_tag);
         str.append(":0");
         NodeList evio_section = bankElement.getElementsByTagName("section");
-        for(int e = 0 ; e < evio_section.getLength(); e++){                        
+        for(int e = 0 ; e < evio_section.getLength(); e++){
             Element evio_entry = (Element) evio_section.item(e);
             int section_tag = Integer.parseInt(evio_entry.getAttribute("tag"));
             NodeList evio_columns = evio_entry.getElementsByTagName("column");
@@ -157,17 +159,17 @@ public class DictionaryLoader {
                 str.append(entry_num);
                 str.append(":");
                 str.append(entry_type);
-                
-                //System.err.println("Entry = " + entry_name + " " 
-                //        + section_tag + "  " + entry_num 
+
+                //LOGGER.warn("Entry = " + entry_name + " "
+                //        + section_tag + "  " + entry_num
                 //        + "  " + entry_type);
             }
         }
-        System.err.println("--> " + str.toString());
+        LOGGER.warn("--> " + str.toString());
         //dictionary_list.add(str.toString());
         return str.toString();
     }
-    
+
     public static ArrayList<EvioDataDescriptor> parseBankXMLtoDescriptorList(Element bankElement){
         ArrayList<EvioDataDescriptor> list = new ArrayList<EvioDataDescriptor>();
 
@@ -178,7 +180,7 @@ public class DictionaryLoader {
         for(int e = 0 ; e < evio_section.getLength(); e++){
             StringBuilder str = new StringBuilder();
             Element evio_entry = (Element) evio_section.item(e);
-            
+
             Integer    section_tag  = Integer.parseInt(evio_entry.getAttribute("tag"));
             String section_name = evio_entry.getAttribute("name");
             str.append(bank_name);
@@ -188,19 +190,19 @@ public class DictionaryLoader {
             NodeList evio_columns = evio_entry.getElementsByTagName("column");
             for(int c = 0 ; c < evio_columns.getLength(); c++){
                 Element evio_col = (Element) evio_columns.item(c);
-                
+
                 String entry_name  = evio_col.getAttribute("name");
                 String entry_num   = evio_col.getAttribute("num");
                 String entry_type  = evio_col.getAttribute("type");
                 desc.addEntry(section_name, entry_name, section_tag,
                         Integer.parseInt(entry_num), entry_type);
-                //System.err.println("Entry = " + str.toString() + "  " + entry_name + " " 
-                //        + section_tag + "  " + entry_num 
+                //LOGGER.warn("Entry = " + str.toString() + "  " + entry_name + " "
+                //        + section_tag + "  " + entry_num
                 //        + "  " + entry_type);
             }
             list.add(desc);
         }
-        //System.err.println("--> " + str.toString());
+        //LOGGER.warn("--> " + str.toString());
         //dictionary_list.add(str.toString());
         //return str.toString();
         return list;

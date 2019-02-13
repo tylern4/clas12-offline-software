@@ -2,6 +2,9 @@ package org.jlab.rec.rich;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.io.base.DataBank;
 import org.jlab.io.base.DataEvent;
 
@@ -10,7 +13,7 @@ import org.jlab.io.evio.EvioDataEvent;
 //import org.jlab.rec.ft.cal.RICHConstantsLoader;
 
 public class RICHEventBuilder{
-
+    public static Logger LOGGER = LogManager.getLogger(RICHEventBuilder.class.getName());
     public int Neve = 0;
     // ----------------
     public RICHEventBuilder() {
@@ -25,7 +28,7 @@ public class RICHEventBuilder{
     // ----------------
     public void init() {
     // ----------------
-        if(debugMode>=1)  System.out.println("RICH Event Builder Initialization AA");
+        if(debugMode>=1)  LOGGER.debug("RICH Event Builder Initialization AA");
         PMTreco = new RICHPMTReconstruction();
     }
     
@@ -34,9 +37,9 @@ public class RICHEventBuilder{
     // ----------------
 
         if(debugMode>=1){  
-            System.out.println("---------------------------------\n");
-            System.out.println("RICH Event Builder: Event Process "+Neve);
-            System.out.println("---------------------------------\n");
+            LOGGER.debug("---------------------------------\n");
+            LOGGER.debug("RICH Event Builder: Event Process "+Neve);
+            LOGGER.debug("---------------------------------\n");
         }
 
         List<RICHEdge>     allEdges      =    new ArrayList();
@@ -72,7 +75,7 @@ public class RICHEventBuilder{
     public void CosmicEvent(List<RICHHit> Hits, List<RICHCluster> Clusters) {
     // ----------------
 
-      if(debugMode>=1)  System.out.println("RICH Event Builder: Event Process ");
+      if(debugMode>=1)  LOGGER.debug("RICH Event Builder: Event Process ");
   
 
     }

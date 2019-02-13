@@ -8,6 +8,9 @@ package org.jlab.detector.base;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.groot.data.GraphErrors;
 import org.jlab.groot.ui.TCanvas;
 import org.jlab.io.base.DataBank;
@@ -19,7 +22,7 @@ import org.jlab.io.hipo.HipoDataSource;
  * @author gavalian
  */
 public class DetectorOccupancy {
-    
+    public static Logger LOGGER = LogManager.getLogger(DetectorOccupancy.class.getName());
     DetectorCollection<DetectorMeasurement>  occupancyCollection = 
             new DetectorCollection<DetectorMeasurement>();
     
@@ -139,7 +142,7 @@ public class DetectorOccupancy {
     
     public GraphErrors  getOccupancyGraphTDC(){
         int maxTDC = this.getMaxTDC();
-        System.out.println(" TDC max = " + maxTDC);
+        LOGGER.debug(" TDC max = " + maxTDC);
         Set<Long> keySet = this.occupancyCollection.getKeys();
         GraphErrors graph = new GraphErrors();
         graph.setMarkerSize(0); 
@@ -156,7 +159,7 @@ public class DetectorOccupancy {
                     DetectorMeasurement measure = this.occupancyCollection.get(sector, layer, component);
                     double intencity = ((double) measure.TDCCount)/maxTDC;
                     graph.addPoint((double) x, 0.0, 0.0, intencity);
-                    System.out.println(" MAX = " + maxTDC + " " + sector + " " + layer + " " + component + " " + measure.TDCCount);
+                    LOGGER.debug(" MAX = " + maxTDC + " " + sector + " " + layer + " " + component + " " + measure.TDCCount);
                 }
             }
         }        

@@ -89,7 +89,7 @@ public class HipoDataDescriptor implements DataDescriptor {
     }
 
     public void show() {
-        System.out.println(this.hipoSchema.toString());
+        LOGGER.debug(this.hipoSchema.toString());
     }
 
     public String getName() {

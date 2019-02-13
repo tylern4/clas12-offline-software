@@ -3,6 +3,9 @@ package org.jlab.rec.dc.trajectory;
 import eu.mihosoft.vrl.v3d.Vector3d;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.clas.swimtools.Swim;
 import org.jlab.detector.geant4.v2.FTOFGeant4Factory;
 import org.jlab.detector.hits.DetHit;
@@ -20,7 +23,7 @@ import org.jlab.rec.dc.cross.Cross;
  *
  */
 public class Trajectory extends ArrayList<Cross> {
-
+    public static Logger LOGGER = LogManager.getLogger(Trajectory.class.getName());
     public Trajectory() {
     }
 

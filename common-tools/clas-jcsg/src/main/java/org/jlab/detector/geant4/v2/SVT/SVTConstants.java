@@ -5,6 +5,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.detector.calib.utils.DatabaseConstantProvider; // coatjava-3.0
 import org.jlab.geom.base.ConstantProvider;
 
@@ -32,6 +34,7 @@ import eu.mihosoft.vrl.v3d.Transform;
  */
 public class SVTConstants
 {
+	public static Logger LOGGER = LogManager.getLogger(SVTConstants.class.getName());
 	private static String ccdbPath = "/geometry/cvt/svt/";
 	private static boolean bLoadedConstants = false; // only load constants once
 	
@@ -271,20 +274,19 @@ public class SVTConstants
 			double layerGapThk = MATERIALDIMENSIONS.get("rohacell")[1] + 2*PASSIVETHK; // construct from material thicknesses instead
 			
 			
-			if( VERBOSE ) System.out.printf("LAYERGAPTHK (CCDB)      = % 8.3f\n", LAYERGAPTHK );
-			if( VERBOSE ) System.out.printf("layerGapThk (MATERIALS) = % 8.3f\n", layerGapThk );
-			LAYERGAPTHK = layerGapThk; if( VERBOSE ) System.out.println("set LAYERGAPTHK to layerGapThk");
+			if( VERBOSE ) LOGGER.debug("LAYERGAPTHK (CCDB)      = % 8.3f\n", LAYERGAPTHK );
+			if( VERBOSE ) LOGGER.debug("layerGapThk (MATERIALS) = % 8.3f\n", layerGapThk );
+			LAYERGAPTHK = layerGapThk; if( VERBOSE ) LOGGER.debug("set LAYERGAPTHK to layerGapThk");
 			
 			if( VERBOSE )
 			{
-				System.out.printf("NREGIONS        %4d\n", NREGIONS );
-				System.out.printf("NMODULES        %4d\n", NMODULES );
-				System.out.printf("NLAYERS         %4d\n", NLAYERS );
-				System.out.printf("NSENSORS        %4d\n", NSENSORS );
-				System.out.printf("NSTRIPS         %4d\n", NSTRIPS );
-				System.out.printf("NFIDUCIALS      %4d\n", NFIDUCIALS );
-				System.out.printf("NPADS           %4d\n", NPADS );
-				System.out.println();
+				LOGGER.debug("NREGIONS        %4d\n", NREGIONS );
+				LOGGER.debug("NMODULES        %4d\n", NMODULES );
+				LOGGER.debug("NLAYERS         %4d\n", NLAYERS );
+				LOGGER.debug("NSENSORS        %4d\n", NSENSORS );
+				LOGGER.debug("NSTRIPS         %4d\n", NSTRIPS );
+				LOGGER.debug("NFIDUCIALS      %4d\n", NFIDUCIALS );
+				LOGGER.debug("NPADS           %4d\n", NPADS );
 			}
 			
 			// read constants from region and support table
@@ -341,22 +343,21 @@ public class SVTConstants
 						LAYERRADIUS[region][m] = REFRADIUS[region] + LAYERGAPTHK + LAYERPOSFAC*SILICONTHK;
 						break;
 					}
-					//System.out.println("LAYERRADIUS "+ LAYERRADIUS[region][m]);
+					//LOGGER.debug("LAYERRADIUS "+ LAYERRADIUS[region][m]);
 				}
 			}
 			
 			if( VERBOSE )
 			{
-				System.out.println("NSECTORS STATUS Z0ACTIVE REFRADIUS SUPPORTRADIUS LAYERRADIUS (U,V)");
+				LOGGER.debug("NSECTORS STATUS Z0ACTIVE REFRADIUS SUPPORTRADIUS LAYERRADIUS (U,V)");
 				for(int r = 0; r < NREGIONS; r++ )
 				{
-					System.out.printf("%6s%2d","", NSECTORS[r] );
-					System.out.printf("%6s%1d","", STATUS[r] );
-					System.out.printf("%1s%8.3f","", Z0ACTIVE[r] );
-					System.out.printf("%2s%8.3f","", REFRADIUS[r] );
-					System.out.printf("%6s%8.3f","", SUPPORTRADIUS[r] );
-					System.out.printf("%1s%8.3f %8.3f","", LAYERRADIUS[r][0], LAYERRADIUS[r][1] );
-					System.out.println();
+					LOGGER.debug("%6s%2d","", NSECTORS[r] );
+					LOGGER.debug("%6s%1d","", STATUS[r] );
+					LOGGER.debug("%1s%8.3f","", Z0ACTIVE[r] );
+					LOGGER.debug("%2s%8.3f","", REFRADIUS[r] );
+					LOGGER.debug("%6s%8.3f","", SUPPORTRADIUS[r] );
+					LOGGER.debug("%1s%8.3f %8.3f","", LAYERRADIUS[r][0], LAYERRADIUS[r][1] );
 				}
 			}
 			
@@ -371,45 +372,44 @@ public class SVTConstants
 			
 			if( VERBOSE )
 			{
-				System.out.println();
-				System.out.printf("NTOTALSECTORS   %4d\n", NTOTALSECTORS );
-				System.out.printf("NTOTALFIDUCIALS %4d\n", NTOTALFIDUCIALS );
-				System.out.printf("PHI0            %8.3f\n", Math.toDegrees(PHI0) );
-				System.out.printf("SECTOR0         %8.3f\n", Math.toDegrees(SECTOR0) );
-				System.out.printf("STEREOANGLE     %8.3f\n", Math.toDegrees(STEREOANGLE) );
-				System.out.printf("READOUTPITCH    %8.3f\n", READOUTPITCH );
-				System.out.printf("STRIPOFFSETWID  %8.3f\n", STRIPOFFSETWID );
-				System.out.printf("STRIPLENMAX     %8.3f\n", STRIPLENMAX );
-				System.out.printf("LAYERPOSFAC     %8.3f\n", LAYERPOSFAC );
-				System.out.printf("PHYSSENLEN      %8.3f\n", PHYSSENLEN );
-				System.out.printf("SILICONTHK      %8.3f\n", SILICONTHK );
-				System.out.printf("PHYSSENWID      %8.3f\n", PHYSSENWID );
-				System.out.printf("ACTIVESENLEN    %8.3f\n", ACTIVESENLEN );
-				System.out.printf("ACTIVESENWID    %8.3f\n", ACTIVESENWID );
-				System.out.printf("DEADZNLEN       %8.3f\n", DEADZNLEN );
-				System.out.printf("DEADZNWID       %8.3f\n", DEADZNWID );
-				System.out.printf("MICROGAPLEN     %8.3f\n", MICROGAPLEN );
-				System.out.printf("MODULEWID       %8.3f\n", MODULEWID );
-				System.out.printf("MODULELEN       %8.3f\n", MODULELEN );
-				System.out.printf("LAYERGAPTHK     %8.3f\n", LAYERGAPTHK );
-				System.out.printf("PASSIVETHK      %8.3f\n", PASSIVETHK );
-				System.out.printf("SECTORLEN       %8.3f\n", SECTORLEN );
-				System.out.printf("FIDCUX          %8.3f\n", FIDCUX );
-				System.out.printf("FIDPKX          %8.3f\n", FIDPKX );
-				System.out.printf("FIDORIGINZ      %8.3f\n", FIDORIGINZ );
-				System.out.printf("FIDCUZ          %8.3f\n", FIDCUZ );
-				System.out.printf("FIDPKZ0         %8.3f\n", FIDPKZ0 );
-				System.out.printf("FIDPKZ1         %8.3f\n", FIDPKZ1 );
+				LOGGER.debug("NTOTALSECTORS   %4d\n", NTOTALSECTORS );
+				LOGGER.debug("NTOTALFIDUCIALS %4d\n", NTOTALFIDUCIALS );
+				LOGGER.debug("PHI0            %8.3f\n", Math.toDegrees(PHI0) );
+				LOGGER.debug("SECTOR0         %8.3f\n", Math.toDegrees(SECTOR0) );
+				LOGGER.debug("STEREOANGLE     %8.3f\n", Math.toDegrees(STEREOANGLE) );
+				LOGGER.debug("READOUTPITCH    %8.3f\n", READOUTPITCH );
+				LOGGER.debug("STRIPOFFSETWID  %8.3f\n", STRIPOFFSETWID );
+				LOGGER.debug("STRIPLENMAX     %8.3f\n", STRIPLENMAX );
+				LOGGER.debug("LAYERPOSFAC     %8.3f\n", LAYERPOSFAC );
+				LOGGER.debug("PHYSSENLEN      %8.3f\n", PHYSSENLEN );
+				LOGGER.debug("SILICONTHK      %8.3f\n", SILICONTHK );
+				LOGGER.debug("PHYSSENWID      %8.3f\n", PHYSSENWID );
+				LOGGER.debug("ACTIVESENLEN    %8.3f\n", ACTIVESENLEN );
+				LOGGER.debug("ACTIVESENWID    %8.3f\n", ACTIVESENWID );
+				LOGGER.debug("DEADZNLEN       %8.3f\n", DEADZNLEN );
+				LOGGER.debug("DEADZNWID       %8.3f\n", DEADZNWID );
+				LOGGER.debug("MICROGAPLEN     %8.3f\n", MICROGAPLEN );
+				LOGGER.debug("MODULEWID       %8.3f\n", MODULEWID );
+				LOGGER.debug("MODULELEN       %8.3f\n", MODULELEN );
+				LOGGER.debug("LAYERGAPTHK     %8.3f\n", LAYERGAPTHK );
+				LOGGER.debug("PASSIVETHK      %8.3f\n", PASSIVETHK );
+				LOGGER.debug("SECTORLEN       %8.3f\n", SECTORLEN );
+				LOGGER.debug("FIDCUX          %8.3f\n", FIDCUX );
+				LOGGER.debug("FIDPKX          %8.3f\n", FIDPKX );
+				LOGGER.debug("FIDORIGINZ      %8.3f\n", FIDORIGINZ );
+				LOGGER.debug("FIDCUZ          %8.3f\n", FIDCUZ );
+				LOGGER.debug("FIDPKZ0         %8.3f\n", FIDPKZ0 );
+				LOGGER.debug("FIDPKZ1         %8.3f\n", FIDPKZ1 );
 				
 				double fidXDist = 2*SVTConstants.FIDCUX;
 				double fidZDist = SVTConstants.FIDCUZ + SVTConstants.FIDPKZ0 + SVTConstants.FIDPKZ1;
 				double fidZDist0 = Math.sqrt( Math.pow(fidZDist,2) + Math.pow(SVTConstants.FIDCUX + SVTConstants.FIDPKX, 2) );
 				double fidZDist1 = Math.sqrt( Math.pow(fidZDist,2) + Math.pow(SVTConstants.FIDCUX - SVTConstants.FIDPKX, 2) );
 				
-				System.out.printf("fidXDist  %8.3f\n", fidXDist );
-				System.out.printf("fidZDist  %8.3f\n", fidZDist );
-				System.out.printf("fidZDist0 %8.3f\n", fidZDist0 );
-				System.out.printf("fidZDist1 %8.3f\n", fidZDist1 );
+				LOGGER.debug("fidXDist  %8.3f\n", fidXDist );
+				LOGGER.debug("fidZDist  %8.3f\n", fidZDist );
+				LOGGER.debug("fidZDist0 %8.3f\n", fidZDist0 );
+				LOGGER.debug("fidZDist1 %8.3f\n", fidZDist1 );
 				
 				int maxStrLenName = 32;
 				int maxStrLenType = 5;
@@ -419,12 +419,11 @@ public class SVTConstants
 					String type = entryType.getValue();
 					double[] dimensions = MATERIALDIMENSIONS.get( name );
 					String fmt = "%s %"+(maxStrLenName - name.length())+"s";
-					System.out.printf(fmt, name, "" );
+					LOGGER.debug(fmt, name, "" );
 					fmt = "%s %"+(maxStrLenType - type.length())+"s";
-					System.out.printf(fmt, type, "" );
+					LOGGER.debug(fmt, type, "" );
 					for( int i = 0; i < dimensions.length; i++ )
-						System.out.printf("%8.3f ", dimensions[i] );
-					System.out.println();
+						LOGGER.debug("%8.3f ", dimensions[i] );
 				}
 			}
 		}
@@ -438,7 +437,7 @@ public class SVTConstants
 	 */
 	public static void loadAlignmentShifts( ConstantProvider cp )
 	{
-		System.out.println("reading alignment shifts from database");
+		LOGGER.debug("reading alignment shifts from database");
 		
 		SECTORSHIFTDATA = new double[NTOTALSECTORS][];
 		//LAYERSHIFTDATA = new double[NTOTALSECTORS*NMODULES][];
@@ -504,7 +503,7 @@ public class SVTConstants
 		
 		if( SECTORSHIFTDATA == null )
 		{
-			System.err.println("stop: SHIFTDATA is null after reading file \""+filenameSectorShiftData+"\"");
+			LOGGER.warn("stop: SHIFTDATA is null after reading file \""+filenameSectorShiftData+"\"");
 			System.exit(-1); 
 		}
 		
@@ -539,7 +538,7 @@ public class SVTConstants
 		
 		if( LAYERSHIFTDATA == null )
 		{
-			System.err.println("stop: SHIFTDATA is null after reading file \""+filenameLayerShiftData+"\"");
+			LOGGER.warn("stop: SHIFTDATA is null after reading file \""+filenameLayerShiftData+"\"");
 			System.exit(-1); 
 		}
 		
@@ -557,15 +556,14 @@ public class SVTConstants
 	 */
 	public static void showSectorShiftData()
 	{
-		//System.out.printf("i%8stx%7sty%7stz%7srx%7sry%7srz%7sra\n","","","","","","","");
-		System.out.printf(" i%9stranslation(x,y,z)%19srotation(x,y,z,a)\n","","");
+		//LOGGER.debug("i%8stx%7sty%7stz%7srx%7sry%7srz%7sra\n","","","","","","","");
+		LOGGER.debug(" i%9stranslation(x,y,z)%19srotation(x,y,z,a)\n","","");
 		for( int i = 0; i < NTOTALSECTORS; i++ )
 		{
-			System.out.printf("%2d", i+1 );
+			LOGGER.debug("%2d", i+1 );
 			for( int d = 0; d < AlignmentFactory.NSHIFTDATARECLEN-1; d++ )
-				System.out.printf(" %8.3f", SECTORSHIFTDATA[i][d] );
-			System.out.printf(" %8.3f", Math.toDegrees(SECTORSHIFTDATA[i][AlignmentFactory.NSHIFTDATARECLEN-1]) );
-			System.out.println();
+				LOGGER.debug(" %8.3f", SECTORSHIFTDATA[i][d] );
+			LOGGER.debug(" %8.3f", Math.toDegrees(SECTORSHIFTDATA[i][AlignmentFactory.NSHIFTDATARECLEN-1]) );
 		}
 	}
 	
@@ -575,17 +573,17 @@ public class SVTConstants
 	 */
 	/*public static void showLayersShiftData()
 	{
-		//System.out.printf("i%8stx%7sty%7stz%7srx%7sry%7srz%7sra\n","","","","","","","");
-		System.out.printf(" i%9stranslation(x,y,z)%19srotation(x,y,z,a)\n","","");
+		//LOGGER.debug("i%8stx%7sty%7stz%7srx%7sry%7srz%7sra\n","","","","","","","");
+		LOGGER.debug(" i%9stranslation(x,y,z)%19srotation(x,y,z,a)\n","","");
 		for( int i = 0; i < NTOTALSECTORS; i++ )
 		{
 			for( int j = 0; j < NMODULES; j++ )
 			{
-				System.out.printf("%2d", i+1 );
+				LOGGER.debug("%2d", i+1 );
 				for( int d = 0; d < AlignmentFactory.NSHIFTDATARECLEN-1; d++ )
-					System.out.printf(" %8.3f", LAYERSHIFTDATA[i][d] );
-				System.out.printf(" %8.3f", Math.toDegrees(LAYERSHIFTDATA[i][AlignmentFactory.NSHIFTDATARECLEN-1]) );
-				System.out.println();
+					LOGGER.debug(" %8.3f", LAYERSHIFTDATA[i][d] );
+				LOGGER.debug(" %8.3f", Math.toDegrees(LAYERSHIFTDATA[i][AlignmentFactory.NSHIFTDATARECLEN-1]) );
+				LOGGER.debug();
 			}
 		}
 	}*/
@@ -793,7 +791,7 @@ public class SVTConstants
 	 */
 	public static double[][] getDataAlignmentSectorShift()
 	{
-		if( SECTORSHIFTDATA == null ){ System.err.println("error: SVTConstants.getDataAlignmentSectorShift: SECTORSHIFTDATA requested is null"); } // System.exit(-1);
+		if( SECTORSHIFTDATA == null ){ LOGGER.warn("error: SVTConstants.getDataAlignmentSectorShift: SECTORSHIFTDATA requested is null"); } // System.exit(-1);
 		return SECTORSHIFTDATA;
 	}
 }

@@ -1,12 +1,15 @@
 package org.jlab.rec.cvt.bmt;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * 
  * @author defurne
  */
 
 public class Lorentz {
-	
+	public static Logger LOGGER = LogManager.getLogger(Lorentz.class.getName());
 	public Lorentz() {
 		
 	}
@@ -18,15 +21,15 @@ public class Lorentz {
 		
 		if (xe<org.jlab.rec.cvt.bmt.Constants.emin) {
 		    xe=org.jlab.rec.cvt.bmt.Constants.emin;
-		    System.err.println("Warning: E out of grid... setting it to Emin");
+		    LOGGER.warn("Warning: E out of grid... setting it to Emin");
 		  }
 		  if (xe>=org.jlab.rec.cvt.bmt.Constants.emax) {
 		    xe=org.jlab.rec.cvt.bmt.Constants.emax*0.99;
-		    System.err.println("Warning: E out of grid... setting it to Emax");
+		    LOGGER.warn("Warning: E out of grid... setting it to Emax");
 		  }
 		  if (xb>org.jlab.rec.cvt.bmt.Constants.bmax) {
 		    xb=org.jlab.rec.cvt.bmt.Constants.bmax*0.99;
-		    System.err.println("Warning: B field out of grid... setting it to Bmax");
+		    LOGGER.warn("Warning: B field out of grid... setting it to Bmax");
 		  }
 		  
 		  int i11 = getBin( xe, xb);

@@ -4,6 +4,8 @@
  */
 package org.jlab.clas.reactions;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.clas.physics.Vector3;
 import org.jlab.clas.physics.LorentzVector;
 /**
@@ -11,7 +13,7 @@ import org.jlab.clas.physics.LorentzVector;
  * @author gavalian
  */
 public class DecayKinematics {
-    
+    public static Logger LOGGER = LogManager.getLogger(DecayKinematics.class.getName());
     public static TransMatrix trMatrix = DecayKinematics.initMatrix();
     
     public DecayKinematics()
@@ -44,7 +46,7 @@ public class DecayKinematics {
         double mult  = mult1*mult2;
         if(mult<0)
         {
-            System.err.println("Decay:: error. particle with Mass="+M 
+            LOGGER.warn("Decay:: error. particle with Mass="+M 
                     + "  can not decay to particles with masses ( " + m1
                     + " , " + m2 + " )");
             return -1.0;

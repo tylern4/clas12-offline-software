@@ -106,7 +106,7 @@ public abstract class AbstractSuperlayer<LayerType extends Layer> implements Sup
     public final LayerType getLayer(int layerId) {
         LayerType layer = layerMap.get(layerId);
         if (layer == null)
-            System.err.println("AbstractSuperlayer: getLayer(int layerId): no such layer: layerId="+layerId);
+            LOGGER.warn("AbstractSuperlayer: getLayer(int layerId): no such layer: layerId="+layerId);
         return layer;
     }
     
@@ -152,7 +152,7 @@ public abstract class AbstractSuperlayer<LayerType extends Layer> implements Sup
     
     @Override
     public void show() {
-        System.out.println(this);
+        LOGGER.debug(this);
     }
     
     @Override

@@ -2,6 +2,8 @@ package org.jlab.rec.cvt.cluster;
 
 import java.util.ArrayList;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.rec.cvt.hit.FittedHit;
 import org.jlab.rec.cvt.hit.Hit;
 
@@ -13,7 +15,7 @@ import org.jlab.rec.cvt.hit.Hit;
  *
  */
 public class Cluster extends ArrayList<FittedHit> implements Comparable<Cluster> {
-
+    public static Logger LOGGER = LogManager.getLogger(Cluster.class.getName());
     private static final long serialVersionUID = 9153980362683755204L;
 
     private int _Detector;							//              The detector SVT or BMT
@@ -218,7 +220,7 @@ public class Cluster extends ArrayList<FittedHit> implements Comparable<Cluster>
 
             }
             if (totEn == 0) {
-                System.err.println(" Cluster energy is null .... exit "+this._Detector+" "+this._DetectorType);
+                LOGGER.warn(" Cluster energy is null .... exit "+this._Detector+" "+this._DetectorType);
                 
                 return;
             }
@@ -401,7 +403,7 @@ public class Cluster extends ArrayList<FittedHit> implements Comparable<Cluster>
      */
     public void printInfo() {
         String s = " cluster: Detector " + this.get_Detector() +"  Detector Type " + this.get_DetectorType() + " ID " + this.get_Id() + " Sector " + this.get_Sector() + " Layer " + this.get_Layer() + " Size " + this.size() +" centroid "+this.get_Centroid();
-        System.out.println(s);
+        LOGGER.debug(s);
     }
 
     /**

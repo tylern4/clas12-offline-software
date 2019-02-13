@@ -56,7 +56,7 @@ public class PhysicsConstants {
         }
 
         double c = Math.sqrt(-2*Math.log(r)/r);
-        //System.out.println("u = " + u + "  r = " + r + " c = " + c);
+        //LOGGER.debug("u = " + u + "  r = " + r + " c = " + c);
         return mean + u*c*width;
     }
 }

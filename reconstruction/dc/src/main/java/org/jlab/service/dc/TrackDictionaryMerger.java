@@ -11,11 +11,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.clas.physics.Particle;
 import org.jlab.utils.options.OptionParser;
 
 public class TrackDictionaryMerger {
-
+    public static Logger LOGGER = LogManager.getLogger(TrackDictionaryMerger.class.getName());
     private Map<ArrayList<Integer>, String> dictionary = null;
             
     public TrackDictionaryMerger(){
@@ -52,7 +55,7 @@ public class TrackDictionaryMerger {
     
     public void readDictionary(String fileName) {
         
-        System.out.println("\nReading dictionary from file " + fileName);
+        LOGGER.debug("\nReading dictionary from file " + fileName);
         int nLines = 0;
         int nFull  = 0;
         int nDupli = 0;
@@ -68,10 +71,10 @@ public class TrackDictionaryMerger {
                 lineValues  = line.split("\t");
                 ArrayList<Integer> wires = new ArrayList<Integer>();
                 if(lineValues.length < 42) {
-                    System.out.println("WARNING: dictionary line " + nLines + " incomplete: skipping");
+                    LOGGER.debug("WARNING: dictionary line " + nLines + " incomplete: skipping");
                 }
                 else {
-//                    System.out.println(line);
+//                    LOGGER.debug(line);
                     int charge   = Integer.parseInt(lineValues[0]);
                     double p     = Double.parseDouble(lineValues[1]);
                     double theta = Double.parseDouble(lineValues[2]);
@@ -94,16 +97,16 @@ public class TrackDictionaryMerger {
                     nFull++;
                     if(this.dictionary.containsKey(wires)) {
                         nDupli++;
-                        if(nDupli<10) System.out.println("WARNING: found duplicate road");
-                        else if(nDupli==10) System.out.println("WARNING: reached maximum number of warnings, switching to silent mode");
+                        if(nDupli<10) LOGGER.debug("WARNING: found duplicate road");
+                        else if(nDupli==10) LOGGER.debug("WARNING: reached maximum number of warnings, switching to silent mode");
                     }
                     else {
                         this.dictionary.put(wires, line);
                     }
                 }
-                if(nLines % 1000000 == 0) System.out.println("Read " + nLines + " roads with " + nFull + " full ones, " + nDupli + " duplicates and " + this.dictionary.keySet().size() + " good ones");
+                if(nLines % 1000000 == 0) LOGGER.debug("Read " + nLines + " roads with " + nFull + " full ones, " + nDupli + " duplicates and " + this.dictionary.keySet().size() + " good ones");
             }
-            System.out.println("Found " + nLines + " roads with " + nFull + " full ones, " + nDupli + " duplicates and " + this.dictionary.keySet().size() + " good ones");
+            LOGGER.debug("Found " + nLines + " roads with " + nFull + " full ones, " + nDupli + " duplicates and " + this.dictionary.keySet().size() + " good ones");
         } 
         catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -130,7 +133,7 @@ public class TrackDictionaryMerger {
             
             if(inputList.isEmpty()==true){
                 parser.printUsage();
-                System.out.println("\n >>>> error : no input file is specified....\n");
+                LOGGER.debug("\n >>>> error : no input file is specified....\n");
                 System.exit(0);
             }
 
@@ -145,7 +148,7 @@ public class TrackDictionaryMerger {
         }
         else {
             parser.printUsage();
-            System.out.println("\n >>>> error : no dictionary specified: specify the road dictionary or choose to create it from file\n");
+            LOGGER.debug("\n >>>> error : no dictionary specified: specify the road dictionary or choose to create it from file\n");
             System.exit(0);       
         }
 

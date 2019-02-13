@@ -354,7 +354,7 @@ public final class PCALGeant4Factory extends Geant4Factory {
         ilayer--;
         PCALSector secVol = sectorVolumes.get(0);
         if (ilayer < 0 || ilayer >= secVol.layerVolumes.size()) {
-            System.err.println(String.format("Layer %d  doesn't exist", ilayer + 1));
+            LOGGER.warn(String.format("Layer %d  doesn't exist", ilayer + 1));
             throw new IndexOutOfBoundsException();
         }
 
@@ -368,19 +368,19 @@ public final class PCALGeant4Factory extends Geant4Factory {
         ipaddle--;
 
         if (isector < 0 || isector >= sectorVolumes.size()) {
-            System.err.println(String.format("Sector %d  doesn't exist", isector + 1));
+            LOGGER.warn(String.format("Sector %d  doesn't exist", isector + 1));
             throw new IndexOutOfBoundsException();
         }
 
         PCALSector secVol = sectorVolumes.get(isector);
         if (ilayer < 0 || ilayer >= secVol.layerVolumes.size()) {
-            System.err.println(String.format("Layer %d  doesn't exist", ilayer + 1));
+            LOGGER.warn(String.format("Layer %d  doesn't exist", ilayer + 1));
             throw new IndexOutOfBoundsException();
         }
 
         Layer lVol = secVol.layerVolumes.get(ilayer);
         if (ipaddle < 0 || ipaddle >= lVol.scipaddles.size()) {
-            System.err.println(String.format("Paddle %d  doesn't exist", ipaddle + 1));
+            LOGGER.warn(String.format("Paddle %d  doesn't exist", ipaddle + 1));
             throw new IndexOutOfBoundsException();
         }
 
@@ -389,7 +389,7 @@ public final class PCALGeant4Factory extends Geant4Factory {
 
     public Plane3D getFrontalFace(int sector) {
         if (sector < 1 || sector > sectorVolumes.size()) {
-            System.err.println(String.format("Sector %d  doesn't exist", sector));
+            LOGGER.warn(String.format("Sector %d  doesn't exist", sector));
             throw new IndexOutOfBoundsException();
         }
         Layer lVol = sectorVolumes.get(sector - 1).layerVolumes.get(0);
@@ -397,8 +397,8 @@ public final class PCALGeant4Factory extends Geant4Factory {
         G4Trap padl = (G4Trap) lVol.scipaddles.get(0);
         Vector3d point = new Vector3d(padl.getVertex(0));
         Vector3d normal = new Vector3d(layerVol.getLineZ().diff().normalized());
-//        System.out.println("color(\"red\") translate(" + point + ") sphere(2, $fn=100);");
-//        System.out.println("line3d(" + point + ", "+point.plus(normal.times(20))+");");
+//        LOGGER.debug("color(\"red\") translate(" + point + ") sphere(2, $fn=100);");
+//        LOGGER.debug("line3d(" + point + ", "+point.plus(normal.times(20))+");");
         return new Plane3D(point.x, point.y, point.z, normal.x, normal.y, normal.z);
     }
 }

@@ -9,6 +9,9 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.detector.base.DetectorDescriptor;
 
 /**
@@ -16,7 +19,7 @@ import org.jlab.detector.base.DetectorDescriptor;
  * @author gavalian
  */
 public class FADCData {
-    
+    public static Logger LOGGER = LogManager.getLogger(FADCData.class.getName());
     private DetectorDescriptor desc = new DetectorDescriptor();
     private short[] adcBuffer  = null;
     
@@ -111,7 +114,7 @@ public class FADCData {
             position+=2;
             if(compressedWord==5){
                 
-                //System.out.println( " position = " + position +  " NWORD = 5  LENGTH = " + adcBuffer.length);
+                //LOGGER.debug( " position = " + position +  " NWORD = 5  LENGTH = " + adcBuffer.length);
                 short value;
                 //result.clear();
                 for(int i = 0; i < 4; i++){
@@ -146,7 +149,7 @@ public class FADCData {
             //position += 4;
             
             //position += nwords*2;
-            //System.out.println("position = " + position);
+            //LOGGER.debug("position = " + position);
         }
         return result;
     }
@@ -167,15 +170,15 @@ public class FADCData {
         int compressedWord = 0;
         byte[] array = new byte[4];
         
-        System.out.println(desc.toString());
-        System.out.println("------------------------------------------------------");
+        LOGGER.debug(desc.toString());
+        LOGGER.debug("------------------------------------------------------");
         for(int i = 0 ; i < adcBuffer.length/2; i++){
-            System.out.print(String.format("%04X ", adcBuffer[i*2+1]));
-            System.out.print(String.format("%04X ", adcBuffer[i*2]));
-            if((i+1)%8==0) System.out.println();
+            LOGGER.debug(String.format("%04X ", adcBuffer[i*2+1]));
+            LOGGER.debug(String.format("%04X ", adcBuffer[i*2]));
+            if((i+1)%8==0) LOGGER.debug("");
         }
-        System.out.println();
-        System.out.println("------------------------------------------------------");
+
+        LOGGER.debug("------------------------------------------------------");
         ByteBuffer buffer = ByteBuffer.wrap(array);
         buffer.order(ByteOrder.LITTLE_ENDIAN);
         
@@ -195,13 +198,13 @@ public class FADCData {
             nskip    = (dataH>>4) &0x0F;
             pedestal = (headerWord>>8)&0x0FFF;
             compressedWord = (headerWord>>27)&0x0F;
-            //System.out.println(String.format(" %08X %08X %08X ==> ch = %3d, nw = %2d, skip = %2d ped = %4d id = %4d, position = %4d", 
+            //LOGGER.debug(String.format(" %08X %08X %08X ==> ch = %3d, nw = %2d, skip = %2d ped = %4d id = %4d, position = %4d", 
             //        headerWord,dataH, dataL, channel, nwords, nskip, pedestal, compressedWord, position));
 
             position+=2;
             if(compressedWord==5){
                 
-                //System.out.println(" NWORD = 5 " );
+                //LOGGER.debug(" NWORD = 5 " );
                 short value;
                 result.clear();
                 for(int i = 0; i < 4; i++){
@@ -233,7 +236,7 @@ public class FADCData {
                         short  first = (short)  ( (adcBuffer[i+position]&0x00FF) << 4);
                         short second = (short) ( ((adcBuffer[i+position] >>8)&0x00FF)<<4);
                         
-                        /*System.out.println(String.format(" data (%3d) = %4d %4d  %04X (%04X %04X) %4d %4d (%4d %4d) ", 
+                        /*LOGGER.debug(String.format(" data (%3d) = %4d %4d  %04X (%04X %04X) %4d %4d (%4d %4d) ", 
                                 nskip,
                                 first,second, adcBuffer[i+position], first,second, 
                                 bucket[nskip+i],bucket[nskip+i+1],
@@ -243,7 +246,7 @@ public class FADCData {
                         if( (nskip+i*2+1)<=15)
                             bucket[nskip+i*2+1] +=  second;
                         //bucket[i+nskip+1] +=  first;
-                        //System.out.println(String.format(" data = %4d %4d  %04X (%04X %04X) ", 
+                        //LOGGER.debug(String.format(" data = %4d %4d  %04X (%04X %04X) ", 
                         //        first,second, adcBuffer[i+position], first,second));
                     }
                     
@@ -254,20 +257,20 @@ public class FADCData {
                     result.add(bucket[k]);
                 }
                 for(int i = 0; i < result.size(); i++){
-                    System.out.print(String.format("%6d", result.get(i)));
+                    LOGGER.debug(String.format("%6d", result.get(i)));
                 }
-                System.out.println();
+
             }
             //position += 4;
             
             //position += nwords*2;
-            //System.out.println("position = " + position);
+            //LOGGER.debug("position = " + position);
         }
     }
     
     public void show(){
         int length = 0;
         if(adcBuffer!=null) length = adcBuffer.length;
-        System.out.println( desc.toString() + " ADC LENGTH = " + length);
+        LOGGER.debug( desc.toString() + " ADC LENGTH = " + length);
     }
 }

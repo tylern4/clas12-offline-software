@@ -7,6 +7,9 @@ package org.jlab.display.ec;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.clas.detector.DetectorParticle;
 import org.jlab.clas.detector.DetectorResponse;
 import org.jlab.clas.physics.Particle;
@@ -20,7 +23,7 @@ import org.jlab.io.hipo.HipoDataSource;
  * @author gavalian
  */
 public class ECPionFinder {
-    
+    public static Logger LOGGER = LogManager.getLogger(ECPionFinder.class.getName());
     List<DetectorResponse>  detectorResponse = null;
     List<DetectorParticle>  particles = new ArrayList<DetectorParticle>();
     List<DetectorParticle>  goodParticles = new ArrayList<DetectorParticle>();
@@ -50,16 +53,16 @@ public class ECPionFinder {
     }
     
     public void show(){
-        /*System.out.println("-----> PARTICLES ");
+        /*LOGGER.debug("-----> PARTICLES ");
         for(DetectorParticle p : particles){
-            System.out.println(p);
+            LOGGER.debug(p);
         }
-        System.out.println("-----> GOOD PARTICLES ");
+        LOGGER.debug("-----> GOOD PARTICLES ");
         for(DetectorParticle p : goodParticles){
-            System.out.println(p);
+            LOGGER.debug(p);
         }*/
         
-        System.out.println(physicsEvent.toLundString());
+        LOGGER.debug(physicsEvent.toLundString());
     }
     
     public void assignEnergy(){
@@ -95,24 +98,24 @@ public class ECPionFinder {
                     best_mass = mass;
                     best_distance = Math.abs(mass-0.135);
                 }
-              /*  System.out.println(String.format("%8.3f %8.3f %8.5f", 
+              /*  LOGGER.debug(String.format("%8.3f %8.3f %8.5f", 
                         mom,g2.vector().p(),g1.vector().mass()));
                 */        
             }            
         }
         if(best_distance<50.0)
-            System.out.println(String.format("%8.3f %8.3f %8.5f", 
+            LOGGER.debug(String.format("%8.3f %8.3f %8.5f", 
                         1.0,1.0,best_mass));
         return best_mass;
     }
     
     public void doMatching(){
         List<DetectorResponse> ECIN = DetectorResponse.getListByLayer(detectorResponse, DetectorType.ECAL, 4);
-        //System.out.println("EC INNER SIZE = " + ECIN.size() );
+        //LOGGER.debug("EC INNER SIZE = " + ECIN.size() );
         int counter = 0;
         for(DetectorParticle p : particles){
             int index = p.getDetectorHit(ECIN, DetectorType.ECAL, 4, 15.0);
-            //System.out.println( "particle = " + counter +  " index = " + index);
+            //LOGGER.debug( "particle = " + counter +  " index = " + index);
             if(index>=0){
                 p.addResponse(ECIN.get(index), true);
             }
@@ -137,7 +140,7 @@ public class ECPionFinder {
         
         while(reader.hasEvent()==true){
             DataEvent event = reader.getNextEvent();
-            //System.out.println("-----------------");
+            //LOGGER.debug("-----------------");
             pion.processEvent(event);
             pion.printMass();
         }

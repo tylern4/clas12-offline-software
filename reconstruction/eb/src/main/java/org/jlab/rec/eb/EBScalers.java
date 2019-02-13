@@ -1,4 +1,6 @@
 package org.jlab.rec.eb;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.io.base.DataBank;
 import org.jlab.io.base.DataEvent;
 /**
@@ -22,7 +24,7 @@ import org.jlab.io.base.DataEvent;
  * @author baltzell
  */
 public class EBScalers {
-
+    public static Logger LOGGER = LogManager.getLogger(EBScalers.class.getName());
     private RawReading firstRawReading=null;
     private RawReading prevRawReading=new RawReading();
     private Reading prevReading=new Reading();
@@ -34,7 +36,7 @@ public class EBScalers {
         public void setLiveTime(double x)   { liveTime=x; }
         public double getBeamCharge()       { return beamCharge; }
         public double getLiveTime()         { return liveTime; }
-        public void show() { System.out.println("BCG=%.3f   LT=%.3f"); }
+        public void show() { LOGGER.debug("BCG=%.3f   LT=%.3f"); }
     }
 
     private static class RawReading {
@@ -78,9 +80,9 @@ public class EBScalers {
         }
 
         public void show() {
-            System.out.println("FCUP = "+this.fcup+"/"+this.gatedFcup);
-            System.out.println("CLOK = "+this.clock+"/"+this.gatedClock);
-            System.out.println("TIME = "+this.unixTime+"/"+this.tiTimeStamp);
+            LOGGER.debug("FCUP = "+this.fcup+"/"+this.gatedFcup);
+            LOGGER.debug("CLOK = "+this.clock+"/"+this.gatedClock);
+            LOGGER.debug("TIME = "+this.unixTime+"/"+this.tiTimeStamp);
         }
         
         public RawReading() {}
@@ -165,7 +167,7 @@ public class EBScalers {
         prevRawReading = raw;
         prevReading.setLiveTime(livetime);
         prevReading.setBeamCharge(beamCharge);
-        //System.out.println("<<<<<<<<<<<<<<    >>>>>>>>>>>>>");
+        //LOGGER.debug("<<<<<<<<<<<<<<    >>>>>>>>>>>>>");
         //raw.show();
         //prevReading.show();
         return prevReading;

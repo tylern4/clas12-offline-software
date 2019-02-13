@@ -6,6 +6,8 @@
 package org.jlab.geom.fx;
 
 import javafx.scene.paint.Color;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.geom.prim.Path3D;
 
 /**
@@ -13,7 +15,7 @@ import org.jlab.geom.prim.Path3D;
  * @author gavalian
  */
 public class DetectorMesh2D {
-    
+    public static Logger LOGGER = LogManager.getLogger(DetectorMesh2D.class.getName());
     private Path3D  meshPath = new Path3D();
     private Color   meshFillColor    = Color.CORAL;
     private Color   meshStrokeColor  = Color.BLACK;
@@ -120,7 +122,7 @@ public class DetectorMesh2D {
     }
     
     public void show(){
-        System.out.println(String.format("UNIT [ %4d %4d %4d %4d] ", 
+        LOGGER.debug(String.format("UNIT [ %4d %4d %4d %4d] ", 
                 this.detectorID,this.detectorIndex[0],this.detectorIndex[1],this.detectorIndex[2]));
     }
 }

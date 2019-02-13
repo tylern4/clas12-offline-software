@@ -8,6 +8,8 @@ package org.jlab.clas.reco.io;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.io.evio.EvioDataBank;
 import org.jlab.io.evio.EvioDataEvent;
 import org.jlab.io.evio.EvioDataSync;
@@ -23,7 +25,7 @@ import org.jlab.utils.system.ClasUtilsFile;
  * @author gavalian
  */
 public class ReconstructionIO {
-    
+    public static Logger LOGGER = LogManager.getLogger(ReconstructionIO.class.getName());
     
     public static void writeHipoEvents(String name, List<String> inputFiles){
         
@@ -110,7 +112,7 @@ public class ReconstructionIO {
             }
             
             ReconstructionIO.createDST(outputFile, inputFiles);
-            System.out.println("\n\n -----> conversion done....\n");
+            LOGGER.debug("\n\n -----> conversion done....\n");
             System.exit(0);
         }
         

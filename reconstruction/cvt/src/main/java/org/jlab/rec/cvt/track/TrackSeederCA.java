@@ -1,4 +1,6 @@
 package org.jlab.rec.cvt.track;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.rec.cvt.track.MakerCA;
 import org.jlab.rec.cvt.track.Cell;
 
@@ -17,7 +19,7 @@ import org.jlab.rec.cvt.fit.LineFitter;
 import org.jlab.rec.cvt.svt.Constants;
 
 public class TrackSeederCA {
-
+    public static Logger LOGGER = LogManager.getLogger(TrackSeederCA.class.getName());
     public TrackSeederCA() {
         
     }
@@ -28,13 +30,13 @@ public class TrackSeederCA {
     // from the output of the cellular automaton   
     // it looks only for the maximum state, TODO: remove found candidate and continue
     public List<ArrayList<Cross>> getCAcandidates( List<Cell> nodes, Swim swimmer ) {
-//System.out.println("\n\n\t ____inside get candidates___");
+//LOGGER.debug("\n\n\t ____inside get candidates___");
         List<ArrayList<Cross>> trCands = new ArrayList<ArrayList<Cross>>();
         List<ArrayList<Cell>> cellCands = new ArrayList<ArrayList<Cell>>();
         if( nodes.size() == 0 ) return trCands;
         Collections.sort( nodes );
         int mstate = nodes.get(0).get_state();
-//        System.out.println( mstate );
+//        LOGGER.debug( mstate );
         for( Cell cell : nodes ){
       	  if( cell.get_state() >= mstate-1 ){
           
@@ -102,13 +104,13 @@ public class TrackSeederCA {
 //      				  n.get_c2().set_usedInZRcand( true );
 //      			  }
 
-//              	  System.out.println(" - " + n);
+//              	  LOGGER.debug(" - " + n);
       			  cand.add(n);
       			  neighbour = n;
       			  candlen += 1;
       		  }
       		  
-//      		  System.out.println(" ");
+//      		  LOGGER.debug(" ");
       		  if( cand.get(0).get_plane().equalsIgnoreCase("XY")) {
 	  			  if( candlen > 2 ){
 	  				  if( fitSeed(getCrossFromCells(cand), 2, false, swimmer) != null) {
@@ -139,7 +141,7 @@ public class TrackSeederCA {
 //      	  else continue; // nodes are sorted, if it is different to the max state, exit
         }
         
-//        System.out.println(" cellCands " + cellCands.size() );
+//        LOGGER.debug(" cellCands " + cellCands.size() );
          
         for( List<Cell> candcell : cellCands ){
           if(candcell.size() == 0 ) continue;
@@ -215,7 +217,7 @@ public class TrackSeederCA {
         List<Cell> xynodes = runCAMaker( "XY", 5, crosses, bmt_geo, swimmer); 
         List<ArrayList<Cross>> xytracks =  getCAcandidates( xynodes, swimmer);
 
-//        System.out.println( " XY tracks " + xytracks );
+//        LOGGER.debug( " XY tracks " + xytracks );
         //// TODO: TEST TEST TEST
         // test if a first fit to move the SVT crosses helps
 //        for( ArrayList<Cross> acr : xytracks ) {
@@ -228,7 +230,7 @@ public class TrackSeederCA {
         List<ArrayList<Cross>> seedCrosses = CAonRZ( xytracks, bmtC_crosses, svt_geo, bmt_geo, swimmer);
         
         List<Track> cands = new ArrayList<Track>();
-//        System.out.println(seedlist.size());
+//        LOGGER.debug(seedlist.size());
 	    for (int s = 0; s < seedCrosses.size(); s++) {
 	    	Collections.sort(seedCrosses.get(s));      // TODO: check why sorting matters
 		    Track cand = fitSeed(seedCrosses.get(s), svt_geo, 5, false, swimmer);
@@ -327,7 +329,7 @@ public class TrackSeederCA {
       List<ArrayList<Cross>> seedCrosses = new ArrayList<ArrayList<Cross>>();
 
       if( bmtC_crosses == null ) return null;
-//      System.out.println("not null bmtc");
+//      LOGGER.debug("not null bmtc");
       // loop over each xytrack to find ZR candidates
       // ---------------------------------------------
 //      for( List<Cross> xycross : xytracks ){ // ALERT: this throw a concurrent modification exception 
@@ -349,14 +351,14 @@ public class TrackSeederCA {
         	  sector = c.get_Sector()-1;
           }
         }
-//        System.out.println(sector);
+//        LOGGER.debug(sector);
         if( sector < 0 ) continue;
         Collections.sort(svtcrs);
 //        Collections.sort(svtcrs,Collections.reverseOrder());
 //        for( Cross c : svtcrs ){
 //            System.out.print( " " + c.get_Id() + " " +c.get_Detector() + " " + c.get_DetectorType() + " ; " );
 //        }
-//        System.out.println();
+//        LOGGER.debug();
 //        crsZR.addAll(svtcrs);
 
         // add all the BMT_C crosses
@@ -364,21 +366,21 @@ public class TrackSeederCA {
 //        for( Cross c : bmtC_crosses.get(sector) ){
 //            System.out.print( " " + c.get_Id() + " " +c.get_Detector() + " " + c.get_DetectorType() + " ; " );
 //        }
-//        System.out.println();
+//        LOGGER.debug();
         if( bmtC_crosses.get(sector) == null  || bmtC_crosses.get(sector).size() == 0 ) continue;
         crsZR.addAll( bmtC_crosses.get(sector) );
 
-//        System.out.println("\n....\t"+crsZR);
+//        LOGGER.debug("\n....\t"+crsZR);
         // sort 
 //        Collections.sort(crsZR,Collections.reverseOrder());
 //        Collections.sort(crsZR);
         
         // run the CAmaker
         List<Cell> zrnodes = runCAMaker( "ZR", 5, crsZR, bmt_geo, swimmer);
-//System.out.println(zrnodes);
+//LOGGER.debug(zrnodes);
         List<ArrayList<Cross>> zrtracks =  getCAcandidates( zrnodes, swimmer);
 
-//        System.out.println("sector" + sector + " len " + zrtracks.size());  
+//        LOGGER.debug("sector" + sector + " len " + zrtracks.size());  
         
         // collect crosses for candidates
         //--------------------------------
@@ -407,7 +409,7 @@ public class TrackSeederCA {
     		
     		LineFitter ft = new LineFitter();
     		boolean status = ft.fitStatus(Z, R, EZ, null, Z.size());
-    		if( status == false ) { System.err.println(" BMTC FIT FAILED");}
+    		if( status == false ) { LOGGER.warn(" BMTC FIT FAILED");}
     		LineFitPars fpars = ft.getFit();
  		   	if( fpars == null ) continue;
  		   	double b = fpars.intercept();
@@ -612,7 +614,7 @@ public class TrackSeederCA {
 //                //i=fitIter;
 //            }
         }
-        //System.out.println(" Seed fitter "+fitTrk.get_chisq()[0]+" "+fitTrk.get_chisq()[1]); 
+        //LOGGER.debug(" Seed fitter "+fitTrk.get_chisq()[0]+" "+fitTrk.get_chisq()[1]); 
 //        if(chisqMax>Constants.CIRCLEFIT_MAXCHI2)
 //            cand=null;
         return cand;

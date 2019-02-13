@@ -51,7 +51,7 @@ public class DCTBEngine extends DCEngine {
     public boolean processDataEvent(DataEvent event) {
         //setRunConditionsParameters( event) ;
         if(event.hasBank("RUN::config")==false) {
-            System.err.println("RUN CONDITIONS NOT READ AT TIMEBASED LEVEL!");
+            LOGGER.warn("RUN CONDITIONS NOT READ AT TIMEBASED LEVEL!");
             return true;
         }
         if(event.hasBank("MC::Event")==true)
@@ -79,7 +79,7 @@ public class DCTBEngine extends DCEngine {
         }
         // get Field
         Swim dcSwim = new Swim();        
-        //System.out.println(" RUNNING TIME BASED....................................");
+        //LOGGER.debug(" RUNNING TIME BASED....................................");
         ClusterFitter cf = new ClusterFitter();
         ClusterCleanerUtilities ct = new ClusterCleanerUtilities();
 
@@ -257,7 +257,7 @@ public class DCTBEngine extends DCEngine {
                         trk.get_Vtx0().z(), trk.get_pAtOrig().x(), trk.get_pAtOrig().y(), trk.get_pAtOrig().z(), trk.get_Q(), 
                         ftofDetector, tSurf, tarCent);
 //                for(int j = 0; j< trk.trajectory.size(); j++) {
-//                System.out.println(trk.get_Id()+" "+trk.trajectory.size()+" ("+trk.trajectory.get(j).getDetId()+") ["+
+//                LOGGER.debug(trk.get_Id()+" "+trk.trajectory.size()+" ("+trk.trajectory.get(j).getDetId()+") ["+
 //                            trk.trajectory.get(j).getDetName()+"] "+
 //                            (float)trk.trajectory.get(j).getX()/trk.get_P()+", "+
 //                            (float)trk.trajectory.get(j).getY()/trk.get_P()+", "+

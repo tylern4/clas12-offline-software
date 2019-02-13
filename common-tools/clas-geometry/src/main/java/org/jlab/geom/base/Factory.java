@@ -1,5 +1,7 @@
 package org.jlab.geom.base;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.geom.Showable;
 import org.jlab.geom.prim.Transformation3D;
 
@@ -148,7 +150,7 @@ public interface Factory<
         SectorType extends Sector,
         SuperlayerType extends Superlayer,
         LayerType extends Layer> extends Showable {
-    
+    Logger LOGGER = LogManager.getLogger(Factory.class.getName());
     /**
      * Constructs a new {@code Detector} in CLAS coordinates using the given
      * constants.
@@ -229,7 +231,7 @@ public interface Factory<
     
     DetectorTransformation getDetectorTransform(ConstantProvider cp);
     /**
-     * Invokes {@code System.out.println(this)}.
+     * Invokes {@code LOGGER.debug(this)}.
      */
     void show();
 }

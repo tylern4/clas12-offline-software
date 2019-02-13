@@ -21,24 +21,24 @@ public class MagFieldsEngine extends ReconstructionEngine {
         String torusMap=this.getEngineConfigString("torusMap");
         String solenoidMap=this.getEngineConfigString("solenoidMap");
         if (torusMap!=null) {
-            System.out.println("["+this.getName()+"] Torus Map chosen based on yaml: "+torusMap);
+            LOGGER.debug("["+this.getName()+"] Torus Map chosen based on yaml: "+torusMap);
         }
         else {
             torusMap = System.getenv("TORUSMAP");
             if (torusMap!=null) {
-                System.out.println("["+this.getName()+"] Torus Map chosen based on env: "+torusMap);
+                LOGGER.debug("["+this.getName()+"] Torus Map chosen based on env: "+torusMap);
             }
         }
         if (torusMap==null) {
             throw new RuntimeException("["+this.getName()+"]  Failed to find torus map name in yaml or env.");
         }
         if (solenoidMap!=null) {
-            System.out.println("["+this.getName()+"] solenoid Map chosen based on yaml: "+solenoidMap);
+            LOGGER.debug("["+this.getName()+"] solenoid Map chosen based on yaml: "+solenoidMap);
         }
         else {
             solenoidMap = System.getenv("SOLENOIDMAP");
             if (solenoidMap!=null) {
-                System.out.println("["+this.getName()+"] solenoid Map chosen based on env: "+solenoidMap);
+                LOGGER.debug("["+this.getName()+"] solenoid Map chosen based on env: "+solenoidMap);
             }
         }
         if (solenoidMap==null) {
@@ -56,72 +56,72 @@ public class MagFieldsEngine extends ReconstructionEngine {
         String solShift = this.getEngineConfigString("solenoidShift");
         
         if (solShift!=null) {
-            System.out.println("["+this.getName()+"] run with solenoid z shift in tracking config chosen based on yaml ="+solShift);
+            LOGGER.debug("["+this.getName()+"] run with solenoid z shift in tracking config chosen based on yaml ="+solShift);
             Swimmer.set_zShift(Float.valueOf(solShift));
         }
         else {
             solShift = System.getenv("SOLSHIFT");
             if (solShift!=null) {
-                System.out.println("["+this.getName()+"] run with solenoid z shift in tracking config chosen based on env ="+solShift);
+                LOGGER.debug("["+this.getName()+"] run with solenoid z shift in tracking config chosen based on env ="+solShift);
                 Swimmer.set_zShift(Float.valueOf(solShift));
             }
         }
         if (solShift==null) {
-            System.out.println("["+this.getName()+"] run with solenoid z shift in tracking set to 0 cm");
+            LOGGER.debug("["+this.getName()+"] run with solenoid z shift in tracking set to 0 cm");
             // this.solenoidShift = (float) 0;
         }
         //torus:
         String TorX = this.getEngineConfigString("torusXShift");
         
         if (TorX!=null) {
-            System.out.println("["+this.getName()+"] run with torus x shift in tracking config chosen based on yaml ="+TorX);
+            LOGGER.debug("["+this.getName()+"] run with torus x shift in tracking config chosen based on yaml ="+TorX);
             Swimmer.setTorXShift(Float.valueOf(TorX));
         }
         else {
             TorX = System.getenv("TORXSHIFT");
             if (TorX!=null) {
-                System.out.println("["+this.getName()+"] run with torus x shift in tracking config chosen based on env ="+TorX);
+                LOGGER.debug("["+this.getName()+"] run with torus x shift in tracking config chosen based on env ="+TorX);
                 Swimmer.setTorXShift(Float.valueOf(TorX));
             }
         }
         if (TorX==null) {
-            System.out.println("["+this.getName()+"] run with torus x shift in tracking set to 0 cm");
+            LOGGER.debug("["+this.getName()+"] run with torus x shift in tracking set to 0 cm");
             // this.solenoidShift = (float) 0;
         }
         
         String TorY = this.getEngineConfigString("torusYShift");
         
         if (TorY!=null) {
-            System.out.println("["+this.getName()+"] run with torus y shift in tracking config chosen based on yaml ="+TorY);
+            LOGGER.debug("["+this.getName()+"] run with torus y shift in tracking config chosen based on yaml ="+TorY);
             Swimmer.setTorYShift(Float.valueOf(TorY));
         }
         else {
             TorY = System.getenv("TORYSHIFT");
             if (TorY!=null) {
-                System.out.println("["+this.getName()+"] run with torus y shift in tracking config chosen based on env ="+TorY);
+                LOGGER.debug("["+this.getName()+"] run with torus y shift in tracking config chosen based on env ="+TorY);
                 Swimmer.setTorYShift(Float.valueOf(TorY));
             }
         }
         if (TorY==null) {
-            System.out.println("["+this.getName()+"] run with torus y shift in tracking set to 0 cm");
+            LOGGER.debug("["+this.getName()+"] run with torus y shift in tracking set to 0 cm");
             // this.solenoidShift = (float) 0;
         }
         
         String TorZ = this.getEngineConfigString("torusZShift");
         
         if (TorZ!=null) {
-            System.out.println("["+this.getName()+"] run with torus z shift in tracking config chosen based on yaml ="+TorZ);
+            LOGGER.debug("["+this.getName()+"] run with torus z shift in tracking config chosen based on yaml ="+TorZ);
             Swimmer.setTorZShift(Float.valueOf(TorZ));
         }
         else {
             TorZ = System.getenv("TORZSHIFT");
             if (TorZ!=null) {
-                System.out.println("["+this.getName()+"] run with torus z shift in tracking config chosen based on env ="+TorZ);
+                LOGGER.debug("["+this.getName()+"] run with torus z shift in tracking config chosen based on env ="+TorZ);
                 Swimmer.setTorZShift(Float.valueOf(TorZ));
             }
         }
         if (TorZ==null) {
-            System.out.println("["+this.getName()+"] run with torus z shift in tracking set to 0 cm");
+            LOGGER.debug("["+this.getName()+"] run with torus z shift in tracking set to 0 cm");
             // this.solenoidShift = (float) 0;
         }
     }

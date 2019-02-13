@@ -8,6 +8,9 @@ package org.jlab.detector.decode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.detector.base.DetectorDescriptor;
 import org.jlab.io.base.DataEvent;
 import org.jlab.io.evio.EvioDataEvent;
@@ -18,7 +21,7 @@ import org.jlab.io.evio.EvioSource;
  * @author gavalian
  */
 public class DetectorDecoderDebug {
-    
+    public static Logger LOGGER = LogManager.getLogger(DetectorDecoderDebug.class.getName());
     private CodaEventDecoder          codaDecoder = null; 
     private int      totalRawSize = 0;
     private int totalComparedSize = 0;
@@ -34,7 +37,7 @@ public class DetectorDecoderDebug {
         short[] ap = a.getADCData(0).getPulseArray();
         short[] bp = a.getADCData(0).getPulseArray();
         if(ap.length!=bp.length){
-            System.out.println("*** ERROR : pulses do not have same size....");
+            LOGGER.debug("*** ERROR : pulses do not have same size....");
             return 0;
         } 
         
@@ -54,7 +57,7 @@ public class DetectorDecoderDebug {
         
         for(Map.Entry<Integer,DetectorDataDgtz> entry : raw.entrySet()){
             if(packed.containsKey(entry.getKey())==false){
-                System.out.println(
+                LOGGER.debug(
                         String.format("*** ERROR : event #%6d -> %4d %4d %4d raw pulse does not exist in bit-packed array",
                                 eventNumber,
                                 entry.getValue().getDescriptor().getCrate(),
@@ -68,14 +71,14 @@ public class DetectorDecoderDebug {
                 if(diff==0){
                     comparedSize++;
                 } else {
-                    System.out.println("*** ERROR : something went wrong with DATA : " + data.getDescriptor().toString());
+                    LOGGER.debug("*** ERROR : something went wrong with DATA : " + data.getDescriptor().toString());
                     this.totalErrors++;
                 }
             }
         }
         
         this.totalComparedSize+=comparedSize;
-        System.out.println(String.format(">>> COMPARISION FOR event #%8d ->  processed %8d / passed %8d",
+        LOGGER.debug(String.format(">>> COMPARISION FOR event #%8d ->  processed %8d / passed %8d",
                 eventNumber,size,comparedSize));
     }
     
@@ -122,11 +125,11 @@ public class DetectorDecoderDebug {
     }
     
     public void printComparisonStats()  {
-        System.out.println("\n Comparison statistics:");
-        System.out.println("\t Number of events:         " + this.totalEvent);
-        System.out.println("\t Number of pulses:         " + this.totalRawSize);
-        System.out.println("\t Number of matched pulses: " + this.totalComparedSize);        
-        System.out.println("\t Number of errors:         " + this.totalErrors);        
+        LOGGER.debug("\n Comparison statistics:");
+        LOGGER.debug("\t Number of events:         " + this.totalEvent);
+        LOGGER.debug("\t Number of pulses:         " + this.totalRawSize);
+        LOGGER.debug("\t Number of matched pulses: " + this.totalComparedSize);        
+        LOGGER.debug("\t Number of errors:         " + this.totalErrors);        
     }
     
     public static void main(String[] args){

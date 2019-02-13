@@ -40,7 +40,7 @@ public class HTCCReconstructionService extends ReconstructionEngine{
               reco.geometry   = this.getConstantsManager().getConstants(runNo, "/geometry/htcc/htcc");
               reco.processEvent(event);
         } catch (Exception e){
-            System.out.println("----> error with HTCC reconstruction..");
+            LOGGER.debug("----> error with HTCC reconstruction..");
             e.printStackTrace();
         }
 
@@ -62,7 +62,7 @@ public class HTCCReconstructionService extends ReconstructionEngine{
         };
         
         requireConstants(Arrays.asList(htccTables));
-        System.out.println("-----> INITIALIZING HTCC as a SERVICE...");
+        LOGGER.debug("-----> INITIALIZING HTCC as a SERVICE...");
         return true;
     }
 

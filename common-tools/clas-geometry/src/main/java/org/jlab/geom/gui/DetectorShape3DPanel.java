@@ -53,9 +53,9 @@ public class DetectorShape3DPanel extends JPanel implements MouseListener , Mous
         DetectorShape3D cui = this.shapeStore.getSelectedShape(e.getX(),e.getY(),
                 this.getSize().width, this.getSize().height);
         this.repaint();
-        //System.out.println(" REGION = " + this.layerUI.drawRegion);
+        //LOGGER.debug(" REGION = " + this.layerUI.drawRegion);
         if(cui!=null){
-            //System.out.println("FOUND A HIT " + cui.COMPONENT);
+            //LOGGER.debug("FOUND A HIT " + cui.COMPONENT);
             if(this.selectionListener!=null){
                 this.selectionListener.detectorSelected(cui.SECTOR,cui.LAYER,cui.COMPONENT);
             }
@@ -90,9 +90,9 @@ public class DetectorShape3DPanel extends JPanel implements MouseListener , Mous
             DetectorShape3D cui = this.shapeStore.getSelectedShape(e.getX(),e.getY(),
                 this.getSize().width, this.getSize().height);
         this.repaint();
-        //System.out.println(" REGION = " + this.layerUI.drawRegion);
+        //LOGGER.debug(" REGION = " + this.layerUI.drawRegion);
         if(cui!=null){
-            //System.out.println("FOUND A HIT " + cui.COMPONENT);
+            //LOGGER.debug("FOUND A HIT " + cui.COMPONENT);
             if(this.selectionListener!=null){
                 this.selectionListener.detectorSelected(cui.SECTOR,cui.LAYER,cui.COMPONENT);
             }

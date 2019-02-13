@@ -5,10 +5,14 @@
  */
 package org.jlab.detector.calib.utils;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  *
  * @author gavalian
  */
 public interface CalibrationConstantsListener {
+    Logger LOGGER = LogManager.getLogger(CalibrationConstantsListener.class.getName());
     void constantsEvent(CalibrationConstants cc, int col, int row);
 }

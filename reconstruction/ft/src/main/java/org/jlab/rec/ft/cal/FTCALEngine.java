@@ -74,7 +74,7 @@ public class FTCALEngine extends ReconstructionEngine {
     public int setRunConditionsParameters(DataEvent event) {
         int run = -1;
         if(event.hasBank("RUN::config")==false) {
-                System.out.println("RUN CONDITIONS NOT READ!");
+                LOGGER.debug("RUN CONDITIONS NOT READ!");
         }
 
         if(event instanceof EvioDataEvent) {
@@ -141,8 +141,8 @@ public class FTCALEngine extends ReconstructionEngine {
                         h2.fill(bank.getFloat("energy",i)-gen.getGeneratedParticle(0).vector().p());
                         Vector3D cluster = new Vector3D(bank.getFloat("x",i),bank.getFloat("y",i),bank.getFloat("z",i));  
                         h3.fill(Math.toDegrees(cluster.theta()-gen.getGeneratedParticle(0).theta()));
-                        System.out.println(cluster.theta() + " " + gen.getGeneratedParticle(0).theta());
-                        System.out.println(cluster.x() + " " + cluster.y() + " " + cluster.z() + " ");
+                        LOGGER.debug(cluster.theta() + " " + gen.getGeneratedParticle(0).theta());
+                        LOGGER.debug(cluster.x() + " " + cluster.y() + " " + cluster.z() + " ");
                         h4.fill(Math.toDegrees(cluster.phi()-gen.getGeneratedParticle(0).phi()));
                         h5.fill(bank.getFloat("time",i)-124.25);
                     }

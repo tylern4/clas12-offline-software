@@ -76,7 +76,7 @@ public class HitReader {
 
         // return if there is no BMT bank
         if (event.hasBank("BMT::adc") == false) {
-            //System.err.println("there is no BMT bank ");
+            //LOGGER.warn("there is no BMT bank ");
             _BMTHits = new ArrayList<Hit>();
 
             return;
@@ -132,7 +132,7 @@ public class HitReader {
     public void fetch_SVTHits(DataEvent event, ADCConvertor adcConv, int omitLayer, int omitHemisphere, org.jlab.rec.cvt.svt.Geometry geo) {
 
         if (event.hasBank("BST::adc") == false) {
-            //System.err.println("there is no BST bank ");
+            //LOGGER.warn("there is no BST bank ");
             _SVTHits = new ArrayList<Hit>();
 
             return;
@@ -226,7 +226,7 @@ public class HitReader {
                 if (SvtStrip.get_Edep() == 0) {
                     hit.set_Status(-1);
                 }
-                //System.out.println("SVT e "+SvtStrip.get_Edep());
+                //LOGGER.debug("SVT e "+SvtStrip.get_Edep());
                 
                 hit.set_Id(id[i]);
                 // add this hit

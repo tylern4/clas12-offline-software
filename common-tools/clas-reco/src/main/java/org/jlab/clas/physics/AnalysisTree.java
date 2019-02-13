@@ -5,6 +5,8 @@
  */
 package org.jlab.clas.physics;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.groot.tree.Tree;
 import org.jlab.io.evio.EvioDataEvent;
 import org.jlab.io.hipo.HipoDataSource;
@@ -15,7 +17,7 @@ import org.jlab.physics.analysis.PhysicsAnalysis;
  * @author gavalian
  */
 public class AnalysisTree extends Tree {
-
+    public static Logger LOGGER = LogManager.getLogger(AnalysisTree.class.getName());
     private PhysicsAnalysis  physAnalysis = new PhysicsAnalysis();
     private HipoDataSource   hipoReader   = null;
     private GenericKinematicFitter fitter = new GenericKinematicFitter(11.0);
@@ -38,7 +40,7 @@ public class AnalysisTree extends Tree {
         PhysicsEvent  physEvent = fitter.getPhysicsEvent(event);
         
         physAnalysis.processEvent(physEvent);
-        System.out.println(physAnalysis.toString());
+        LOGGER.debug(physAnalysis.toString());
         return true;
     }
     

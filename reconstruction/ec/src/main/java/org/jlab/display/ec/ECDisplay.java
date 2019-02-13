@@ -67,8 +67,8 @@ public class ECDisplay extends JPanel implements IDataEventListener {
         
         shapeP.createBarXY(900,900);
         detectorView.getView().addShape("PCAL", shapeP);
-        System.out.println("***********************************************");
-        System.out.println("Adding shapes " + ecStrips.size());
+        LOGGER.debug("***********************************************");
+        LOGGER.debug("Adding shapes " + ecStrips.size());
         
         for(ECPeak s : ecPeaks){
             
@@ -76,18 +76,18 @@ public class ECDisplay extends JPanel implements IDataEventListener {
                     DetectorType.ECAL,
                     s.getDescriptor().getSector(),s.getDescriptor().getLayer(),
                     s.getMaxStrip());
-            System.out.println(s);
+            LOGGER.debug(s);
             shape.getShapePath().addPoint(s.getLine().origin());
             shape.getShapePath().addPoint(s.getLine().end());
-            //System.out.println(s.getLine());
+            //LOGGER.debug(s.getLine());
             if(shape.getDescriptor().getLayer()<4)
                 detectorView.getView().addShape("PCAL", shape);
             
         }
-        System.out.println("*****************  CLUSTERS ");
+        LOGGER.debug("*****************  CLUSTERS ");
         List<ECCluster> cPCAL  = ECCommon.createClusters(ecPeaks,1);
         for(ECCluster c : cPCAL){
-            System.out.println(c);
+            LOGGER.debug(c);
         }
         detectorView.repaint();
     }

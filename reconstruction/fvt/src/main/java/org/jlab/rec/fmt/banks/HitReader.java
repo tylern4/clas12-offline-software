@@ -43,7 +43,7 @@ public class HitReader {
     public void fetch_FMTHits(DataEvent event) {
         
         if (event.hasBank("FMT::adc") == false) {
-            //System.err.println("there is no BST bank ");
+            //LOGGER.warn("there is no BST bank ");
             _FMTHits = new ArrayList<Hit>();
 
             return;

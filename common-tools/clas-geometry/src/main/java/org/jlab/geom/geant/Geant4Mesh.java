@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javafx.scene.shape.MeshView;
 import javafx.scene.shape.TriangleMesh;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.geom.prim.Point3D;
 import org.jlab.geom.prim.Transformation3D;
 
@@ -17,7 +19,7 @@ import org.jlab.geom.prim.Transformation3D;
  * @author gavalian
  */
 public class Geant4Mesh {
-    
+    public static Logger LOGGER = LogManager.getLogger(Geant4Mesh.class.getName());
     String meshName = "G4Mesh";
     MeshView volumeMesh = null;
     
@@ -53,7 +55,7 @@ public class Geant4Mesh {
             vT.append(item.translation());
             vT.append(volume.rotation());
             vT.append(volume.translation());            
-            System.out.println("[creating mesh] --> name : " + item.getName());
+            LOGGER.debug("[creating mesh] --> name : " + item.getName());
             //vT.show();
             if(item.getType().compareTo("box")==0){
                 MeshView  mesh = Geant4Mesh.makeMeshBox(item, vT);                
@@ -107,13 +109,13 @@ public class Geant4Mesh {
             points[index+2] = (float) point.z();
         }
         /*
-        System.out.println(" TRD = " );
+        LOGGER.debug(" TRD = " );
         for(int i = 0; i < points.length; i++){
             System.out.print("  " + points[i]);
-            if((i+1)%3==0) System.out.println();
+            if((i+1)%3==0) LOGGER.debug();
         }*/
         TriangleMesh boxMesh = new TriangleMesh();
-        //System.out.println("CREATING MESH");
+        //LOGGER.debug("CREATING MESH");
         boxMesh.getTexCoords().addAll(0, 0);
         boxMesh.getPoints().addAll(points);
         boxMesh.getFaces().addAll(faces);
@@ -147,7 +149,7 @@ public class Geant4Mesh {
         }
         
         TriangleMesh boxMesh = new TriangleMesh();
-        //System.out.println("CREATING MESH");
+        //LOGGER.debug("CREATING MESH");
         boxMesh.getTexCoords().addAll(0, 0);
         boxMesh.getPoints().addAll(p);
         boxMesh.getFaces().addAll(faces);
@@ -190,7 +192,7 @@ public class Geant4Mesh {
         };
         
         TriangleMesh boxMesh = new TriangleMesh();
-        //System.out.println("CREATING MESH");
+        //LOGGER.debug("CREATING MESH");
         boxMesh.getTexCoords().addAll(0, 0);
         boxMesh.getPoints().addAll(points);
         boxMesh.getFaces().addAll(faces);
@@ -278,7 +280,7 @@ public class Geant4Mesh {
         };
         
         TriangleMesh boxMesh = new TriangleMesh();
-        //System.out.println("CREATING MESH");
+        //LOGGER.debug("CREATING MESH");
         boxMesh.getTexCoords().addAll(0, 0);
         boxMesh.getPoints().addAll(points);
         boxMesh.getFaces().addAll(faces);
@@ -303,7 +305,7 @@ public class Geant4Mesh {
     
     public static float[]  getPointsTrap(double... pars){
         if(pars.length!=11){
-            System.out.println("[Geatn4::getPointsTrap] --> parameter length is wrong ["
+            LOGGER.debug("[Geatn4::getPointsTrap] --> parameter length is wrong ["
             + pars.length + "]  must be 11" );
             return null;
         }

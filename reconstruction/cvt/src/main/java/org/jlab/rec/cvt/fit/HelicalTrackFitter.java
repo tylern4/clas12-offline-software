@@ -3,6 +3,8 @@ package org.jlab.rec.cvt.fit;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.rec.cvt.svt.Constants;
 import org.jlab.rec.cvt.trajectory.Helix;
 
@@ -15,7 +17,7 @@ import Jama.Matrix;
  * CircleCalculator
  */
 public class HelicalTrackFitter {
-
+    public static Logger LOGGER = LogManager.getLogger(HelicalTrackFitter.class.getName());
     private Helix _helix;  // fit helix
     private double[] _chisq = new double[2];  // fit chi-squared [0]: circle [1] line
 
@@ -75,7 +77,7 @@ public class HelicalTrackFitter {
         for (int j = 0; j < X.size(); j++) {
             
             if (errRt.get(j) == 0) {
-                System.err.println("Point errors ill-defined -- helical fit exiting");
+                LOGGER.warn("Point errors ill-defined -- helical fit exiting");
                 return FitStatus.CircleFitFailed;
             }
             W.add(j, 1. / (errRt.get(j) * errRt.get(j))); //the weight is the 1./error^2
@@ -161,7 +163,7 @@ public class HelicalTrackFitter {
         //double fit_Z0 = _linefitpars.intercept();
         double fit_Z0 = _linefitpars.intercept();
         //fit_Z0 = (Math.abs(fit_dca)-_linefitpars.intercept())/ _linefitpars.slope() ; //reset for displaced vertex
-        //System.out.println("fit z0 "+_linefitpars.intercept());
+        //LOGGER.debug("fit z0 "+_linefitpars.intercept());
         //require vertex position inside of the inner barrel
         if (Math.abs(fit_dca) > Constants.MODULERADIUS[0][0]) {
 //            if (Math.abs(fit_dca) > Constants.MODULERADIUS[0][0] || Math.abs(fit_Z0) > 100) {
@@ -203,7 +205,7 @@ public class HelicalTrackFitter {
         _chisq[0] = _circlefitpars.chisq();
         _chisq[1] = _linefitpars.chisq();
 
-        //System.out.println("chi2 "+_chisq[0]+" " + _chisq[1]);
+        //LOGGER.debug("chi2 "+_chisq[0]+" " + _chisq[1]);
         //  Create the HelicalTrackFit for this helix
         _helicalfitoutput = new HelicalTrackFitPars(helixresult, _chisq);
 

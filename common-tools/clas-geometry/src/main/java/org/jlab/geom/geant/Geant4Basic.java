@@ -159,7 +159,7 @@ public class Geant4Basic implements IGeant4Volume {
                 this.volumeRotation.rotateZ(r1).rotateY(r2).rotateX(r3);
                 break;
             default:
-                System.out.println("[GEANT4VOLUME]---> unknown rotation " + order);
+                LOGGER.debug("[GEANT4VOLUME]---> unknown rotation " + order);
                 break;
         }
     }
@@ -203,12 +203,12 @@ public class Geant4Basic implements IGeant4Volume {
         List<Geant4Basic> volumes = new ArrayList<>();
         for (int loop = 0; loop < 20; loop++) {
             Geant4Basic paddle = new Geant4Basic("paddle_" + loop, "box", 4.0, 4.0, 20 + loop * 4);
-            //System.out.println("adding");
+            //LOGGER.debug("adding");
             volumes.add(paddle);
         }
 
         for (Geant4Basic paddle : volumes) {
-            System.out.println(paddle.toString());
+            LOGGER.debug(paddle.toString());
         }
     }
 }

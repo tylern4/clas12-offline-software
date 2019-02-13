@@ -25,6 +25,8 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.ToolBar;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.geom.prim.Point3D;
 
 /**
@@ -32,7 +34,7 @@ import org.jlab.geom.prim.Point3D;
  * @author gavalian
  */
 public class DetectorMesh2DCanvas extends Canvas {
-    
+    public static Logger LOGGER = LogManager.getLogger(DetectorMesh2DCanvas.class.getName());
     private Map<String,DetectorMesh2DLayer>  meshLayers = new HashMap<String,DetectorMesh2DLayer>();
     private Color   background = Color.rgb(58, 70, 80);//Color.ANTIQUEWHITE;
     private double  canvasScale = 1.0;
@@ -105,7 +107,7 @@ public class DetectorMesh2DCanvas extends Canvas {
     }
     
     public void update(){
-        //System.out.println("updating");
+        //LOGGER.debug("updating");
         GraphicsContext gc = this.getGraphicsContext2D();
         double w = this.getWidth();
         double h = this.getHeight();
@@ -158,7 +160,7 @@ public class DetectorMesh2DCanvas extends Canvas {
         double rcx = w/2.0 - centerX;
         double rcy = h/2.0 - centerY;
         double factor = 0.1*w/(p2.x()-p1.x());
-        System.out.println("Scale factor = " + factor);
+        LOGGER.debug("Scale factor = " + factor);
         this.canvasScale = this.canvasScale + this.canvasScale*factor;
         this.canvasCenterOffsetX += rcx;
         this.canvasCenterOffsetY += rcy;        
@@ -208,7 +210,7 @@ public class DetectorMesh2DCanvas extends Canvas {
         for(Map.Entry<String,DetectorMesh2DLayer> entry : this.meshLayers.entrySet()){
             for(DetectorMesh2D mesh : entry.getValue().getMeshList()){
                 if(mesh.isContained(worldX, worldY)){
-                    //System.out.println("yep ! you clicked on a shape");
+                    //LOGGER.debug("yep ! you clicked on a shape");
                     dMesh = mesh;
                 }
             }
@@ -221,7 +223,7 @@ public class DetectorMesh2DCanvas extends Canvas {
                     h.handle(dMesh);
                 }
             }
-            //System.out.println("selected detector component");
+            //LOGGER.debug("selected detector component");
         }
     }
     
@@ -238,7 +240,7 @@ public class DetectorMesh2DCanvas extends Canvas {
                         double rml = Math.sqrt((t.getX()-15)*(t.getX()-15) + (t.getY()-115)*(t.getY()-115));
                         double rmu = Math.sqrt((t.getX()-15)*(t.getX()-15) + (t.getY()-140)*(t.getY()-140));
                         double rmd = Math.sqrt((t.getX()-15)*(t.getX()-15) + (t.getY()-165)*(t.getY()-165));
-                        //System.out.println("CLICKED " 
+                        //LOGGER.debug("CLICKED " 
                         //        + t.getX() + " " + t.getY() 
                          //       + "  " + rzi + "  " + rzo);
                         if(rzo<10.0){ autoScaling = false; canvasScale -= 0.1; update();}
@@ -254,7 +256,7 @@ public class DetectorMesh2DCanvas extends Canvas {
                         updateSelectionList(mousePositionWorld.x(),mousePositionWorld.y());
                         
                         update();
-                        System.out.println("changed the dragg mode = " + isInDragMode);
+                        LOGGER.debug("changed the dragg mode = " + isInDragMode);
                     }
                 };
         EventHandler<MouseEvent> mouseMoveHandler = new EventHandler<MouseEvent>() {                    
@@ -275,7 +277,7 @@ public class DetectorMesh2DCanvas extends Canvas {
                 new EventHandler<MouseEvent>() {                    
                     @Override
                     public void handle(MouseEvent event) {
-                        //System.out.println("---> dragging finished");
+                        //LOGGER.debug("---> dragging finished");
                         if(isInDragMode==true){
                             isInDragMode = false;
                             zoomRegion();
@@ -288,7 +290,7 @@ public class DetectorMesh2DCanvas extends Canvas {
                 new EventHandler<MouseEvent>() {                    
                     @Override
                     public void handle(MouseEvent event) {
-                        System.out.println("---> dragging moude " + isInDragMode);
+                        LOGGER.debug("---> dragging moude " + isInDragMode);
                         mousePositionDragged.set(event.getX(), event.getY(), 0.0);
                         isInDragMode = true;
                         update();
@@ -299,7 +301,7 @@ public class DetectorMesh2DCanvas extends Canvas {
                 new EventHandler<MouseEvent>() {                    
                     @Override
                     public void handle(MouseEvent t) {
-                        System.out.println("---> dragging moude " + isInDragMode);
+                        LOGGER.debug("---> dragging moude " + isInDragMode);
                         mousePositionClicked.set(t.getX(), t.getY(), 0.0);
                         mousePositionDragged.set(t.getX(), t.getY(), 0.0);
                         //isInDragMode = true;
@@ -351,7 +353,7 @@ public class DetectorMesh2DCanvas extends Canvas {
             @Override
             public void changed(ObservableValue<? extends Number> ov,
                 Number old_val, Number new_val) {
-                    System.out.println(new_val.doubleValue());
+                    LOGGER.debug(new_val.doubleValue());
                     String layerName = (String) comboBox.getSelectionModel().getSelectedItem();
                     meshLayers.get(layerName).setOpacity(new_val.doubleValue());
                     update();
@@ -360,9 +362,9 @@ public class DetectorMesh2DCanvas extends Canvas {
         
         comboBox.valueProperty().addListener(new ChangeListener<String>() {
             @Override public void changed(ObservableValue ov, String t, String t1) {
-                System.out.println(ov);
-                System.out.println(t);
-                System.out.println(t1);
+                LOGGER.debug(ov);
+                LOGGER.debug(t);
+                LOGGER.debug(t1);
                 if(meshLayers.containsKey(t1)==true){
                     double opacity = meshLayers.get(t1).getOpacity();
                     slider.setValue(opacity);

@@ -1,6 +1,9 @@
 package org.jlab.rec.fmt.cluster;
 
 import java.util.ArrayList;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.geom.prim.Line3D;
 import org.jlab.rec.fmt.Constants;
 import org.jlab.rec.fmt.hit.FittedHit;
@@ -12,7 +15,7 @@ import org.jlab.rec.fmt.hit.Hit;
  *
  */
 public class Cluster extends ArrayList<FittedHit> implements Comparable<Cluster>{
-
+	public static Logger LOGGER = LogManager.getLogger(Cluster.class.getName());
 	private static final long serialVersionUID = 9153980362683755204L;
 
 
@@ -194,7 +197,7 @@ public class Cluster extends ArrayList<FittedHit> implements Comparable<Cluster>
 			    weightedStripEndPoint2X+= strpEn*x2;
 			    weightedStripEndPoint2Y+= strpEn*y2;
 			    weightedStripEndPoint2Z+= strpEn*z2;
-			    //System.out.println(" making a cluster with strip "+strpNb+" ref var "+Constants.FVT_stripsYloc[strpNb-1][0]);
+			    //LOGGER.debug(" making a cluster with strip "+strpNb+" ref var "+Constants.FVT_stripsYloc[strpNb-1][0]);
 			    // getting the max and min strip number in the cluster
 			    if(strpNb<=min) 
 					min = strpNb;
@@ -208,7 +211,7 @@ public class Cluster extends ArrayList<FittedHit> implements Comparable<Cluster>
 			    
 			}
 			if(totEn==0) {
-				System.err.println(" Cluster energy is null .... exit");
+				LOGGER.warn(" Cluster energy is null .... exit");
 				return;
 			}
 
@@ -217,7 +220,7 @@ public class Cluster extends ArrayList<FittedHit> implements Comparable<Cluster>
 			this.set_SeedStrip(seed);
 			this.set_SeedEnergy(Emax);
 			// calculates the centroid values and associated positions
-			stripNumCent = weightedStrp/totEn; //System.out.println("  --> centroid "+stripNumCent);
+			stripNumCent = weightedStrp/totEn; //LOGGER.debug("  --> centroid "+stripNumCent);
 			xCentEndPoint1 = weightedStripEndPoint1X/totEn;
 			yCentEndPoint1 = weightedStripEndPoint1Y/totEn;
 			zCentEndPoint1 = weightedStripEndPoint1Z/totEn;

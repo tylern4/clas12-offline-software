@@ -6,12 +6,15 @@
 package org.jlab.detector.base;
 
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  *
  * @author gavalian
  */
 public class DetectorDescriptor implements Comparable<DetectorDescriptor> {
-
+    public static Logger LOGGER = LogManager.getLogger(DetectorDescriptor.class.getName());
     private DetectorType  detectorType = DetectorType.UNDEFINED;
     private Integer hw_CRATE     = 0;
     private Integer hw_SLOT      = 0;
@@ -55,7 +58,7 @@ public class DetectorDescriptor implements Comparable<DetectorDescriptor> {
     public void setOrder(int order){        
         this.dt_ORDER = order;
         if(this.dt_ORDER<0||this.dt_ORDER>3){
-            System.err.println("----> error : detector descriptor order must be [1..4]");
+            LOGGER.warn("----> error : detector descriptor order must be [1..4]");
             this.dt_ORDER = 0;
         }
     }

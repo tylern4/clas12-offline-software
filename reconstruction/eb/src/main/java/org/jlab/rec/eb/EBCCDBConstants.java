@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.detector.calib.utils.ConstantsManager;
 import org.jlab.utils.groups.IndexedTable;
 import org.jlab.geom.prim.Vector3D;
@@ -14,7 +16,7 @@ import org.jlab.geom.prim.Vector3D;
  * @author baltzell
  */
 public class EBCCDBConstants {
-
+    public static Logger LOGGER = LogManager.getLogger(EBCCDBConstants.class.getName());
     private int currentRun = -1;
     private boolean isLoaded = false;
     
@@ -182,28 +184,28 @@ public class EBCCDBConstants {
     }
     
     public void show() {
-        System.out.println("EBCCDBConstants:  show()");
+        LOGGER.debug("EBCCDBConstants:  show()");
         for (EBCCDBEnum ii : dbIntegers.keySet()) {
-            System.out.println(String.format("%-30s: %d",ii,dbIntegers.get(ii)));
+            LOGGER.debug(String.format("%-30s: %d",ii,dbIntegers.get(ii)));
         }
         for (EBCCDBEnum ii : dbDoubles.keySet()) {
-            System.out.println(String.format("%-30s: %f",ii,dbDoubles.get(ii)));
+            LOGGER.debug(String.format("%-30s: %f",ii,dbDoubles.get(ii)));
         }
         for (EBCCDBEnum ii : dbArrays.keySet()) {
-            System.out.print(String.format("%-30s: ",ii));
-            for (double xx : dbArrays.get(ii)) System.out.print(xx+" , ");
-            System.out.println();
+            LOGGER.debug(String.format("%-30s: ",ii));
+            for (double xx : dbArrays.get(ii)) LOGGER.debug(xx+" , ");
+            LOGGER.debug("");
         }
         for (EBCCDBEnum ii : dbVector3Ds.keySet()) {
-           System.out.println(String.format("%-30s",ii)+": "+dbVector3Ds.get(ii));
+           LOGGER.debug(String.format("%-30s",ii)+": "+dbVector3Ds.get(ii));
         }
         for (EBCCDBEnum ii : dbSectorArrays.keySet()) {
             for (int sector : dbSectorArrays.get(ii).keySet()) {
-                System.out.print(String.format("%-30s: %d ",ii,sector));
+                LOGGER.debug(String.format("%-30s: %d ",ii,sector));
                 for (double xx : dbSectorArrays.get(ii).get(sector)) {
-                    System.out.print(xx+" , ");
+                    LOGGER.debug(xx+" , ");
                 }
-                System.out.println();
+                LOGGER.debug("");
             }
         }
     }

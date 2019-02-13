@@ -2,6 +2,9 @@ package org.jlab.rec.dc.track;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.clas.clas.math.FastMath;
 
 //import org.apache.commons.math3.util.FastMath;
@@ -29,7 +32,7 @@ import trackfitter.fitter.LineFitter;
  */
 
 public class TrackCandListFinder {
-
+    public static Logger LOGGER = LogManager.getLogger(TrackCandListFinder.class.getName());
     private boolean debug = false;
     long startTime, startTime2 = 0;
 
@@ -204,7 +207,7 @@ public class TrackCandListFinder {
 
             if (debug) startTime = System.currentTimeMillis();
             Trajectory traj = trjFind.findTrajectory(aCrossList, DcDetector, dcSwim);
-            if (debug) System.out.println("Trajectory finding = " + (System.currentTimeMillis() - startTime));
+            if (debug) LOGGER.debug("Trajectory finding = " + (System.currentTimeMillis() - startTime));
 
             if (traj == null)
                 continue;
@@ -229,7 +232,7 @@ public class TrackCandListFinder {
 
                     if (debug) startTime = System.currentTimeMillis();
                     kFit.runFitter(cand.get(0).get_Sector());
-                    if (debug) System.out.println("Kalman fitter = " + (System.currentTimeMillis() - startTime));
+                    if (debug) LOGGER.debug("Kalman fitter = " + (System.currentTimeMillis() - startTime));
 
 
                     if (kFit.finalStateVec == null)
@@ -238,7 +241,7 @@ public class TrackCandListFinder {
                     // initialize the state vector corresponding to the last measurement site
                     StateVec fn = new StateVec();
 
-                    //System.out.println(" fit failed due to chi2 "+kFit.setFitFailed+" p "+1./Math.abs(kFit.finalStateVec.Q));
+                    //LOGGER.debug(" fit failed due to chi2 "+kFit.setFitFailed+" p "+1./Math.abs(kFit.finalStateVec.Q));
                     if (!kFit.setFitFailed && kFit.finalStateVec != null) {
                         // set the state vector at the last measurement site
                         fn.set(kFit.finalStateVec.x, kFit.finalStateVec.y, kFit.finalStateVec.tx, kFit.finalStateVec.ty);
@@ -276,11 +279,11 @@ public class TrackCandListFinder {
 
                     //require 3 crosses to make a track (allows for 1 pseudo-cross)
                     if (cand.size() == 3) {
-                        //System.out.println("---- cand in sector "+crossesInTrk.get(0).get_Sector());
-                        //System.out.println(crossesInTrk.get(0).printInfo());
-                        //System.out.println(crossesInTrk.get(1).printInfo());
-                        //System.out.println(crossesInTrk.get(2).printInfo());
-                        //System.out.println("---------------");
+                        //LOGGER.debug("---- cand in sector "+crossesInTrk.get(0).get_Sector());
+                        //LOGGER.debug(crossesInTrk.get(0).printInfo());
+                        //LOGGER.debug(crossesInTrk.get(1).printInfo());
+                        //LOGGER.debug(crossesInTrk.get(2).printInfo());
+                        //LOGGER.debug("---------------");
                         double x1 = aCrossList.get(0).get_Point().x();
                         double y1 = aCrossList.get(0).get_Point().y();
                         double z1 = aCrossList.get(0).get_Point().z();
@@ -332,7 +335,7 @@ public class TrackCandListFinder {
                             theta3 = theta3s1;
                             iBdl = pars[1];
                         }
-                        if (debug) System.out.println("TrackInitFit-1 = " + (System.currentTimeMillis() - startTime));
+                        if (debug) LOGGER.debug("TrackInitFit-1 = " + (System.currentTimeMillis() - startTime));
 
                         if (debug) startTime = System.currentTimeMillis();
                         pars = getTrackInitFit(cand.get(0).get_Sector(), x1, y1, z1, x2, y2, z2, x3, y3, z3,
@@ -346,7 +349,7 @@ public class TrackCandListFinder {
                             theta3 = theta3s2;
                             iBdl = pars[1];
                         }
-                        if (debug) System.out.println("TrackInitFit-2 = " + (System.currentTimeMillis() - startTime));
+                        if (debug) LOGGER.debug("TrackInitFit-2 = " + (System.currentTimeMillis() - startTime));
 
                         if (debug) startTime = System.currentTimeMillis();
                         pars = getTrackInitFit(cand.get(0).get_Sector(), x1, y1, z1, x2, y2, z2, x3, y3, z3,
@@ -360,7 +363,7 @@ public class TrackCandListFinder {
                             theta3 = theta3s1;
                             iBdl = pars[1];
                         }
-                        if (debug) System.out.println("TrackInitFit-3 = " + (System.currentTimeMillis() - startTime));
+                        if (debug) LOGGER.debug("TrackInitFit-3 = " + (System.currentTimeMillis() - startTime));
 
                         if (debug) startTime = System.currentTimeMillis();
                         pars = getTrackInitFit(cand.get(0).get_Sector(), x1, y1, z1, x2, y2, z2, x3, y3, z3,
@@ -373,7 +376,7 @@ public class TrackCandListFinder {
                             theta3 = theta3s2;
                             iBdl = pars[1];
                         }
-                        if (debug) System.out.println("TrackInitFit-4 = " + (System.currentTimeMillis() - startTime));
+                        if (debug) LOGGER.debug("TrackInitFit-4 = " + (System.currentTimeMillis() - startTime));
 
                         if (chi2 > 2500)
                             continue;
@@ -390,7 +393,7 @@ public class TrackCandListFinder {
                                     iBdl, TORSCALE);
                             if (debug) startTime = System.currentTimeMillis();
                             int q = this.calcInitTrkQ(theta1, theta3, TORSCALE);
-                            if (debug) System.out.println("calcInitTrkQ = " + (System.currentTimeMillis() - startTime));
+                            if (debug) LOGGER.debug("calcInitTrkQ = " + (System.currentTimeMillis() - startTime));
 
                             if (p > 11) {
                                 p = 11;
@@ -420,7 +423,7 @@ public class TrackCandListFinder {
                             if (debug) startTime = System.currentTimeMillis();
                             kFit.runFitter(cand.get(0).get_Sector());
                             if (debug)
-                                System.out.println("Kalman fitter - 2 = " + (System.currentTimeMillis() - startTime));
+                                LOGGER.debug("Kalman fitter - 2 = " + (System.currentTimeMillis() - startTime));
 
                             if (kFit.finalStateVec == null)
                                 continue;
@@ -439,15 +442,15 @@ public class TrackCandListFinder {
                                         kFit.finalStateVec.ty,
                                         dcSwim);
                                 if (debug)
-                                    System.out.println("getHitBasedFitChi2ToCrosses = " +
+                                    LOGGER.debug("getHitBasedFitChi2ToCrosses = " +
                                             (System.currentTimeMillis() - startTime));
 
-                                //System.out.println(cand.get(0).get_Sector()+" HB fit to crosses c2 "+HBc2);
+                                //LOGGER.debug(cand.get(0).get_Sector()+" HB fit to crosses c2 "+HBc2);
                                 if (HBc2 > 1000) {
                                     kFit.setFitFailed = true;
                                 }
                             }
-                            //System.out.println(" fit failed due to chi2 "+kFit.setFitFailed+" p "+1./Math.abs(kFit.finalStateVec.Q));
+                            //LOGGER.debug(" fit failed due to chi2 "+kFit.setFitFailed+" p "+1./Math.abs(kFit.finalStateVec.Q));
                             if (!kFit.setFitFailed && kFit.finalStateVec != null) {
                                 // set the state vector at the last measurement site
                                 fn.set(kFit.finalStateVec.x,
@@ -478,7 +481,7 @@ public class TrackCandListFinder {
             }
         }
         //this.setAssociatedIDs(cands);
-        if (debug) System.out.println("TrackCandidate finding = " +
+        if (debug) LOGGER.debug("TrackCandidate finding = " +
                 (System.currentTimeMillis() - startTime2) + "\n");
         return cands;
     }
@@ -582,7 +585,7 @@ public class TrackCandListFinder {
             sector = 6;
 
         if ((sector < 1) || (sector > 6)) {
-            System.err.println("Track sector not found....");
+            LOGGER.warn("Track sector not found....");
         }
         return sector;
     }
@@ -605,7 +608,7 @@ public class TrackCandListFinder {
         double pz = cand.get_P() / Math.sqrt(stateVec.tanThetaX() * stateVec.tanThetaX() +
                 stateVec.tanThetaY() * stateVec.tanThetaY() + 1);
 
-        //System.out.println("Setting track params for ");stateVec.printInfo();
+        //LOGGER.debug("Setting track params for ");stateVec.printInfo();
         dcSwim.SetSwimParameters(stateVec.x(), stateVec.y(), z,
                 pz * stateVec.tanThetaX(), pz * stateVec.tanThetaY(), pz,
                 cand.get_Q());

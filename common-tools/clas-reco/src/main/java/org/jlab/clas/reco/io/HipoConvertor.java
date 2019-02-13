@@ -7,6 +7,8 @@ package org.jlab.clas.reco.io;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.io.evio.EvioDataBank;
 import org.jlab.io.evio.EvioDataEvent;
 import org.jlab.io.evio.EvioSource;
@@ -20,7 +22,7 @@ import org.jlab.jnp.utils.file.FileUtils;
  * @author gavalian
  */
 public class HipoConvertor {
-    
+    public static Logger LOGGER = LogManager.getLogger(HipoConvertor.class.getName());
     
     public static void createRecBanksTOF(HipoDataEvent hipoEvent, EvioDataEvent evioEvent){
         
@@ -136,7 +138,7 @@ public class HipoConvertor {
         int counter = 0;
         for(String file : inputFiles){
             
-            System.out.println("processing file ----> " + file);
+            LOGGER.debug("processing file ----> " + file);
             EvioSource reader = new EvioSource();
             reader.open(file);
             while(reader.hasEvent()==true){
@@ -146,12 +148,12 @@ public class HipoConvertor {
                 try {
                     HipoConvertor.createRecBanksTOF(hipoEvent, evioEvent);
                 } catch (Exception e){
-                    System.out.println("\n>>>   EVENT # " + counter + " error with FTOF banks\n");
+                    LOGGER.debug("\n>>>   EVENT # " + counter + " error with FTOF banks\n");
                 }
                 try {
                     HipoConvertor.createRecBanksCTOF(hipoEvent, evioEvent);                
                 } catch (Exception e){
-                    System.out.println("\n>>>   EVENT # " + counter + " error with CTOF banks\n");                    
+                    LOGGER.debug("\n>>>   EVENT # " + counter + " error with CTOF banks\n");                    
                 }
                 writer.writeEvent(hipoEvent);
             }

@@ -3,6 +3,9 @@ package org.jlab.rec.cvt.cross;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.clas.swimtools.Swim;
 import org.jlab.geom.prim.Point3D;
 import org.jlab.rec.cvt.cluster.Cluster;
@@ -21,7 +24,7 @@ import org.jlab.rec.cvt.track.TrackSeeder;
  *
  */
 public class HelixCrossListFinder {
-
+    public static Logger LOGGER = LogManager.getLogger(HelixCrossListFinder.class.getName());
     public HelixCrossListFinder() { 
     }
 
@@ -85,7 +88,7 @@ public class HelixCrossListFinder {
             }
         }
         for(Cross c : allCrossList){
-            //System.out.println(" CROSSLISTER "+c.printInfo());
+            //LOGGER.debug(" CROSSLISTER "+c.printInfo());
             if(c.get_Detector().equalsIgnoreCase("SVT"))
                 theListsByRegion.get(c.get_Region()-1).add(c);
             if(c.get_Detector().equalsIgnoreCase("BMT") && c.get_DetectorType().equalsIgnoreCase("Z"))
@@ -109,12 +112,12 @@ public class HelixCrossListFinder {
                     for (int i5 = 0; i5 < theListsByRegion.get(4).size(); i5++) {
                         for (int i6 = 0; i6 < theListsByRegion.get(5).size(); i6++) {
                             Seed cand ; 
-                            //System.out.println("-----");
-                            //if(theListsByRegion.get(1).get(i2)!=null) System.out.println(" 5-l "+theListsByRegion.get(1).get(i2).printInfo());
-                            //if(theListsByRegion.get(2).get(i3)!=null) System.out.println(" 5-l "+theListsByRegion.get(2).get(i3).printInfo());
-                            //if(theListsByRegion.get(3).get(i4)!=null) System.out.println(" 5-l "+theListsByRegion.get(3).get(i4).printInfo());
-                            //if(theListsByRegion.get(4).get(i5)!=null) System.out.println(" 5-l "+theListsByRegion.get(4).get(i5).printInfo());
-                            //if(theListsByRegion.get(5).get(i6)!=null) System.out.println(" 5-l "+theListsByRegion.get(5).get(i6).printInfo());
+                            //LOGGER.debug("-----");
+                            //if(theListsByRegion.get(1).get(i2)!=null) LOGGER.debug(" 5-l "+theListsByRegion.get(1).get(i2).printInfo());
+                            //if(theListsByRegion.get(2).get(i3)!=null) LOGGER.debug(" 5-l "+theListsByRegion.get(2).get(i3).printInfo());
+                            //if(theListsByRegion.get(3).get(i4)!=null) LOGGER.debug(" 5-l "+theListsByRegion.get(3).get(i4).printInfo());
+                            //if(theListsByRegion.get(4).get(i5)!=null) LOGGER.debug(" 5-l "+theListsByRegion.get(4).get(i5).printInfo());
+                            //if(theListsByRegion.get(5).get(i6)!=null) LOGGER.debug(" 5-l "+theListsByRegion.get(5).get(i6).printInfo());
                             cand = this.isTrack5(
                                     theListsByRegion.get(1).get(i2), 
                                     theListsByRegion.get(2).get(i3), 
@@ -126,10 +129,10 @@ public class HelixCrossListFinder {
                                 continue;
                             } else {
                                 for (int l = 0; l < C4.length; l++) { 
-                              //      System.out.println("0) TRAC 4 regions "+C4[l][0]+" cnt "+this.match(C4[l][0], i2, i3, i4, i5, i6));
-                              //      System.out.println("1) TRAC 4 regions "+C4[l][1]+" cnt "+this.match(C4[l][1], i2, i3, i4, i5, i6));
-                              //      System.out.println("2) TRAC 4 regions "+C4[l][2]+" cnt "+this.match(C4[l][2], i2, i3, i4, i5, i6));
-                              //      System.out.println("3) TRAC 4 regions "+C4[l][3]+" cnt "+this.match(C4[l][3], i2, i3, i4, i5, i6));
+                              //      LOGGER.debug("0) TRAC 4 regions "+C4[l][0]+" cnt "+this.match(C4[l][0], i2, i3, i4, i5, i6));
+                              //      LOGGER.debug("1) TRAC 4 regions "+C4[l][1]+" cnt "+this.match(C4[l][1], i2, i3, i4, i5, i6));
+                              //      LOGGER.debug("2) TRAC 4 regions "+C4[l][2]+" cnt "+this.match(C4[l][2], i2, i3, i4, i5, i6));
+                              //      LOGGER.debug("3) TRAC 4 regions "+C4[l][3]+" cnt "+this.match(C4[l][3], i2, i3, i4, i5, i6));
                                     cand = this.isTrack4(
                                         theListsByRegion.get(C4[l][0] - 1).get(this.match(C4[l][0], i2, i3, i4, i5, i6)),
                                         theListsByRegion.get(C4[l][1] - 1).get(this.match(C4[l][1], i2, i3, i4, i5, i6)), 
@@ -177,8 +180,8 @@ public class HelixCrossListFinder {
             
             trkSeed.set_Crosses(s);
             List<Cluster> clusters = new ArrayList<Cluster>();
-            System.out.println(" seed crosses ");
-            for(Cross c : s ) { System.out.println(" --> "+c.printInfo());
+            LOGGER.debug(" seed crosses ");
+            for(Cross c : s ) { LOGGER.debug(" --> "+c.printInfo());
                 if(c.get_Detector().equalsIgnoreCase("SVT")) {
                     c.get_Cluster1().set_CentroidError(this.calcCentErr(c, c.get_Cluster1(), svt_geo));
                     c.get_Cluster2().set_CentroidError(this.calcCentErr(c, c.get_Cluster2(), svt_geo));

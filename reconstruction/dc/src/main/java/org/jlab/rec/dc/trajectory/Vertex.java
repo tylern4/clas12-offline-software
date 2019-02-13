@@ -48,7 +48,7 @@ public class Vertex {
         // For MC studies only
         double r = vertexEstimator(event) ;
 
-        //System.out.println(" r "+r);
+        //LOGGER.debug(" r "+r);
         double x0 = thecand.get_Vtx0().x();
         double y0 = thecand.get_Vtx0().y();
         double z0 = thecand.get_Vtx0().z();
@@ -71,7 +71,7 @@ public class Vertex {
         double rpz = result[5];
         double rpath = result[6];
 
-        //System.out.println(r+" } --> x0 "+x0 +" y0 "+y0+" rx "+rx +" ry "+ry+" r "+Math.sqrt(rx*rx+ry*ry));
+        //LOGGER.debug(r+" } --> x0 "+x0 +" y0 "+y0+" rx "+rx +" ry "+ry+" r "+Math.sqrt(rx*rx+ry*ry));
 
         double path = thecand.get_TotPathLen()-rpath;
 

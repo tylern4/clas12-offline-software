@@ -1,10 +1,14 @@
 package org.jlab.geom.base;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * This is an interface for providing constants for geometry objects.
  * @author gavalian
  */
 public interface ConstantProvider {
+    Logger LOGGER = LogManager.getLogger(ConstantProvider.class.getName());
     /**
      * Returns true if this ConstantProvider contains an entry for the given
      * key string.

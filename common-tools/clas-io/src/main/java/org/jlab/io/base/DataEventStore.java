@@ -5,6 +5,9 @@
  */
 package org.jlab.io.base;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -13,6 +16,7 @@ import java.util.TreeMap;
  * @author gavalian
  */
 public class DataEventStore {
+    public static Logger LOGGER = LogManager.getLogger(DataEventStore.class.getName());
     private TreeMap<String,DataBank> store = new TreeMap<String,DataBank>();
     
     
@@ -33,7 +37,7 @@ public class DataEventStore {
             if(db!=null){
                 store.put(bank, db);
             } else {
-                System.err.println("[DataEventStore::init] ----> error : reading bank "
+                LOGGER.warn("[DataEventStore::init] ----> error : reading bank "
                 + " [" + bank + "]  failed....");
             }
         }
@@ -49,7 +53,7 @@ public class DataEventStore {
     
     public void show(){
         for(Map.Entry<String,DataBank> bank : this.store.entrySet()){
-            System.out.println(String.format("| %-24s | %6d | %6d |", bank.getKey(),
+            LOGGER.debug(String.format("| %-24s | %6d | %6d |", bank.getKey(),
                     bank.getValue().rows(),bank.getValue().rows()));
         }
     }

@@ -124,7 +124,7 @@ public class HipoDataEvent implements DataEvent {
     public double[] getDouble(String path) {
         HipoNode node = this.getHipoNodeByPath(path);        
         if(node==null){
-            System.out.println("\n>>>>> error : getting node failed : " + path);
+            LOGGER.debug("\n>>>>> error : getting node failed : " + path);
             return new double[0];
         }
         return node.getDouble();
@@ -142,7 +142,7 @@ public class HipoDataEvent implements DataEvent {
     public float[] getFloat(String path) {
         HipoNode node = this.getHipoNodeByPath(path);        
         if(node==null){
-            System.out.println("\n>>>>> error : getting node failed : " + path);
+            LOGGER.debug("\n>>>>> error : getting node failed : " + path);
             return new float[0];
         }
         return node.getFloat();
@@ -160,7 +160,7 @@ public class HipoDataEvent implements DataEvent {
     public int[] getInt(String path) {
         HipoNode node = this.getHipoNodeByPath(path);        
         if(node==null){
-            System.out.println("\n>>>>> error : getting node failed : " + path);
+            LOGGER.debug("\n>>>>> error : getting node failed : " + path);
             return new int[0];
         }
         return node.getInt();
@@ -177,7 +177,7 @@ public class HipoDataEvent implements DataEvent {
     public short[] getShort(String path) {
         HipoNode node = this.getHipoNodeByPath(path);        
         if(node==null){
-            System.out.println("\n>>>>> error : getting node failed : " + path);
+            LOGGER.debug("\n>>>>> error : getting node failed : " + path);
             return new short[0];
         }
         return node.getShort();
@@ -194,19 +194,19 @@ public class HipoDataEvent implements DataEvent {
     public HipoNode getHipoNodeByPath(String path){
         String[] bank_and_item = path.split("[.]+");
         if(bank_and_item.length<2){
-            System.out.println("\n>>>>> error : syntax error in path name : " + path);
+            LOGGER.debug("\n>>>>> error : syntax error in path name : " + path);
             return null;
         }
         Schema schema = this.hipoEvent.getSchemaFactory().getSchema(bank_and_item[0]);
         if(schema==null){
-            System.out.println("\n>>>>> error : can not find schema with name : " 
+            LOGGER.debug("\n>>>>> error : can not find schema with name : " 
                     + bank_and_item[0]);
             return null;
         }
         
         SchemaEntry entry = schema.getEntry(bank_and_item[1]);
         if(entry==null){
-            System.out.println("\n>>>>> error : schema  " + bank_and_item[0] +
+            LOGGER.debug("\n>>>>> error : schema  " + bank_and_item[0] +
                     " dose not have an entry with name :"
                     + bank_and_item[1]);
             return null;
@@ -219,7 +219,7 @@ public class HipoDataEvent implements DataEvent {
     public byte[] getByte(String path) {
         HipoNode node = this.getHipoNodeByPath(path);        
         if(node==null){
-            System.out.println("\n>>>>> error : getting node failed : " + path);
+            LOGGER.debug("\n>>>>> error : getting node failed : " + path);
             return new byte[0];
         }
         return node.getByte();
@@ -252,10 +252,9 @@ public class HipoDataEvent implements DataEvent {
     @Override
     public DataBank createBank(String bank_name, int rows) {
         if(this.hipoEvent.getSchemaFactory().hasSchema(bank_name)==false){
-            System.out.println(">>>>> error :  descriptor not found : " + bank_name);
-            System.out.println(">>>>> error : number of descriptors : " + 
+            LOGGER.debug(">>>>> error :  descriptor not found : " + bank_name);
+            LOGGER.debug(">>>>> error : number of descriptors : " + 
                     hipoEvent.getSchemaFactory().getSchemaList().size());
-            System.out.println();
             this.hipoEvent.getSchemaFactory().show();
             return null;
         }
@@ -279,7 +278,7 @@ public class HipoDataEvent implements DataEvent {
     public long[] getLong(String path) {
         HipoNode node = this.getHipoNodeByPath(path);        
         if(node==null){
-            System.out.println("\n>>>>> error : getting node failed : " + path);
+            LOGGER.debug("\n>>>>> error : getting node failed : " + path);
             return new long[0];
         }
         int size = node.getDataSize();

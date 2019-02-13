@@ -5,6 +5,9 @@
  */
 package org.jlab.geom.gui;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -18,7 +21,7 @@ import java.util.ArrayList;
  * @author gavalian
  */
 public class DetectorLayerUI {
-    
+    public static Logger LOGGER = LogManager.getLogger(DetectorLayerUI.class.getName());
     private ArrayList<DetectorComponentUI>  components = new ArrayList<DetectorComponentUI>();
     public  Rectangle  drawRegion = new Rectangle();
     public  IDetectorComponentSelection  selectionListener = null;
@@ -51,16 +54,16 @@ public class DetectorLayerUI {
         drawRegion.width  = 0;
         for(DetectorComponentUI comp : components){
             Rectangle bound = comp.shapePolygon.getBounds();
-            //System.out.println(bound);
+            //LOGGER.debug(bound);
             if(bound.x<drawRegion.x) drawRegion.x = bound.x;
             if(bound.y<drawRegion.y) drawRegion.y = bound.y;
             if((bound.x+bound.width)>(drawRegion.x+drawRegion.width)){
-                //System.out.println("yeap X");
+                //LOGGER.debug("yeap X");
                 drawRegion.width = (bound.x + bound.width) - drawRegion.x;
             }
             
             if((bound.y+bound.height)>(drawRegion.y+drawRegion.height)){
-                //System.out.println("yeap");
+                //LOGGER.debug("yeap");
                 drawRegion.height = (bound.y + bound.height) - drawRegion.y;
             }
         }
@@ -89,7 +92,7 @@ public class DetectorLayerUI {
         this.drawRegion.height = this.drawRegion.height + (int) (2*yfraction);
         
         /*
-        System.out.println("X/Y " + this.drawRegion.x + "  " + this.drawRegion.y +
+        LOGGER.debug("X/Y " + this.drawRegion.x + "  " + this.drawRegion.y +
                  "   W/H " + this.drawRegion.width + "  " + this.drawRegion.height);
                 */
     }
@@ -119,11 +122,11 @@ public class DetectorLayerUI {
         this.reset();
         int xc = this.getCoordinateX(x,width);
         int yc = this.getCoordinateY(y,height);
-        System.out.println("X/Y " + x + "  " + y + " W/H  " + width + " " + height + "  XC/YC = " + xc + "  " + yc);
+        LOGGER.debug("X/Y " + x + "  " + y + " W/H  " + width + " " + height + "  XC/YC = " + xc + "  " + yc);
         int counter = 0;
         for(DetectorComponentUI comp : this.components){
             counter++;
-            //System.out.println("COMPONENT " + counter);
+            //LOGGER.debug("COMPONENT " + counter);
             //comp.show();
             if(comp.shapePolygon.contains(xc, yc)==true){
                 comp.isActive = true;
@@ -143,12 +146,12 @@ public class DetectorLayerUI {
         
         g2d.setColor(new Color(165,155,155));
         g2d.fillRect(xoff, yoff, width, height);
-        //System.out.println("Drawing Detector Layer SIZE = " + this.components.size());
+        //LOGGER.debug("Drawing Detector Layer SIZE = " + this.components.size());
         float[] value = new float[6];
         for(DetectorComponentUI comp : this.components){
             int[] x = comp.shapePolygon.xpoints;
             int[] y = comp.shapePolygon.ypoints;
-            //System.out.println("POLYGON SIZE = " + x.length);
+            //LOGGER.debug("POLYGON SIZE = " + x.length);
             GeneralPath path = new GeneralPath();
             path.moveTo(getX(x[0],width), getY(y[0],height));
             for(int loop = 1; loop < x.length; loop++){

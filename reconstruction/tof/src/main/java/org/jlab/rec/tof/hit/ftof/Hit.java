@@ -198,7 +198,7 @@ public class Hit extends AHit implements IGetCalibrationParams {
                     + "  zPos =  " + form.format(this.get_Position().z())
                     + "\n ";
         }
-        System.out.println(s);
+        LOGGER.debug(s);
     }
 
     @Override
@@ -464,14 +464,14 @@ public class Hit extends AHit implements IGetCalibrationParams {
 
             for (DetHit hit : hits) {
                 FTOFDetHit fhit = new FTOFDetHit(hit);
-                System.out.println("\t" + fhit.length());
-                System.out.println("\t\t" + fhit.getSector());
-                System.out.println("\t\t" + fhit.getLayer());
-                System.out.println("\t\t" + fhit.getPaddle());
-                System.out.println("\t\tentry: " + fhit.origin());
-                System.out.println("\t\texit:  " + fhit.end());
-                System.out.println("\t\tmid:   " + fhit.mid());
-                System.out.println("\t\tlength: " + fhit.length());
+                LOGGER.debug("\t" + fhit.length());
+                LOGGER.debug("\t\t" + fhit.getSector());
+                LOGGER.debug("\t\t" + fhit.getLayer());
+                LOGGER.debug("\t\t" + fhit.getPaddle());
+                LOGGER.debug("\t\tentry: " + fhit.origin());
+                LOGGER.debug("\t\texit:  " + fhit.end());
+                LOGGER.debug("\t\tmid:   " + fhit.mid());
+                LOGGER.debug("\t\tlength: " + fhit.length());
             }
         }
         // create the hit object
@@ -479,11 +479,11 @@ public class Hit extends AHit implements IGetCalibrationParams {
         // String statusWord = hrd.set_StatusWord(statusL, statusR,
         // hit.get_ADC1(), hit.get_TDC1(), hit.get_ADC2(), hit.get_TDC2());
 
-        // System.out.println(statusWord);
+        // LOGGER.debug(statusWord);
         // hit.set_StatusWord(statusWord);
         // hit.set_HitParameters(superlayer, geometry, trks, paths);
         // read the hit object
-        // System.out.println(" hit "); hit.printInfo();
+        // LOGGER.debug(" hit "); hit.printInfo();
     }
 
     public boolean isAssociatedWTrk(FTOFDetHit[][][][] hitArray, int i) {
@@ -509,13 +509,13 @@ public class Hit extends AHit implements IGetCalibrationParams {
                 isAssoc = true;
                 this.trkAssociated_Paddle = jIdxUp + 1;
 
-                // System.out.println(r+") sector "+this.get_Sector()+" panel "+this.get_Panel()+" track associated index "+jIdxUp+" hit panel idx "+(this.get_Paddle()-1));
+                // LOGGER.debug(r+") sector "+this.get_Sector()+" panel "+this.get_Panel()+" track associated index "+jIdxUp+" hit panel idx "+(this.get_Paddle()-1));
             }
             if (hitArray[this.get_Sector() - 1][this.get_Panel() - 1][jIdxDown][i] != null) {
                 isAssoc = true;
                 this.trkAssociated_Paddle = jIdxDown + 1;
 
-                // System.out.println(r+") sector "+this.get_Sector()+" panel "+this.get_Panel()+" track associated index "+jIdxDown+" hit panel idx "+(this.get_Paddle()-1));
+                // LOGGER.debug(r+") sector "+this.get_Sector()+" panel "+this.get_Panel()+" track associated index "+jIdxDown+" hit panel idx "+(this.get_Paddle()-1));
             }
         }
         return isAssoc;

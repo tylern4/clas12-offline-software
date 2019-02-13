@@ -100,7 +100,7 @@ public class TrackReader {
     public void fetch_Trks(DataEvent event) {
 
         if (event.hasBank("TimeBasedTrkg::TBTracks") == false && event.hasBank("HitBasedTrkg::HBTracks") == false) {
-            // System.err.println("there is no DC bank ");
+            // LOGGER.warn("there is no DC bank ");
             _TrkLines = new ArrayList<Line3d>();
 
             return;

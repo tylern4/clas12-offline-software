@@ -1,10 +1,14 @@
 package org.jlab.io.base;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * DataDescriptor is the dictionary of a single DataBank object.
  * It consists of a list of Entries by name and integer ID.
  */
 public interface DataDescriptor {
+    Logger LOGGER = LogManager.getLogger(DataDescriptor.class.getName());
 	void init(String s);
 	String[] getEntryList();
 	String getName();

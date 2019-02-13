@@ -269,7 +269,7 @@ public class RICHHit implements Comparable<RICHHit>{
     // ----------------
     public void showHit() {
     // ----------------
-        System.out.println("Hit "  
+       System.out.println("Hit "  
             +" ID  "  + this.get_id()
             +" Sec "  + this.get_sector()
             +" Til "  + this.get_tile()  

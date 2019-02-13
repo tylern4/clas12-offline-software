@@ -40,9 +40,9 @@ public class TrackListFinder {
                 //KalFit kf = new KalFit(trk, svt_geo);
                 //kf.runKalFit(trk, svt_geo);
                 //EnergyLossCorr elc = new EnergyLossCorr(trk);
-                //System.out.println("******* before EL "+trk.get_P());
+                //LOGGER.debug("******* before EL "+trk.get_P());
                 //elc.doCorrection(trk, svt_geo);
-                //System.out.println("*******  after EL "+trk.get_P());
+                //LOGGER.debug("*******  after EL "+trk.get_P());
 
                 int charge = trk.get_Q();
                 double maxPathLength = 5.0;//very loose cut 

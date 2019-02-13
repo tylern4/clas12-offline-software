@@ -92,7 +92,7 @@ public class HitReader implements IMatchedHit {
         List<BaseHit> hitList = hitReader.get_MatchedHits(event, MH, triggerPhase, constants6, constants7);
 
         if (hitList.size() == 0) {
-            // System.err.println("there is no FTOF bank ");
+            // LOGGER.warn("there is no FTOF bank ");
 
             _FTOF1AHits = new ArrayList<Hit>();
             _FTOF1BHits = new ArrayList<Hit>();
@@ -132,7 +132,7 @@ public class HitReader implements IMatchedHit {
             TDCRIdx[i] = hitList.get(i).TDCbankHitIdx2;
 
             /*
-			 * System.out.println("hit "+hitList.get(i).get_Id()+ " sector "+
+			 * LOGGER.debug("hit "+hitList.get(i).get_Id()+ " sector "+
 			 * hitList.get(i).get_Sector()+ " panel "+
 			 * hitList.get(i).get_Layer()+ " paddle "+
 			 * hitList.get(i).get_Component()+ " ADCL "+ hitList.get(i).ADC1+
@@ -397,9 +397,9 @@ public class HitReader implements IMatchedHit {
 
         if (ADCandTDCLists != null) {
             Collections.sort(ADCandTDCLists);
-//            System.out.println("Sorted");
+//            LOGGER.debug("Sorted");
 //            for (BaseHit h : ADCandTDCLists) {
-//                System.out.println(" : " + h.get_Sector() + " " + h.get_Layer() + " " + h.get_Component() + " "
+//                LOGGER.debug(" : " + h.get_Sector() + " " + h.get_Layer() + " " + h.get_Component() + " "
 //                        + h.ADC1 + " " + h.ADC2 + " " + h.TDC1 + " " + h.TDC2 + " i: " + h.ADCbankHitIdx1 + " " + h.ADCbankHitIdx2
 //                        + " " + h.TDCbankHitIdx1 + " " + h.TDCbankHitIdx2);
 //            }
@@ -527,7 +527,7 @@ public class HitReader implements IMatchedHit {
                     hit.TDCbankHitIdx2 = tdc_idx2;
 
                     matchLists.add(hit);
-//                    System.out.println(i+")  s "+hit.get_Sector()+" l "+hit.get_Layer()+" c "+hit.get_Component()+" adcL "+hit.get_ADC1()+" adcR "+hit.get_ADC2()+" tdcL "+
+//                    LOGGER.debug(i+")  s "+hit.get_Sector()+" l "+hit.get_Layer()+" c "+hit.get_Component()+" adcL "+hit.get_ADC1()+" adcR "+hit.get_ADC2()+" tdcL "+
 //                                                 hit.get_TDC1()+" tdcR "+hit.get_TDC2());
 
                 }
@@ -545,12 +545,12 @@ public class HitReader implements IMatchedHit {
         int    cycles = table.getIntValue("cycles", 0,0,0);
         double triggerphase=0;
         if(cycles > 0) triggerphase=period*((timestamp+phase)%cycles);
-//        System.out.println(period + " " + phase + " " + cycles + " " + timestamp + " " + triggerphase);
+//        LOGGER.debug(period + " " + phase + " " + cycles + " " + timestamp + " " + triggerphase);
         return triggerphase;
     }
     
     public static void main(String arg[]) {
-        System.out.println(" TRYING TO MATCH HITS");
+        LOGGER.debug(" TRYING TO MATCH HITS");
         HitReader hr = new HitReader();
         ArrayList<BaseHit> ADCandTDCLists = new ArrayList<BaseHit>();
         BaseHit hit1 = new BaseHit(1,1,1);

@@ -108,7 +108,7 @@ public class ParticleResolutionCentralIn implements IParticleResolution {
 		double theta_res = this.getSigmaTheta(p, torus_scale);
 		double phi_res = this.getSigmaPhi(p, torus_scale);
 		double p_res = this.getSigmaMom(p, torus_scale);
-		// System.out.println(" Resolution --> P = " + p_res
+		// LOGGER.debug(" Resolution --> P = " + p_res
 		// + " theta = " + theta_res + " phi = " + phi_res);
 		p.setP(p.p() + PhysicsConstants.getRandomGauss(0.0, p_res));
 		p.setTheta(p.theta() + PhysicsConstants.getRandomGauss(0.0, theta_res));

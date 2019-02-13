@@ -54,7 +54,7 @@ public class Bos2Evio {
         
         File file = new File(output);
         if(file.exists()==true){
-            System.out.println("\n\n ERROR : output file " + output + 
+            System.out.println("\n\n ERROR : output file " + output +
                     "  already exists. Can not override.\n\n");
             System.exit(0);
         }

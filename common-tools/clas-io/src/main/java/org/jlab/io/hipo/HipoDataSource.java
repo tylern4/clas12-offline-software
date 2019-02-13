@@ -57,16 +57,16 @@ public class HipoDataSource implements DataSource {
     @Override
     public void open(String filename) {
         this.reader.open(filename);
-        System.out.println("[DataSourceDump] --> opened file with events # " + this.reader.getEventCount());
+        LOGGER.debug("[DataSourceDump] --> opened file with events # " + this.reader.getEventCount());
         //this.reader.getSchemaFactory().show();
         /*
         HipoRecord header = this.reader.getHeaderRecord();
         int  ncount = header.getEventCount();
-        System.out.println("[HipoDataSource] ---> dictionary record opened. # entries = " + ncount);
+        LOGGER.debug("[HipoDataSource] ---> dictionary record opened. # entries = " + ncount);
         for(int ev = 0; ev < ncount; ev++){
             byte[] descBytes  = header.getEvent(ev);
             String descString = new String(descBytes);
-            //System.out.println("init dictionary : " + descString);
+            //LOGGER.debug("init dictionary : " + descString);
             EvioDataDescriptor  descriptor = new EvioDataDescriptor(descString);
             this.dictionary.addDescriptor(descriptor);
         }*/
@@ -103,7 +103,7 @@ public class HipoDataSource implements DataSource {
     public DataEvent getNextEvent() {
         HipoEvent  hipoEvent = reader.readNextEvent();
         /*hipoEvent.getDataBuffer();        
-        System.out.println(" GET NEXT HIPO EVENT : DICTIONARY SIZE = " + 
+        LOGGER.debug(" GET NEXT HIPO EVENT : DICTIONARY SIZE = " + 
                 hipoEvent.getSchemaFactory().getSchemaList().size() + "  EVENT LENGTH = "
                 + hipoEvent.getDataBuffer().length);
         hipoEvent.showNodes();*/
@@ -144,7 +144,7 @@ public class HipoDataSource implements DataSource {
         int counter = 0;
         while(reader.hasEvent()==true){
             DataEvent  event = reader.getNextEvent();
-            System.out.println("EVENT # " + counter);
+            LOGGER.debug("EVENT # " + counter);
             event.show();
             counter++;
         }

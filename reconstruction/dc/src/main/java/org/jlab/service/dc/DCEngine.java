@@ -35,25 +35,25 @@ public class DCEngine extends ReconstructionEngine {
         String useSTTConf = this.getEngineConfigString("useStartTime");
         
         if (useSTTConf!=null) {
-            System.out.println("["+this.getName()+"] run with start time in tracking config chosen based on yaml ="+useSTTConf);
+            LOGGER.debug("["+this.getName()+"] run with start time in tracking config chosen based on yaml ="+useSTTConf);
             Constants.setUSETSTART(Boolean.valueOf(useSTTConf));
         }
         else {
             useSTTConf = System.getenv("USESTT");
             if (useSTTConf!=null) {
-                System.out.println("["+this.getName()+"] run with start time in tracking config chosen based on env ="+useSTTConf);
+                LOGGER.debug("["+this.getName()+"] run with start time in tracking config chosen based on env ="+useSTTConf);
                 Constants.setUSETSTART(Boolean.valueOf(useSTTConf));
             }
         }
         if (useSTTConf==null) {
-             System.out.println("["+this.getName()+"] run with start time in tracking config chosen based on default ="+Constants.isUSETSTART());
+            LOGGER.debug("["+this.getName()+"] run with start time in tracking config chosen based on default ="+Constants.isUSETSTART());
         }
         
         // Wire distortions
         String wireDistortionsFlag = this.getEngineConfigString("wireDistort");
         
         if (wireDistortionsFlag!=null) {
-            System.out.println("["+this.getName()+"] run with wire distortions in tracking config chosen based on yaml ="+wireDistortionsFlag);
+            LOGGER.debug("["+this.getName()+"] run with wire distortions in tracking config chosen based on yaml ="+wireDistortionsFlag);
             if(Boolean.valueOf(wireDistortionsFlag)==true) {
                 Constants.setWIREDIST(1.0);
             } else {
@@ -63,7 +63,7 @@ public class DCEngine extends ReconstructionEngine {
         else {
             wireDistortionsFlag = System.getenv("USEWIREDIST");
             if (wireDistortionsFlag!=null) {
-                System.out.println("["+this.getName()+"] run with wire distortions in tracking config chosen based on env ="+wireDistortionsFlag);
+                LOGGER.debug("["+this.getName()+"] run with wire distortions in tracking config chosen based on env ="+wireDistortionsFlag);
                 if(Boolean.valueOf(wireDistortionsFlag)==true) {
                     Constants.setWIREDIST(1.0);
                 } else {
@@ -72,7 +72,7 @@ public class DCEngine extends ReconstructionEngine {
             }
         }
         if (wireDistortionsFlag==null) {
-             System.out.println("["+this.getName()+"] run with default setting for wire distortions in tracking (off in MC, on in data)");
+            LOGGER.debug("["+this.getName()+"] run with default setting for wire distortions in tracking (off in MC, on in data)");
         }
     }
     public void LoadTables() {
@@ -93,16 +93,16 @@ public class DCEngine extends ReconstructionEngine {
         // Get the constants for the correct variation
         String geomDBVar = this.getEngineConfigString("geomDBVariation");
         if (geomDBVar!=null) {
-            System.out.println("["+this.getName()+"] run with geometry variation based on yaml ="+geomDBVar);
+            LOGGER.debug("["+this.getName()+"] run with geometry variation based on yaml ="+geomDBVar);
         }
         else {
             geomDBVar = System.getenv("GEOMDBVAR");
             if (geomDBVar!=null) {
-                System.out.println("["+this.getName()+"] run with geometry variation chosen based on env ="+geomDBVar);
+                LOGGER.debug("["+this.getName()+"] run with geometry variation chosen based on env ="+geomDBVar);
             }
         } 
         if (geomDBVar==null) {
-            System.out.println("["+this.getName()+"] run with default geometry");
+            LOGGER.debug("["+this.getName()+"] run with default geometry");
         }
         
         // Load the geometry
@@ -110,7 +110,7 @@ public class DCEngine extends ReconstructionEngine {
         dcDetector = new DCGeant4Factory(provider, DCGeant4Factory.MINISTAGGERON);
         for(int l=0; l<6; l++) {
             Constants.wpdist[l] = provider.getDouble("/geometry/dc/superlayer/wpdist", l);
-            System.out.println("****************** WPDIST READ *********FROM "+geomDBVar+"**** VARIATION ****** "+provider.getDouble("/geometry/dc/superlayer/wpdist", l));
+            LOGGER.debug("****************** WPDIST READ *********FROM "+geomDBVar+"**** VARIATION ****** "+provider.getDouble("/geometry/dc/superlayer/wpdist", l));
         }
         // Load other geometries
         ConstantProvider providerFTOF = GeometryFactory.getConstants(DetectorType.FTOF, 11, "default");
@@ -119,9 +119,9 @@ public class DCEngine extends ReconstructionEngine {
         ConstantProvider providerEC = GeometryFactory.getConstants(DetectorType.ECAL, 11, "default");
         ecDetector = new ECGeant4Factory(providerEC);
         pcalDetector = new PCALGeant4Factory(providerEC);
-        
-        
-        System.out.println(" -- Det Geometry constants are Loaded " );
+
+
+        LOGGER.debug(" -- Det Geometry constants are Loaded " );
         // create the surfaces
         tSurf = new TrajectorySurfaces();
         tSurf.LoadSurfaces(dcDetector, ftofDetector, ecDetector, pcalDetector);
@@ -129,16 +129,16 @@ public class DCEngine extends ReconstructionEngine {
         // Get the constants for the correct variation
         String ccDBVar = this.getEngineConfigString("constantsDBVariation");
         if (ccDBVar!=null) {
-            System.out.println("["+this.getName()+"] run with constants variation based on yaml ="+ccDBVar);
+            LOGGER.debug("["+this.getName()+"] run with constants variation based on yaml ="+ccDBVar);
         }
         else {
             ccDBVar = System.getenv("CCDBVAR");
             if (ccDBVar!=null) {
-                System.out.println("["+this.getName()+"] run with constants variation chosen based on env ="+ccDBVar);
+                LOGGER.debug("["+this.getName()+"] run with constants variation chosen based on env ="+ccDBVar);
             }
         } 
         if (ccDBVar==null) {
-            System.out.println("["+this.getName()+"] run with default constants");
+            LOGGER.debug("["+this.getName()+"] run with default constants");
         }
         // Load the calibration constants
         String dcvariationName = Optional.ofNullable(ccDBVar).orElse("default");

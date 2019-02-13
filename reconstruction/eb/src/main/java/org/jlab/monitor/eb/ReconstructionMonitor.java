@@ -2,6 +2,9 @@ package org.jlab.monitor.eb;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.groot.data.TDirectory;
 import org.jlab.groot.ui.TBrowser;
 import org.jlab.io.evio.EvioDataEvent;
@@ -12,6 +15,7 @@ import org.jlab.io.hipo.HipoDataSource;
  * @author gavalian
  */
 public class ReconstructionMonitor {
+    public static Logger LOGGER = LogManager.getLogger(ReconstructionMonitor.class.getName());
     public static void main(String[] args){
         String inputFile  = args[0];
         String outputFile = args[1];
@@ -28,12 +32,12 @@ public class ReconstructionMonitor {
         ReactionAnalysis  analysisPi0 = new ReactionAnalysis(dir);
         
         List<String> objects = dir.getCompositeObjectList(dir);
-        System.out.println("OBJECTS");
+        LOGGER.debug("OBJECTS");
         for(String o : objects){
-            System.out.println(o);
+            LOGGER.debug(o);
         }
         
-        System.out.println("OBJECTS END");
+        LOGGER.debug("OBJECTS END");
         HipoDataSource reader = new HipoDataSource();  
         reader.open(inputFile);
         
@@ -46,7 +50,7 @@ public class ReconstructionMonitor {
             analysisPi0.process(event, dir);
             events++;
         }
-        System.out.println(" processed events # " + events);
+        LOGGER.debug(" processed events # " + events);
         dir.writeFile(outputFile);
         
         //TBrowser t = new TBrowser(dir);

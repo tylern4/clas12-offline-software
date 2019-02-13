@@ -13,6 +13,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.GeneralPath;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.detector.base.DetectorDescriptor;
 import org.jlab.detector.base.DetectorType;
 
@@ -23,7 +26,7 @@ import org.jlab.geom.prim.Path3D;
  * @author gavalian
  */
 public class DetectorShape2D {
-    
+    public static Logger LOGGER = LogManager.getLogger(DetectorShape2D.class.getName());
     DetectorDescriptor  desc = new DetectorDescriptor();
     Path3D              shapePath = new Path3D();
     int                 colorRed    = 80;
@@ -146,7 +149,7 @@ public class DetectorShape2D {
         if(status<0)  rs = 0;
         int red   = (25*rs);
         int green = (255-red);
-        System.out.println(" setting color " + red + " " + green + " 0");
+        LOGGER.debug(" setting color " + red + " " + green + " 0");
         this.setColor(red,green,0);
     }
     

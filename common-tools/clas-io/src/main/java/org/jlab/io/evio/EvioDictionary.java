@@ -36,7 +36,7 @@ public final class EvioDictionary implements DataDictionary {
 	public EvioDictionary() {
 		String CLAS12DIR = System.getenv("CLAS12DIR");
 		if (CLAS12DIR == null) {
-			System.out.println("---> Warning the CLAS12DIR environment is not defined.");
+			LOGGER.debug("---> Warning the CLAS12DIR environment is not defined.");
 			return;
 		}
 
@@ -49,18 +49,18 @@ public final class EvioDictionary implements DataDictionary {
 			 * } catch (NoSuchAlgorithmException | ParserConfigurationException | SAXException | IOException | TransformerException e) { // TODO Auto-generated catch
 			 * block e.printStackTrace(); }
 			 */ } catch (ParserConfigurationException ex) {
-			Logger.getLogger(EvioDictionary.class.getName()).log(Level.SEVERE, null, ex);
+			LOGGER.error(ex);
 		} catch (SAXException ex) {
-			Logger.getLogger(EvioDictionary.class.getName()).log(Level.SEVERE, null, ex);
+			LOGGER.error(ex);
 		} catch (IOException ex) {
-			Logger.getLogger(EvioDictionary.class.getName()).log(Level.SEVERE, null, ex);
+			LOGGER.error(ex);
 		} catch (NoSuchAlgorithmException ex) {
-			Logger.getLogger(EvioDictionary.class.getName()).log(Level.SEVERE, null, ex);
+			LOGGER.error(ex);
 		} catch (TransformerException ex) {
-			Logger.getLogger(EvioDictionary.class.getName()).log(Level.SEVERE, null, ex);
+			LOGGER.error(ex);
 		}
-		System.err.println("[EvioDictionary] ----> loaded from directory : " + dict_path);
-		System.err.println("[EvioDictionary] ----> number of descriptors : " + descriptors.size());
+		LOGGER.warn("[EvioDictionary] ----> loaded from directory : " + dict_path);
+		LOGGER.warn("[EvioDictionary] ----> number of descriptors : " + descriptors.size());
 
 		// if()
 	}
@@ -72,15 +72,15 @@ public final class EvioDictionary implements DataDictionary {
 			 * } catch (NoSuchAlgorithmException | ParserConfigurationException | SAXException | IOException | TransformerException e) { // TODO Auto-generated catch
 			 * block e.printStackTrace(); }
 			 */ } catch (ParserConfigurationException ex) {
-			Logger.getLogger(EvioDictionary.class.getName()).log(Level.SEVERE, null, ex);
+			LOGGER.error(ex);
 		} catch (SAXException ex) {
-			Logger.getLogger(EvioDictionary.class.getName()).log(Level.SEVERE, null, ex);
+			LOGGER.error(ex);
 		} catch (IOException ex) {
-			Logger.getLogger(EvioDictionary.class.getName()).log(Level.SEVERE, null, ex);
+			LOGGER.error(ex);
 		} catch (NoSuchAlgorithmException ex) {
-			Logger.getLogger(EvioDictionary.class.getName()).log(Level.SEVERE, null, ex);
+			LOGGER.error(ex);
 		} catch (TransformerException ex) {
-			Logger.getLogger(EvioDictionary.class.getName()).log(Level.SEVERE, null, ex);
+			LOGGER.error(ex);
 		}
 	}
 
@@ -88,7 +88,7 @@ public final class EvioDictionary implements DataDictionary {
 		/*
 		 * try { this.setDictionary(xml_dict); } catch (NoSuchAlgorithmException e) { e.printStackTrace(); } catch (ParserConfigurationException e) {
 		 * e.printStackTrace(); } catch (SAXException e) { e.printStackTrace(); } catch (IOException e) { e.printStackTrace(); }
-		 * 
+		 *
 		 */
 	}
 
@@ -216,9 +216,9 @@ public final class EvioDictionary implements DataDictionary {
 			}
 			if (!ignore) {
 				xmlFileList = FileUtils.filesInFolder(dict_dir, "xml", ignorePrefixes);
-				// System.out.println("Reading in EVIO dictionaries:");
+				// LOGGER.debug("Reading in EVIO dictionaries:");
 				// for (String x : xmlFileList) {
-				// System.out.println(" "+x);
+				// LOGGER.debug(" "+x);
 				// }
 			}
 		} else {
@@ -301,12 +301,12 @@ public final class EvioDictionary implements DataDictionary {
 
 	public static void main(String[] args) {
 		String indir = args[0];
-		System.out.println(" ---> " + args[0]);
+		LOGGER.debug(" ---> " + args[0]);
 		EvioDictionary dict = new EvioDictionary(new File(indir));
 		int tag = dict.getDescriptor("DC").getProperty("tag");
 		int num = dict.getDescriptor("DC").getProperty("num", "x_avg");
 		int typ = dict.getDescriptor("DC").getProperty("type", "x_avg");
-		System.out.println("DC.x_avg (" + tag + ", " + num + ", " + typ + ")");
+		LOGGER.debug("DC.x_avg (" + tag + ", " + num + ", " + typ + ")");
 	}
 
 	public DataBank createBank(String name, int rows) {

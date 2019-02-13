@@ -4,6 +4,8 @@
  */
 package org.jlab.clas.reactions;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.clas.physics.Vector3;
 
 /**
@@ -11,6 +13,7 @@ import org.jlab.clas.physics.Vector3;
  * @author gagikgavalian
  */
 public class TransMatrix {
+    public static Logger LOGGER = LogManager.getLogger(TransMatrix.class.getName());
     double[][] tMatrix;
     double[]   partialMatrix;
     
@@ -133,22 +136,22 @@ public class TransMatrix {
         PrimeV[1] = LabV[2].cross(vec);
         if(PrimeV[1].mag()==0)
         {
-            //System.out.println("set prime vector to lab direction");
+            //LOGGER.debug("set prime vector to lab direction");
             PrimeV[1].setXYZ(0.0, 1.0, 0.0);
         }
-        //System.out.println(" Mag = " + PrimeV[1].mag());
+        //LOGGER.debug(" Mag = " + PrimeV[1].mag());
         PrimeV[1].unit();
-        //System.out.println(" Mag unit = " + PrimeV[1].mag());
+        //LOGGER.debug(" Mag unit = " + PrimeV[1].mag());
         PrimeV[2].setXYZ(vec.x(), vec.y(), vec.z());
         PrimeV[2].unit();
         PrimeV[0] = PrimeV[1].cross(PrimeV[2]);
         
-        //System.out.println("-------> prime vector");
+        //LOGGER.debug("-------> prime vector");
         /*for(int j = 0; j < 3; j++)
-            System.out.println(PrimeV[j].x() + "   " +  PrimeV[j].y() + "   " + PrimeV[j].z() + "  " + PrimeV[j].mag());
-        System.out.println("-------> lab vector");
+            LOGGER.debug(PrimeV[j].x() + "   " +  PrimeV[j].y() + "   " + PrimeV[j].z() + "  " + PrimeV[j].mag());
+        LOGGER.debug("-------> lab vector");
         for(int j = 0; j < 3; j++)
-            System.out.println(LabV[j].x() + "   " +  LabV[j].y() + "   " + LabV[j].z());
+            LOGGER.debug(LabV[j].x() + "   " +  LabV[j].y() + "   " + LabV[j].z());
         */
         for(int ir = 0; ir < 3; ir++)
             for(int ic=0;ic<3;ic++)
@@ -171,7 +174,7 @@ public class TransMatrix {
         double determ = this.det();
         if(determ==0.0)
         {
-            System.err.println("----> error in transmatrix deteminant is 0.0 and it can not be inversed.");
+            LOGGER.warn("----> error in transmatrix deteminant is 0.0 and it can not be inversed.");
             return;
         }
         
@@ -196,9 +199,9 @@ public class TransMatrix {
     
     public void print()
     {
-        System.out.println("\n");
+        LOGGER.debug("\n");
         for(int ir = 0; ir < 3; ir++)
-                System.out.println(String.format("%8.5f,%8.5f,%8.5f", 
+                LOGGER.debug(String.format("%8.5f,%8.5f,%8.5f", 
                         get(ir,0),get(ir,1),get(ir,2)));
 
     }

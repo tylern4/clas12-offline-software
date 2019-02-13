@@ -90,7 +90,7 @@ public class CNDEngine extends ReconstructionEngine {
 				//          DataBank outbank = RecoBankWriter.fillCndHitBanks(event, hits);
 			//          event.appendBanks(outbank);
 			// event.show();
-			System.out.println("in process event ");
+			LOGGER.debug("in process event ");
 			rbc.appendCNDBanks(event,hits);
 			//      ecnd++;
 			//      if(event.hasBank("CVTRec::Tracks")){
@@ -109,7 +109,7 @@ public class CNDEngine extends ReconstructionEngine {
 	        if(size>0){
 	                DataBank bank2 =  event.createBank("CND::clusters", size);
 	                if (bank2 == null) {
-	                        System.err.println("COULD NOT CREATE A CND::clusters BANK!!!!!!");
+						LOGGER.warn("COULD NOT CREATE A CND::clusters BANK!!!!!!");
 	                        return false;
 	                }
 	                for(int i =0; i< size; i++) {
@@ -140,7 +140,7 @@ public class CNDEngine extends ReconstructionEngine {
 
 	public void setRunConditionsParameters(DataEvent event) {
 		if(event.hasBank("RUN::config")==false) {
-			System.err.println("RUN CONDITIONS NOT READ!");
+			LOGGER.warn("RUN CONDITIONS NOT READ!");
 		}
 		else {
 			int newRun = Run;        
@@ -190,21 +190,21 @@ public class CNDEngine extends ReconstructionEngine {
 			en.processDataEvent(event);
 			writer.writeEvent(event);
 			//event.getBank("CND::hits").show();
-			System.out.println("event nb "+enb);
+			LOGGER.debug("event nb "+enb);
 			//event.getBank("CND::hits").show();
-			//System.out.println();
+			//LOGGER.debug();
 			if(enb>1000)
 				break;
 		}		
 		writer.close();
-		
-		System.out.println("enb "+enb);
-		System.out.println("ecnd "+ecnd);
-		System.out.println("hcvt "+hcvt);
-		System.out.println("posmatch "+posmatch);
-		System.out.println("match "+match);
-		System.out.println("%match "+100.*match/posmatch);
-		System.out.println("Done");
+
+		LOGGER.debug("enb "+enb);
+		LOGGER.debug("ecnd "+ecnd);
+		LOGGER.debug("hcvt "+hcvt);
+		LOGGER.debug("posmatch "+posmatch);
+		LOGGER.debug("match "+match);
+		LOGGER.debug("%match "+100.*match/posmatch);
+		LOGGER.debug("Done");
 	}
 
 }

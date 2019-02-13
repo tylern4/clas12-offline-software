@@ -66,7 +66,7 @@ public class DetectorDecoderView extends JPanel implements IDataEventListener {
         dataTable.getSelectionModel().addListSelectionListener(new ListSelectionListener(){        
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                //System.out.println(dataTable.getValueAt(dataTable.getSelectedRow(), 0).toString());
+                //LOGGER.debug(dataTable.getValueAt(dataTable.getSelectedRow(), 0).toString());
                 drawData(dataTable.getSelectedRow());
             }
         });
@@ -78,11 +78,11 @@ public class DetectorDecoderView extends JPanel implements IDataEventListener {
     
     @Override
     public void dataEventAction(DataEvent event) {
-        //System.out.println("---> starting decoding ");
+        //LOGGER.debug("---> starting decoding ");
         List<DetectorDataDgtz>  dataSet = decoder.getDataEntries((EvioDataEvent) event);
         detectorDecoder.translate(dataSet);
         detectorDecoder.fitPulses(dataSet);
-        //System.out.println(" processed the event data set Size = " + dataSet.size());
+        //LOGGER.debug(" processed the event data set Size = " + dataSet.size());
         //detectorData.clear();
         //detectorData.addAll(dataSet);
         //this.updateTableModel();
@@ -92,7 +92,7 @@ public class DetectorDecoderView extends JPanel implements IDataEventListener {
 
     private void drawData(int index){
         try {
-            //System.out.println(" ---> drawing data " + index + "  ");
+            //LOGGER.debug(" ---> drawing data " + index + "  ");
             if(this.detectorData.get(index).getADCSize()>0){
                 int nbins = this.detectorData.get(index).getADCData(0).getPulseSize();
                 H1F dh = new H1F("dh",nbins, 0.5, ((double) nbins) + 0.5);
@@ -110,7 +110,7 @@ public class DetectorDecoderView extends JPanel implements IDataEventListener {
                 this.dataCanvas.update();
             }
         } catch (Exception e) {
-            System.out.println("error drawing component " + index);
+            LOGGER.debug("error drawing component " + index);
         }
     }
     
@@ -123,7 +123,7 @@ public class DetectorDecoderView extends JPanel implements IDataEventListener {
     
     private void updateTableModel(){
 
-        System.out.println( "number of rows to add = " + detectorData.size());
+        LOGGER.debug( "number of rows to add = " + detectorData.size());
         
         //DefaultTableModel tableModel = (DefaultTableModel) dataTable.getModel();
         //tableModel.setRowCount(0);
@@ -132,7 +132,7 @@ public class DetectorDecoderView extends JPanel implements IDataEventListener {
         dataTable.getSelectionModel().addListSelectionListener(new ListSelectionListener(){        
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                System.out.println(dataTable.getValueAt(dataTable.getSelectedRow(), 0).toString());
+                LOGGER.debug(dataTable.getValueAt(dataTable.getSelectedRow(), 0).toString());
             }
         });*/
         /*
@@ -148,7 +148,7 @@ public class DetectorDecoderView extends JPanel implements IDataEventListener {
             data[6] = Integer.toString(dd.getDescriptor().getComponent());
             data[7] = "ADC";
             tableModel.addRow(data);
-            System.out.println("adding row " + i);
+            LOGGER.debug("adding row " + i);
         }
         dataTable.setModel(tableModel);
                 */

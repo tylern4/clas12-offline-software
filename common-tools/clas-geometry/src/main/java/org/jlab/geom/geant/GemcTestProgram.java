@@ -7,6 +7,9 @@ package org.jlab.geom.geant;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jlab.geom.base.ConstantProvider;
 
 /**
@@ -14,7 +17,7 @@ import org.jlab.geom.base.ConstantProvider;
  * @author gavalian
  */
 public class GemcTestProgram {
-    
+    public static Logger LOGGER = LogManager.getLogger(GemcTestProgram.class.getName());
     public static String numberString(Integer num, int spaces){
         String ns = num.toString();
         StringBuilder str = new StringBuilder();
@@ -48,8 +51,8 @@ public class GemcTestProgram {
             trd.setDescription("FTOF-sector-2-paddle-" + GemcTestProgram.numberString(loop, 3));
             
             trd.getDetector().put("mother", "ftof-panel-1-sector-1");
-            //System.out.println("created paddle # "+ loop);
-            System.out.println(trd.getDetector().toPaddedString(trd.getDetector().getWidths(1), "|"));
+            //LOGGER.debug("created paddle # "+ loop);
+            LOGGER.debug(trd.getDetector().toPaddedString(trd.getDetector().getWidths(1), "|"));
         }
     }
 }
